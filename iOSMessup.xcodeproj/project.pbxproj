@@ -8,12 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		AA51462F2D40450600FE93E5 /* iOSMessupApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51462E2D40450600FE93E5 /* iOSMessupApp.swift */; };
-		AA5146312D40450600FE93E5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5146302D40450600FE93E5 /* ContentView.swift */; };
+		AA5146312D40450600FE93E5 /* ExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5146302D40450600FE93E5 /* ExpensesView.swift */; };
 		AA5146332D40450700FE93E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA5146322D40450700FE93E5 /* Assets.xcassets */; };
 		AA5146372D40450700FE93E5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA5146362D40450700FE93E5 /* Preview Assets.xcassets */; };
 		AA5146412D40450700FE93E5 /* iOSMessupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5146402D40450700FE93E5 /* iOSMessupTests.swift */; };
 		AA51464B2D40450700FE93E5 /* iOSMessupUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51464A2D40450700FE93E5 /* iOSMessupUITests.swift */; };
 		AA51464D2D40450700FE93E5 /* iOSMessupUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51464C2D40450700FE93E5 /* iOSMessupUITestsLaunchTests.swift */; };
+		AA51465C2D4047DE00FE93E5 /* ExpenseCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51465B2D4047DE00FE93E5 /* ExpenseCellView.swift */; };
+		AA51465F2D4048E800FE93E5 /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51465E2D4048E800FE93E5 /* Expense.swift */; };
+		AA5146662D40531500FE93E5 /* Double+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5146652D40531500FE93E5 /* Double+Utils.swift */; };
+		AA5146692D40542D00FE93E5 /* PaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5146682D40542D00FE93E5 /* PaymentMethod.swift */; };
+		AA51466B2D40592500FE93E5 /* TotalBalanceCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51466A2D40592500FE93E5 /* TotalBalanceCardView.swift */; };
+		AA51466D2D40EC0F00FE93E5 /* WeeklyExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51466C2D40EC0F00FE93E5 /* WeeklyExpensesView.swift */; };
+		AA51466F2D40ECB400FE93E5 /* Calendar+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51466E2D40ECB400FE93E5 /* Calendar+Utils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +43,7 @@
 /* Begin PBXFileReference section */
 		AA51462B2D40450600FE93E5 /* iOSMessup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSMessup.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA51462E2D40450600FE93E5 /* iOSMessupApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSMessupApp.swift; sourceTree = "<group>"; };
-		AA5146302D40450600FE93E5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		AA5146302D40450600FE93E5 /* ExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesView.swift; sourceTree = "<group>"; };
 		AA5146322D40450700FE93E5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AA5146342D40450700FE93E5 /* iOSMessup.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iOSMessup.entitlements; sourceTree = "<group>"; };
 		AA5146362D40450700FE93E5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -45,6 +52,13 @@
 		AA5146462D40450700FE93E5 /* iOSMessupUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSMessupUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA51464A2D40450700FE93E5 /* iOSMessupUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSMessupUITests.swift; sourceTree = "<group>"; };
 		AA51464C2D40450700FE93E5 /* iOSMessupUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSMessupUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		AA51465B2D4047DE00FE93E5 /* ExpenseCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseCellView.swift; sourceTree = "<group>"; };
+		AA51465E2D4048E800FE93E5 /* Expense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expense.swift; sourceTree = "<group>"; };
+		AA5146652D40531500FE93E5 /* Double+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Utils.swift"; sourceTree = "<group>"; };
+		AA5146682D40542D00FE93E5 /* PaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethod.swift; sourceTree = "<group>"; };
+		AA51466A2D40592500FE93E5 /* TotalBalanceCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalBalanceCardView.swift; sourceTree = "<group>"; };
+		AA51466C2D40EC0F00FE93E5 /* WeeklyExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyExpensesView.swift; sourceTree = "<group>"; };
+		AA51466E2D40ECB400FE93E5 /* Calendar+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Calendar+Utils.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,11 +109,14 @@
 		AA51462D2D40450600FE93E5 /* iOSMessup */ = {
 			isa = PBXGroup;
 			children = (
-				AA51462E2D40450600FE93E5 /* iOSMessupApp.swift */,
-				AA5146302D40450600FE93E5 /* ContentView.swift */,
-				AA5146322D40450700FE93E5 /* Assets.xcassets */,
 				AA5146342D40450700FE93E5 /* iOSMessup.entitlements */,
+				AA51462E2D40450600FE93E5 /* iOSMessupApp.swift */,
+				AA5146322D40450700FE93E5 /* Assets.xcassets */,
+				AA51465A2D4047C500FE93E5 /* Components */,
+				AA5146672D40533500FE93E5 /* Extensions */,
+				AA51465D2D4048B100FE93E5 /* Model */,
 				AA5146352D40450700FE93E5 /* Preview Content */,
+				AA5146592D4047C100FE93E5 /* Views */,
 			);
 			path = iOSMessup;
 			sourceTree = "<group>";
@@ -129,6 +146,42 @@
 			path = iOSMessupUITests;
 			sourceTree = "<group>";
 		};
+		AA5146592D4047C100FE93E5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AA5146302D40450600FE93E5 /* ExpensesView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		AA51465A2D4047C500FE93E5 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				AA51465B2D4047DE00FE93E5 /* ExpenseCellView.swift */,
+				AA51466A2D40592500FE93E5 /* TotalBalanceCardView.swift */,
+				AA51466C2D40EC0F00FE93E5 /* WeeklyExpensesView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		AA51465D2D4048B100FE93E5 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				AA51465E2D4048E800FE93E5 /* Expense.swift */,
+				AA5146682D40542D00FE93E5 /* PaymentMethod.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		AA5146672D40533500FE93E5 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				AA5146652D40531500FE93E5 /* Double+Utils.swift */,
+				AA51466E2D40ECB400FE93E5 /* Calendar+Utils.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -145,6 +198,8 @@
 			dependencies = (
 			);
 			name = iOSMessup;
+			packageProductDependencies = (
+			);
 			productName = iOSMessup;
 			productReference = AA51462B2D40450600FE93E5 /* iOSMessup.app */;
 			productType = "com.apple.product-type.application";
@@ -217,6 +272,8 @@
 				Base,
 			);
 			mainGroup = AA5146222D40450600FE93E5;
+			packageReferences = (
+			);
 			productRefGroup = AA51462C2D40450600FE93E5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -259,8 +316,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA5146312D40450600FE93E5 /* ContentView.swift in Sources */,
+				AA51465F2D4048E800FE93E5 /* Expense.swift in Sources */,
+				AA51465C2D4047DE00FE93E5 /* ExpenseCellView.swift in Sources */,
+				AA51466D2D40EC0F00FE93E5 /* WeeklyExpensesView.swift in Sources */,
+				AA5146312D40450600FE93E5 /* ExpensesView.swift in Sources */,
+				AA5146692D40542D00FE93E5 /* PaymentMethod.swift in Sources */,
 				AA51462F2D40450600FE93E5 /* iOSMessupApp.swift in Sources */,
+				AA51466F2D40ECB400FE93E5 /* Calendar+Utils.swift in Sources */,
+				AA51466B2D40592500FE93E5 /* TotalBalanceCardView.swift in Sources */,
+				AA5146662D40531500FE93E5 /* Double+Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,6 +413,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -404,6 +469,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
