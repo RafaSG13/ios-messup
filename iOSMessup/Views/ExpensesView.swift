@@ -73,11 +73,11 @@ extension ExpensesView {
                 .font(.title2)
                 .bold()
             Spacer()
-            Button("View all") {
-                //Navigate to full list view
+            NavigationLink(destination: AllExpensesView(expenses: $expenses)) {
+                Text("View all")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
-            .font(.caption)
-            .foregroundStyle(.secondary)
         }
     }
 
