@@ -11,6 +11,7 @@ struct AllExpensesView: View {
     @Binding var expenses: [Expense]
     @State private var selectedItem: Expense?
     @State var shouldPresentEditExpense = false
+    @State var shouldPresentAddExpense = false
 
     var body: some View {
         List($expenses, id: \.self, editActions: [.delete], selection: $selectedItem) { $expense in
@@ -23,7 +24,7 @@ struct AllExpensesView: View {
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 Button {
-                    // Display add expense modal
+                    shouldPresentAddExpense.toggle()
                 } label: {
                     Image(systemName: "plus")
                 }.buttonStyle(.plain)
@@ -41,6 +42,8 @@ struct AllExpensesView: View {
                 Text("No expense selected.")
             }
         }
+        .addExpenseSheet(isPresented: $shouldPresentAddExpense,
+                         expenses: $expenses)
     }
 }
 

@@ -23,6 +23,9 @@
 		AA51466B2D40592500FE93E5 /* TotalBalanceCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51466A2D40592500FE93E5 /* TotalBalanceCardView.swift */; };
 		AA51466D2D40EC0F00FE93E5 /* WeeklyExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51466C2D40EC0F00FE93E5 /* WeeklyExpensesView.swift */; };
 		AA51466F2D40ECB400FE93E5 /* Calendar+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51466E2D40ECB400FE93E5 /* Calendar+Utils.swift */; };
+		AA6D45B82D41ABBD0014A95F /* AddExpenseViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45B72D41ABBD0014A95F /* AddExpenseViewModal.swift */; };
+		AA6D45BB2D41B0E40014A95F /* AddExpenseSheetViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45BA2D41B0E40014A95F /* AddExpenseSheetViewModifier.swift */; };
+		AA6D45BD2D41B5A90014A95F /* UIApplication+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45BC2D41B5A90014A95F /* UIApplication+Keyboard.swift */; };
 		AA7923D32D413C3600768849 /* MonthlyObjetiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7923D22D413C3600768849 /* MonthlyObjetiveView.swift */; };
 		AA7923D52D413C5800768849 /* SocialGroupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7923D42D413C5800768849 /* SocialGroupsView.swift */; };
 		AA7923D72D413C7100768849 /* PendingPaymentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7923D62D413C7100768849 /* PendingPaymentsView.swift */; };
@@ -68,6 +71,9 @@
 		AA51466A2D40592500FE93E5 /* TotalBalanceCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalBalanceCardView.swift; sourceTree = "<group>"; };
 		AA51466C2D40EC0F00FE93E5 /* WeeklyExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyExpensesView.swift; sourceTree = "<group>"; };
 		AA51466E2D40ECB400FE93E5 /* Calendar+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Calendar+Utils.swift"; sourceTree = "<group>"; };
+		AA6D45B72D41ABBD0014A95F /* AddExpenseViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseViewModal.swift; sourceTree = "<group>"; };
+		AA6D45BA2D41B0E40014A95F /* AddExpenseSheetViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseSheetViewModifier.swift; sourceTree = "<group>"; };
+		AA6D45BC2D41B5A90014A95F /* UIApplication+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Keyboard.swift"; sourceTree = "<group>"; };
 		AA7923D22D413C3600768849 /* MonthlyObjetiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlyObjetiveView.swift; sourceTree = "<group>"; };
 		AA7923D42D413C5800768849 /* SocialGroupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialGroupsView.swift; sourceTree = "<group>"; };
 		AA7923D62D413C7100768849 /* PendingPaymentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingPaymentsView.swift; sourceTree = "<group>"; };
@@ -130,6 +136,7 @@
 				AA5146672D40533500FE93E5 /* Extensions */,
 				AA51465D2D4048B100FE93E5 /* Model */,
 				AA5146352D40450700FE93E5 /* Preview Content */,
+				AA6D45B92D41B0D20014A95F /* ViewModifiers */,
 				AA5146592D4047C100FE93E5 /* Views */,
 			);
 			path = iOSMessup;
@@ -197,8 +204,17 @@
 			children = (
 				AA5146652D40531500FE93E5 /* Double+Utils.swift */,
 				AA51466E2D40ECB400FE93E5 /* Calendar+Utils.swift */,
+				AA6D45BC2D41B5A90014A95F /* UIApplication+Keyboard.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		AA6D45B92D41B0D20014A95F /* ViewModifiers */ = {
+			isa = PBXGroup;
+			children = (
+				AA6D45BA2D41B0E40014A95F /* AddExpenseSheetViewModifier.swift */,
+			);
+			path = ViewModifiers;
 			sourceTree = "<group>";
 		};
 		AA832E682D415B8300940F78 /* Expenses */ = {
@@ -207,6 +223,7 @@
 				AA5146302D40450600FE93E5 /* ExpensesView.swift */,
 				AA832E692D415B9200940F78 /* AllExpensesView.swift */,
 				AA832E6B2D4173EC00940F78 /* EditExpenseModalView.swift */,
+				AA6D45B72D41ABBD0014A95F /* AddExpenseViewModal.swift */,
 			);
 			name = Expenses;
 			sourceTree = "<group>";
@@ -346,6 +363,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA51465F2D4048E800FE93E5 /* Expense.swift in Sources */,
+				AA6D45BD2D41B5A90014A95F /* UIApplication+Keyboard.swift in Sources */,
 				AA832E6A2D415B9200940F78 /* AllExpensesView.swift in Sources */,
 				AA51465C2D4047DE00FE93E5 /* ExpenseCellView.swift in Sources */,
 				AA7923D72D413C7100768849 /* PendingPaymentsView.swift in Sources */,
@@ -357,7 +375,9 @@
 				AA51462F2D40450600FE93E5 /* iOSMessupApp.swift in Sources */,
 				AA51466F2D40ECB400FE93E5 /* Calendar+Utils.swift in Sources */,
 				AA832E6C2D4173EC00940F78 /* EditExpenseModalView.swift in Sources */,
+				AA6D45B82D41ABBD0014A95F /* AddExpenseViewModal.swift in Sources */,
 				AA422C292D4141B500F108B8 /* MainTabBarView.swift in Sources */,
+				AA6D45BB2D41B0E40014A95F /* AddExpenseSheetViewModifier.swift in Sources */,
 				AA51466B2D40592500FE93E5 /* TotalBalanceCardView.swift in Sources */,
 				AA5146662D40531500FE93E5 /* Double+Utils.swift in Sources */,
 				AA422C2B2D41475600F108B8 /* Category.swift in Sources */,

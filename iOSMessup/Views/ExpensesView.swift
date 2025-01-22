@@ -11,6 +11,7 @@ import Charts
 struct ExpensesView: View {
 
     @State var expenses: [Expense] = Expense.mockArray
+    @State private var shouldPresentAddExpense = false
 
     private enum ViewTraits {
         static let generalViewPadding: CGFloat = 20
@@ -53,18 +54,22 @@ struct ExpensesView: View {
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
-                            // Display add expense modal
+                            shouldPresentAddExpense.toggle()
                         } label: {
                             Image(systemName: "plus")
                         }.buttonStyle(.plain)
                     }
                 }
+                .addExpenseSheet(isPresented: $shouldPresentAddExpense,
+                                 expenses: $expenses)
             }
         }
         .scrollIndicators(.hidden)
         .scrollBounceBehavior(.always)
     }
 }
+
+//MARK: - View Components
 
 extension ExpensesView {
     var TransactionsHeader: some View {
