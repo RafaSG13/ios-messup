@@ -10,16 +10,26 @@ import SwiftUI
 struct ExpenseCellView: View {
     let expense: Expense
 
+    private enum ViewTraits {
+        static let imageSize: CGFloat = 40
+        static let imageInternalPadding: CGFloat = 5
+        static let generalPadding: CGFloat = 10
+        static let backgroundColor: Color = .secondary.opacity(0.15)
+        static let cornerRadius: CGFloat = 10
+        static let generalSpacing: CGFloat = 10
+        static let cellHeight: CGFloat = 70
+    }
+
     var body: some View {
-        HStack {
-            Image(systemName: "cart.fill")
+        HStack(spacing: ViewTraits.generalPadding) {
+            Image(systemName: expense.category.symbol)
                 .resizable()
-                .frame(width: 40, height: 40)
+                .frame(width: ViewTraits.imageSize, height: ViewTraits.imageSize)
                 .scaledToFill()
-                .padding(5)
-                .background(.white)
-                .clipShape(.rect(cornerRadius: 10))
-                .padding(.trailing, 10)
+                .padding(ViewTraits.imageInternalPadding)
+                .background(expense.category.color)
+                .foregroundColor(.white)
+                .clipShape(.rect(cornerRadius: ViewTraits.cornerRadius))
 
             VStack(alignment: .leading) {
                 Text(expense.name)
@@ -37,15 +47,22 @@ struct ExpenseCellView: View {
                     .font(.caption)
             }
         }
-        .padding(.vertical)
-        .padding(.horizontal, 10)
-        .frame(maxWidth: .infinity, maxHeight: 60)
-        .background(.gray.opacity(0.2))
-        .clipShape(.rect(cornerRadius: 10))
+        .padding(ViewTraits.generalPadding)
+        .frame(maxWidth: .infinity)
+        .frame(height: ViewTraits.cellHeight)
+        .background(ViewTraits.backgroundColor)
+        .clipShape(.rect(cornerRadius: ViewTraits.cornerRadius))
     }
 }
 
 #Preview {
-    ExpenseCellView(expense: Expense.mock)
-        .previewLayout(.sizeThatFits)
+    ScrollView {
+        LazyVStack {
+            ForEach(Expense.mockArray) { expense in
+                ExpenseCellView(expense: expense)
+            }
+        }
+    }
+    .scrollIndicators(.hidden)
+    .padding()
 }

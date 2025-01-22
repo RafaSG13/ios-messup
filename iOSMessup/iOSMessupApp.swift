@@ -11,7 +11,7 @@ import SwiftUI
 struct iOSMessupApp: App {
     var body: some Scene {
         WindowGroup {
-            ExpensesView()
+            MainTabBarView()
         }
     }
 }

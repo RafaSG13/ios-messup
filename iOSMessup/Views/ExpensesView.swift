@@ -17,44 +17,52 @@ struct ExpensesView: View {
         static let interSectionSpacing: CGFloat = 28
         static let headerSpacing: CGFloat = 10
     }
+
+    private enum Constants {
+        static let maximumNumberOfExpenses = 5
+    }
+
     var body: some View {
         NavigationStack {
-            VStack(spacing: ViewTraits.interSectionSpacing) {
-                TotalBalanceCardView()
-                    .frame(height: 150)
-                
-                VStack(spacing: ViewTraits.headerSpacing) {
-                    AnalyticsHeader
-                    WeeklyExpensesView(expenses: expenses)
+            ScrollView {
+                VStack(spacing: ViewTraits.interSectionSpacing) {
+                    TotalBalanceCardView()
                         .frame(height: 150)
-                }
-
-                VStack(spacing: ViewTraits.headerSpacing) {
-                    TransactionsHeader
-                    VStack {
-                        ForEach(expenses.sorted().suffix(3)) { expense in
-                            ExpenseCellView(expense: expense)
+                    
+                    VStack(spacing: ViewTraits.headerSpacing) {
+                        AnalyticsHeader
+                        WeeklyExpensesView(expenses: expenses)
+                            .frame(height: 150)
+                    }
+                    
+                    VStack(spacing: ViewTraits.headerSpacing) {
+                        TransactionsHeader
+                        VStack(spacing: 15) {
+                            ForEach(expenses.sorted().suffix(Constants.maximumNumberOfExpenses)) { expense in
+                                ExpenseCellView(expense: expense)
+                            }
                         }
                     }
                 }
-                Spacer()
-            }
-            .padding(ViewTraits.generalViewPadding)
-            .navigationTitle("Expenses")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Image(systemName: "line.horizontal.3")
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        // Display add expense modal
-                    } label: {
-                        Image(systemName: "plus")
-                    }.buttonStyle(.plain)
+                .padding(ViewTraits.generalViewPadding)
+                .navigationTitle("Expenses")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Image(systemName: "line.horizontal.3")
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            // Display add expense modal
+                        } label: {
+                            Image(systemName: "plus")
+                        }.buttonStyle(.plain)
+                    }
                 }
             }
         }
+        .scrollIndicators(.hidden)
+        .scrollBounceBehavior(.always)
     }
 }
 
