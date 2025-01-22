@@ -32,6 +32,7 @@ struct MainTabBarView: View {
                 .tabItem { Label("Pending payments", systemImage: "clock.fill") }
                 .tag(Tab.pendingPayments)
         }
+        .tint(.black)
     }
 }
 
