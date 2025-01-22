@@ -9,7 +9,7 @@ import SwiftUI
 import Charts
 
 struct WeeklyExpensesView: View {
-    @State var expenses: [Expense]
+    @Binding var expenses: [Expense]
 
     var body: some View {
         let data = buildData(for: getActualWeekExpenses())
@@ -106,5 +106,5 @@ extension WeeklyExpensesView {
 }
 
 #Preview {
-    WeeklyExpensesView(expenses: Expense.mockArray)
+    WeeklyExpensesView(expenses: .constant(Expense.mockArray))
 }

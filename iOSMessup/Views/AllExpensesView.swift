@@ -34,8 +34,9 @@ struct AllExpensesView: View {
             shouldPresentEditExpense.toggle()
         }
         .sheet(isPresented: $shouldPresentEditExpense, onDismiss: resetSelectedItem) {
-            if let selectedItem = Binding($selectedItem) {
-                EditExpenseModalView(expense: selectedItem)
+            if let selectedID = selectedItem?.id,
+               let index = expenses.firstIndex(where: { $0.id == selectedID }) {
+                EditExpenseModalView(expense: $expenses[index])
             } else {
                 Text("No expense selected.")
             }

@@ -8,7 +8,7 @@
 import Foundation
 
 
-enum PaymentMethod: String {
+enum PaymentMethod: String, CaseIterable, Hashable {
     case cash = "Cash"
     case creditCard = "Credit Card"
     case debitCard = "Debit Card"

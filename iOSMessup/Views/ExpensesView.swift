@@ -31,7 +31,7 @@ struct ExpensesView: View {
                     
                     VStack(spacing: ViewTraits.headerSpacing) {
                         AnalyticsHeader
-                        WeeklyExpensesView(expenses: expenses)
+                        WeeklyExpensesView(expenses: $expenses)
                             .frame(height: 150)
                     }
                     
