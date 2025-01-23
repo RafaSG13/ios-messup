@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct MonthlyObjetiveView: View {
+struct MonthlyObjectiveView: View {
     var body: some View {
-        Text("This is my monthly objetive")
+        Text("This is my monthly objective")
     }
 }
 
 #Preview {
-    MonthlyObjetiveView()
+    MonthlyObjectiveView()
 }

@@ -9,8 +9,7 @@ import SwiftUI
 import Charts
 
 struct ExpensesView: View {
-
-    @State var expenses: [Expense] = Expense.mockArray
+    @Environment(ExpenseViewModel.self) var expensesVM
     @State private var shouldPresentAddExpense = false
 
     private enum ViewTraits {
@@ -27,19 +26,19 @@ struct ExpensesView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: ViewTraits.interSectionSpacing) {
-                    TotalBalanceCardView()
+                    TotalBalanceCardView(total: expensesVM.calculateTotalSpent())
                         .frame(height: 150)
                     
                     VStack(spacing: ViewTraits.headerSpacing) {
                         AnalyticsHeader
-                        WeeklyExpensesView(expenses: $expenses)
+                        WeeklyExpensesView()
                             .frame(height: 150)
                     }
                     
                     VStack(spacing: ViewTraits.headerSpacing) {
                         TransactionsHeader
                         VStack(spacing: 15) {
-                            ForEach(expenses.sorted().suffix(Constants.maximumNumberOfExpenses)) { expense in
+                            ForEach(expensesVM.lastExpenses(limit: Constants.maximumNumberOfExpenses)) { expense in
                                 ExpenseCellView(expense: expense)
                             }
                         }
@@ -61,7 +60,7 @@ struct ExpensesView: View {
                     }
                 }
                 .addExpenseSheet(isPresented: $shouldPresentAddExpense,
-                                 expenses: $expenses)
+                                 onSubmit: expensesVM.addExpense)
             }
         }
         .scrollIndicators(.hidden)
@@ -78,7 +77,7 @@ extension ExpensesView {
                 .font(.title2)
                 .bold()
             Spacer()
-            NavigationLink(destination: AllExpensesView(expenses: $expenses)) {
+            NavigationLink(destination: AllExpensesView()) {
                 Text("View all")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -98,4 +97,5 @@ extension ExpensesView {
 
 #Preview {
     ExpensesView()
+        .environment(ExpenseViewModel(dataSource: ExpensesDataSourceSpy()))
 }

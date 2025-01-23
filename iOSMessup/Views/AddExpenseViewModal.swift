@@ -9,13 +9,12 @@ import SwiftUI
 
 struct AddExpenseViewModal: View {
     @Environment(\.presentationMode) var presentationMode
-    @Binding var expenses: [Expense]
-    
-    @State private var name: String = ""
-    @State private var amount: Double = 0.0
-    @State private var date: Date = Date()
-    @State private var paymentMethod: PaymentMethod = .cash
-    @State private var category: Category = .miscellaneous
+    @State private var newExpense: Expense = Expense(name: "",
+                                                     amount: 0.0,
+                                                     date: Date(),
+                                                     paymentMethod: .cash,
+                                                     category: .miscellaneous)
+    var onSubmit: ((_ expense: Expense) -> Void)?
 
     var body: some View {
         NavigationView {
@@ -35,10 +34,10 @@ struct AddExpenseViewModal: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        addExpense()
+                        onSubmit?(newExpense)
                         presentationMode.wrappedValue.dismiss()
                     }
-                    .disabled(name.isEmpty || amount <= 0)
+                    .disabled(newExpense.name.isEmpty || newExpense.amount <= 0)
                 }
                 ToolbarItem(placement: .keyboard) {
                     HStack {
@@ -58,16 +57,16 @@ struct AddExpenseViewModal: View {
 private extension AddExpenseViewModal {
     var DetailsSection: some View {
         Section(header: Text("Details")) {
-            TextField("Name", text: $name)
-            TextField("Amount", value: $amount, format: .currency(code: "USD"))
+            TextField("Name", text: $newExpense.name)
+            TextField("Amount", value: $newExpense.amount, format: .currency(code: "USD"))
                 .keyboardType(.decimalPad)
-            DatePicker("Date", selection: $date, displayedComponents: .date)
+            DatePicker("Date", selection: $newExpense.date, displayedComponents: .date)
         }
     }
 
     var PaymentMethodSection: some View {
         Section(header: Text("Payment Method")) {
-            Picker(selection: $paymentMethod, label: EmptyView()) {
+            Picker(selection: $newExpense.paymentMethod, label: EmptyView()) {
                 ForEach(PaymentMethod.allCases, id: \.self) { method in
                     Text(method.rawValue).tag(method)
                 }
@@ -77,7 +76,7 @@ private extension AddExpenseViewModal {
 
     var CategorySection: some View {
         Section(header: Text("Category")) {
-            Picker(selection: $category, label: Text("Select a Category")) {
+            Picker(selection: $newExpense.category, label: Text("Select a Category")) {
                 ForEach(Category.allCases, id: \.self) { category in
                     Text(category.rawValue).tag(category)
                 }
@@ -87,23 +86,8 @@ private extension AddExpenseViewModal {
     }
 }
 
-// MARK: - Private Methods
-
-extension AddExpenseViewModal {
-    func addExpense() {
-        let newExpense = Expense(
-            name: name,
-            amount: amount,
-            date: date,
-            paymentMethod: paymentMethod,
-            category: category
-        )
-        expenses.append(newExpense)
-    }
-}
-
 // MARK: - Preview
 
 #Preview {
-    AddExpenseViewModal(expenses: .constant(Expense.mockArray))
+    AddExpenseViewModal(onSubmit: nil)
 }

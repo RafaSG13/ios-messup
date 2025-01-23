@@ -8,15 +8,26 @@
 import SwiftUI
 
 struct AllExpensesView: View {
-    @Binding var expenses: [Expense]
+    @Environment(ExpenseViewModel.self) var expensesVM
     @State private var selectedItem: Expense?
     @State var shouldPresentEditExpense = false
     @State var shouldPresentAddExpense = false
 
     var body: some View {
-        List($expenses, id: \.self, editActions: [.delete], selection: $selectedItem) { $expense in
-            ExpenseCellView(expense: expense)
-                .listRowSeparator(.hidden)
+        List {
+            ForEach(expensesVM.expenses, id: \.self) { expense in
+                ExpenseCellView(expense: expense)
+                    .listRowSeparator(.hidden)
+                    .onTapGesture {
+                        selectedItem = expense
+                    }
+                    .onChange(of: selectedItem) {
+                        guard selectedItem != nil else { return }
+                        shouldPresentEditExpense = true
+                    }
+            }.onDelete { indexSet in
+                expensesVM.delete(removeAt: indexSet)
+            }
         }
         .listStyle(.plain)
         .navigationTitle("All transactions")
@@ -30,29 +41,15 @@ struct AllExpensesView: View {
                 }.buttonStyle(.plain)
             }
         }
-        .onChange(of: selectedItem) { _, newValue in
-            guard newValue != nil else { return }
-            shouldPresentEditExpense.toggle()
-        }
-        .sheet(isPresented: $shouldPresentEditExpense, onDismiss: resetSelectedItem) {
-            if let selectedID = selectedItem?.id,
-               let index = expenses.firstIndex(where: { $0.id == selectedID }) {
-                EditExpenseModalView(expense: $expenses[index])
-            } else {
-                Text("No expense selected.")
-            }
-        }
+        .editExpenseSheet(isPresented: $shouldPresentEditExpense,
+                          selectedItem: $selectedItem,
+                          onSubmit: expensesVM.updateExpense(with:))
         .addExpenseSheet(isPresented: $shouldPresentAddExpense,
-                         expenses: $expenses)
-    }
-}
-
-private extension AllExpensesView {
-    func resetSelectedItem() {
-        selectedItem = nil
+                         onSubmit: expensesVM.addExpense)
     }
 }
 
 #Preview {
-    AllExpensesView(expenses: .constant(Expense.mockArray))
+    AllExpensesView()
+        .environment(ExpenseViewModel(dataSource: ExpensesDataSourceSpy()))
 }

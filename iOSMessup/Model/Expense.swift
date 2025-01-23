@@ -30,7 +30,7 @@ extension Expense {
     static var mock = Expense(name: "Puma Store", amount: 59.95, date: Date(), paymentMethod: .creditCard, category: .fashion)
     static var mockArray: [Expense] = [
         Expense(name: "Puma Store", amount: 59.95, date: Date(), paymentMethod: .creditCard, category: .fashion),
-        Expense(name: "Apple Store", amount: 1299.99, date: Date().addingTimeInterval(-86400), paymentMethod: .creditCard, category: .technology),
+        Expense(name: "Apple Store", amount: 329.99, date: Date().addingTimeInterval(-86400), paymentMethod: .creditCard, category: .technology),
         Expense(name: "Grocery Store", amount: 75.49, date: Date().addingTimeInterval(-172800), paymentMethod: .debitCard, category: .food),
         Expense(name: "Coffee Shop", amount: 4.95, date: Date().addingTimeInterval(-3600), paymentMethod: .cash, category: .food),
         Expense(name: "Online Subscription", amount: 12.99, date: Date().addingTimeInterval(-604800), paymentMethod: .creditCard, category: .entertainment),

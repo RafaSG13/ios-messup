@@ -17,12 +17,15 @@ enum Tab: Int, CaseIterable {
 
 struct MainTabBarView: View {
     @State var activeTab: Tab = .expenses
+    var expenseViewModel = ExpenseViewModel(dataSource: ExpensesDataSource())
+
     var body: some View {
         TabView(selection: $activeTab) {
             ExpensesView()
+                .environment(expenseViewModel )
                 .tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill") }
                 .tag(Tab.expenses)
-            MonthlyObjetiveView()
+            MonthlyObjectiveView()
                 .tabItem { Label("Monthly objetive", systemImage: "chart.pie.fill") }
                 .tag(Tab.monthlyObjective)
             SocialGroupsView()
@@ -33,6 +36,13 @@ struct MainTabBarView: View {
                 .tag(Tab.pendingPayments)
         }
         .tint(.black)
+        .task {
+            do {
+                try await expenseViewModel.loadExpenses()
+            } catch {
+                print("Error loading expenses: \(error.localizedDescription)")
+            }
+        }
     }
 }
 
