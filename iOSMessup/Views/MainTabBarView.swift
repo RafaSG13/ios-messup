@@ -10,9 +10,8 @@ import SwiftUI
 
 enum Tab: Int, CaseIterable {
     case expenses
-    case monthlyObjective
+    case savings
     case socialGroups
-    case pendingPayments
 }
 
 struct MainTabBarView: View {
@@ -25,15 +24,12 @@ struct MainTabBarView: View {
                 .environment(expenseViewModel )
                 .tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill") }
                 .tag(Tab.expenses)
-            MonthlyObjectiveView()
-                .tabItem { Label("Monthly objetive", systemImage: "chart.pie.fill") }
-                .tag(Tab.monthlyObjective)
+            SavingsObjectiveView()
+                .tabItem { Label("Savings", systemImage: "chart.pie.fill") }
+                .tag(Tab.savings)
             SocialGroupsView()
                 .tabItem { Label("Social groups", systemImage: "person.3.fill") }
                 .tag(Tab.socialGroups)
-            PendingPaymentsView()
-                .tabItem { Label("Pending payments", systemImage: "clock.fill") }
-                .tag(Tab.pendingPayments)
         }
         .tint(.black)
         .task {

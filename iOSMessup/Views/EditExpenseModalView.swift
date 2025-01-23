@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EditExpenseModalView: View {
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @State var expense: Expense
 
     var onSubmit: ((_ expense: Expense) async throws -> Void)?
@@ -44,7 +44,7 @@ struct EditExpenseModalView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -52,7 +52,7 @@ struct EditExpenseModalView: View {
                         Task {
                             try? await onSubmit?(expense)
                         }
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
                     }
                 }
             }
