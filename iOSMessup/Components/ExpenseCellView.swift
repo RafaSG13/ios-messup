@@ -22,7 +22,7 @@ struct ExpenseCellView: View {
 
     var body: some View {
         HStack(spacing: ViewTraits.generalPadding) {
-            Image(systemName: expense.category.symbol)
+            Image(systemName: expense.category.icon)
                 .resizable()
                 .frame(width: ViewTraits.imageSize, height: ViewTraits.imageSize)
                 .scaledToFill()

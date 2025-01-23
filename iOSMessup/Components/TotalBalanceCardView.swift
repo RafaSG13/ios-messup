@@ -12,8 +12,13 @@ struct TotalBalanceCardView: View {
     var body: some View {
         VStack(alignment: .leading) {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Total Balance")
-                     .font(.title2)
+                HStack {
+                    Text("Total Spent")
+                         .font(.title2)
+                    Spacer()
+                    Text(Calendar.current.actualMonthToString())
+                        .font(.subheadline)
+                }
                 Text(total.toMoneyString())
                      .font(.largeTitle)
                      .bold()
