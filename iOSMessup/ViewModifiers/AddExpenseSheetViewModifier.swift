@@ -8,26 +8,20 @@
 import SwiftUI
 
 struct AddExpenseSheetModifier: ViewModifier {
-    @Binding var shouldPresentAddExpense: Bool
-    @Binding var expenses: [Expense]
+    @Binding var isPresented: Bool
+    var onSubmit: ((_ expense: Expense) -> Void)?
 
     func body(content: Content) -> some View {
         content
-            .sheet(isPresented: $shouldPresentAddExpense, onDismiss: {
-                shouldPresentAddExpense = false // Reset to false
-            }) {
-                AddExpenseViewModal(expenses: $expenses)
+            .sheet(isPresented: $isPresented) {
+                AddExpenseViewModal(onSubmit: onSubmit)
             }
     }
 }
 
 extension View {
-    func addExpenseSheet(isPresented: Binding<Bool>, expenses: Binding<[Expense]>) -> some View {
-        self.modifier(
-            AddExpenseSheetModifier(
-                shouldPresentAddExpense: isPresented,
-                expenses: expenses
-            )
-        )
+    func addExpenseSheet(isPresented: Binding<Bool>, onSubmit: ((_ expense: Expense) -> Void)?) -> some View {
+        self.modifier(AddExpenseSheetModifier(isPresented: isPresented,
+                                              onSubmit: onSubmit))
     }
 }

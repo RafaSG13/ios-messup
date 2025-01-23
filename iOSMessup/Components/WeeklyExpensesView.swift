@@ -9,10 +9,10 @@ import SwiftUI
 import Charts
 
 struct WeeklyExpensesView: View {
-    @Binding var expenses: [Expense]
+    @Environment(ExpenseViewModel.self) var expensesViewModel
 
     var body: some View {
-        let data = buildData(for: getActualWeekExpenses())
+        let data = buildData(for: expensesViewModel.getActualWeekExpenses())
 
         VStack(spacing: 20) {
             // Header
@@ -74,25 +74,14 @@ struct WeeklyExpensesView: View {
 // MARK: - Auxiliary Methods
 
 extension WeeklyExpensesView {
-    func getActualWeekExpenses() -> [Int: Double] {
-        let weeklyExpenses = expenses.filter { expense in
-            Calendar.current.isDateInThisWeek(expense.date)
-        }
-        
-        let groupedExpenses = Dictionary(grouping: weeklyExpenses) { expense in
-            Calendar.current.component(.weekday, from: expense.date)
-        }
-        .mapValues { $0.reduce(0) { $0 + $1.amount } }
-        return groupedExpenses
-    }
-
-    func buildData(for expensesPerDay: [Int: Double]) -> [(day: String, amount: Double)] {
-        let data = (1...7).map { weekday in
+    func buildData(for weeklyExpenses: [Expense]) -> [(day: String, amount: Double)] {
+        (1...7).map { weekday in
             let dayName = Calendar.current.shortWeekdaySymbols[weekday - 1]
-            let amount = expensesPerDay[weekday] ?? 0
+            let amount = weeklyExpenses
+                .filter { Calendar.current.component(.weekday, from: $0.date) == weekday }
+                .reduce(0) { $0 + $1.amount }
             return (day: dayName, amount: amount)
         }
-        return data
     }
 
     func getExpenseChartColor(for amount: Double) -> Color {
@@ -106,5 +95,6 @@ extension WeeklyExpensesView {
 }
 
 #Preview {
-    WeeklyExpensesView(expenses: .constant(Expense.mockArray))
+    WeeklyExpensesView()
+        .environment(ExpenseViewModel(dataSource: ExpensesDataSourceSpy()))
 }

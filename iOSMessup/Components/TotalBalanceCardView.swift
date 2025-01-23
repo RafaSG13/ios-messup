@@ -8,15 +8,13 @@
 import SwiftUI
 
 struct TotalBalanceCardView: View {
-    let gradient = LinearGradient(gradient: Gradient(colors: [.blue, .purple]),
-                                  startPoint: .topLeading,
-                                  endPoint: .bottomTrailing)
+    let total: Double
     var body: some View {
         VStack(alignment: .leading) {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Total Balance")
                      .font(.title2)
-                 Text("€ 1.000.000")
+                Text(total.toMoneyString())
                      .font(.largeTitle)
                      .bold()
             }
@@ -39,5 +37,5 @@ struct TotalBalanceCardView: View {
 }
 
 #Preview {
-    TotalBalanceCardView()
+    TotalBalanceCardView(total: 2399.00)
 }
