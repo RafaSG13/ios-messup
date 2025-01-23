@@ -36,6 +36,7 @@
 		AA7923D72D413C7100768849 /* PendingPaymentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7923D62D413C7100768849 /* PendingPaymentsView.swift */; };
 		AA832E6A2D415B9200940F78 /* AllExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA832E692D415B9200940F78 /* AllExpensesView.swift */; };
 		AA832E6C2D4173EC00940F78 /* EditExpenseModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA832E6B2D4173EC00940F78 /* EditExpenseModalView.swift */; };
+		AAF9F59A2D429DF00085FD44 /* ExpenseViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF9F5992D429DE60085FD44 /* ExpenseViewModelTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +90,7 @@
 		AA7923D62D413C7100768849 /* PendingPaymentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingPaymentsView.swift; sourceTree = "<group>"; };
 		AA832E692D415B9200940F78 /* AllExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllExpensesView.swift; sourceTree = "<group>"; };
 		AA832E6B2D4173EC00940F78 /* EditExpenseModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExpenseModalView.swift; sourceTree = "<group>"; };
+		AAF9F5992D429DE60085FD44 /* ExpenseViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModelTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +166,7 @@
 		AA51463F2D40450700FE93E5 /* iOSMessupTests */ = {
 			isa = PBXGroup;
 			children = (
+				AAF9F5982D429DDA0085FD44 /* Expense */,
 				AA5146402D40450700FE93E5 /* iOSMessupTests.swift */,
 			);
 			path = iOSMessupTests;
@@ -291,6 +294,14 @@
 			name = Expenses;
 			sourceTree = "<group>";
 		};
+		AAF9F5982D429DDA0085FD44 /* Expense */ = {
+			isa = PBXGroup;
+			children = (
+				AAF9F5992D429DE60085FD44 /* ExpenseViewModelTests.swift */,
+			);
+			path = Expense;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -382,6 +393,7 @@
 			);
 			mainGroup = AA5146222D40450600FE93E5;
 			packageReferences = (
+				AAF9F5972D429DCB0085FD44 /* XCRemoteSwiftPackageReference "swift-testing" */,
 			);
 			productRefGroup = AA51462C2D40450600FE93E5 /* Products */;
 			projectDirPath = "";
@@ -457,6 +469,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA5146412D40450700FE93E5 /* iOSMessupTests.swift in Sources */,
+				AAF9F59A2D429DF00085FD44 /* ExpenseViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -807,6 +820,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AAF9F5972D429DCB0085FD44 /* XCRemoteSwiftPackageReference "swift-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/swiftlang/swift-testing.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = AA5146232D40450600FE93E5 /* Project object */;
 }

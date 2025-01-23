@@ -26,7 +26,9 @@ struct AllExpensesView: View {
                         shouldPresentEditExpense = true
                     }
             }.onDelete { indexSet in
-                expensesVM.delete(removeAt: indexSet)
+                Task {
+                    try await expensesVM.delete(removeAt: indexSet)
+                }
             }
         }
         .listStyle(.plain)

@@ -15,9 +15,11 @@ class ExpensesDataSourceSpy: ExpensesDataSourceProtocol {
     var deleteCalled: Bool = false
     var deleteAllCalled: Bool = false
 
+    var readAllResponse: [Expense] = []
+
     func readAll() async throws -> [Expense] {
         readAllCalled = true
-        return []
+        return readAllResponse
     }
 
     func create(_ expense: Expense) async throws {
@@ -34,5 +36,9 @@ class ExpensesDataSourceSpy: ExpensesDataSourceProtocol {
 
     func update(_ expense: Expense) async throws {
         updateCalled = true
+    }
+    
+    func setReadAllResponse(_ response: [Expense]) {
+        self.readAllResponse = response
     }
 }

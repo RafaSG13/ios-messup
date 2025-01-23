@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddExpenseSheetModifier: ViewModifier {
     @Binding var isPresented: Bool
-    var onSubmit: ((_ expense: Expense) -> Void)?
+    var onSubmit: ((_ expense: Expense) async throws -> Void)?
 
     func body(content: Content) -> some View {
         content
@@ -20,7 +20,7 @@ struct AddExpenseSheetModifier: ViewModifier {
 }
 
 extension View {
-    func addExpenseSheet(isPresented: Binding<Bool>, onSubmit: ((_ expense: Expense) -> Void)?) -> some View {
+    func addExpenseSheet(isPresented: Binding<Bool>, onSubmit: ((_ expense: Expense) async throws -> Void)?) -> some View {
         self.modifier(AddExpenseSheetModifier(isPresented: isPresented,
                                               onSubmit: onSubmit))
     }

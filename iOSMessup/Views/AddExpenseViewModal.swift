@@ -14,7 +14,7 @@ struct AddExpenseViewModal: View {
                                                      date: Date(),
                                                      paymentMethod: .cash,
                                                      category: .miscellaneous)
-    var onSubmit: ((_ expense: Expense) -> Void)?
+    var onSubmit: ((_ expense: Expense) async throws -> Void)?
 
     var body: some View {
         NavigationView {
@@ -34,7 +34,9 @@ struct AddExpenseViewModal: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        onSubmit?(newExpense)
+                        Task {
+                           try? await onSubmit?(newExpense)
+                        }
                         presentationMode.wrappedValue.dismiss()
                     }
                     .disabled(newExpense.name.isEmpty || newExpense.amount <= 0)

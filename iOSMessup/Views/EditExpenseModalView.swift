@@ -11,7 +11,7 @@ struct EditExpenseModalView: View {
     @Environment(\.presentationMode) private var presentationMode
     @State var expense: Expense
 
-    var onSubmit: ((_ expense: Expense) -> Void)?
+    var onSubmit: ((_ expense: Expense) async throws -> Void)?
 
     var body: some View {
         NavigationView {
@@ -49,7 +49,9 @@ struct EditExpenseModalView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        onSubmit?(expense)
+                        Task {
+                            try? await onSubmit?(expense)
+                        }
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
