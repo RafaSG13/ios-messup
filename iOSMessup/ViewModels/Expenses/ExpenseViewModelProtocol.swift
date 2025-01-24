@@ -5,7 +5,7 @@
 //  Created by Rafael Serrano Gamarra on 24/1/25.
 //
 import Observation
-import SwiftUICore
+import SwiftUI
 
 protocol ExpenseViewModelProtocol: Observable {
     var expenses: [Expense] { get }
