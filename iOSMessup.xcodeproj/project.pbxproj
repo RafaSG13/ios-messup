@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA0B19232D42FF6A00B02095 /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0B19222D42FF5F00B02095 /* ProgressBar.swift */; };
+		AA0B19252D43147F00B02095 /* Date+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0B19242D43147A00B02095 /* Date+Utils.swift */; };
+		AA0B19272D43D9A200B02095 /* CircularSavingProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0B19262D43D99800B02095 /* CircularSavingProgressView.swift */; };
+		AA0B19292D43E63500B02095 /* DepositCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0B19282D43E62C00B02095 /* DepositCellView.swift */; };
+		AA0B192B2D43E8E200B02095 /* ListSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0B192A2D43E8E100B02095 /* ListSectionHeaderView.swift */; };
 		AA1214DE2D42F2EC00787FD2 /* SavingGoal.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1214DD2D42F2EC00787FD2 /* SavingGoal.swift */; };
 		AA1214E22D42F66A00787FD2 /* Deposit.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1214E12D42F66600787FD2 /* Deposit.swift */; };
 		AA422C292D4141B500F108B8 /* MainTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA422C282D4141B500F108B8 /* MainTabBarView.swift */; };
@@ -56,6 +61,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AA0B19222D42FF5F00B02095 /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
+		AA0B19242D43147A00B02095 /* Date+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Utils.swift"; sourceTree = "<group>"; };
+		AA0B19262D43D99800B02095 /* CircularSavingProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularSavingProgressView.swift; sourceTree = "<group>"; };
+		AA0B19282D43E62C00B02095 /* DepositCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepositCellView.swift; sourceTree = "<group>"; };
+		AA0B192A2D43E8E100B02095 /* ListSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSectionHeaderView.swift; sourceTree = "<group>"; };
 		AA1214DD2D42F2EC00787FD2 /* SavingGoal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingGoal.swift; sourceTree = "<group>"; };
 		AA1214E12D42F66600787FD2 /* Deposit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deposit.swift; sourceTree = "<group>"; };
 		AA422C282D4141B500F108B8 /* MainTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarView.swift; sourceTree = "<group>"; };
@@ -193,6 +203,10 @@
 		AA51465A2D4047C500FE93E5 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				AA0B192A2D43E8E100B02095 /* ListSectionHeaderView.swift */,
+				AA0B19282D43E62C00B02095 /* DepositCellView.swift */,
+				AA0B19262D43D99800B02095 /* CircularSavingProgressView.swift */,
+				AA0B19222D42FF5F00B02095 /* ProgressBar.swift */,
 				AA51465B2D4047DE00FE93E5 /* ExpenseCellView.swift */,
 				AA51466A2D40592500FE93E5 /* TotalBalanceCardView.swift */,
 				AA51466C2D40EC0F00FE93E5 /* WeeklyExpensesView.swift */,
@@ -213,6 +227,7 @@
 		AA5146672D40533500FE93E5 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				AA0B19242D43147A00B02095 /* Date+Utils.swift */,
 				AA5146652D40531500FE93E5 /* Double+Utils.swift */,
 				AA51466E2D40ECB400FE93E5 /* Calendar+Utils.swift */,
 				AA6D45BC2D41B5A90014A95F /* UIApplication+Keyboard.swift */,
@@ -428,8 +443,10 @@
 			files = (
 				AA51465F2D4048E800FE93E5 /* Expense.swift in Sources */,
 				AA6D45BD2D41B5A90014A95F /* UIApplication+Keyboard.swift in Sources */,
+				AA0B192B2D43E8E200B02095 /* ListSectionHeaderView.swift in Sources */,
 				AA1214E22D42F66A00787FD2 /* Deposit.swift in Sources */,
 				AA832E6A2D415B9200940F78 /* AllExpensesView.swift in Sources */,
+				AA0B19272D43D9A200B02095 /* CircularSavingProgressView.swift in Sources */,
 				AA51465C2D4047DE00FE93E5 /* ExpenseCellView.swift in Sources */,
 				AA6EE0C42D4286E200E0F7D3 /* ExpenseViewModelMock.swift in Sources */,
 				AA7923D32D413C3600768849 /* SavingsObjectiveView.swift in Sources */,
@@ -445,9 +462,12 @@
 				AA6D45B82D41ABBD0014A95F /* AddExpenseViewModal.swift in Sources */,
 				AA6EE0C02D4277A300E0F7D3 /* ExpensesDataSource.swift in Sources */,
 				AA422C292D4141B500F108B8 /* MainTabBarView.swift in Sources */,
+				AA0B19292D43E63500B02095 /* DepositCellView.swift in Sources */,
 				AA6D45BB2D41B0E40014A95F /* AddExpenseSheetViewModifier.swift in Sources */,
+				AA0B19252D43147F00B02095 /* Date+Utils.swift in Sources */,
 				AA51466B2D40592500FE93E5 /* TotalBalanceCardView.swift in Sources */,
 				AA5146662D40531500FE93E5 /* Double+Utils.swift in Sources */,
+				AA0B19232D42FF6A00B02095 /* ProgressBar.swift in Sources */,
 				AA6EE0BE2D426DE300E0F7D3 /* EditExpenseSheetModifier.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

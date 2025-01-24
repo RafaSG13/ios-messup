@@ -45,8 +45,6 @@ struct ExpensesView: View {
                     }
                 }
                 .padding(ViewTraits.generalViewPadding)
-                .navigationTitle("Expenses")
-                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Image(systemName: "line.horizontal.3")
@@ -62,9 +60,11 @@ struct ExpensesView: View {
                 .addExpenseSheet(isPresented: $shouldPresentAddExpense,
                                  onSubmit: expensesVM.addExpense)
             }
+            .navigationTitle("Expenses")
+            .navigationBarTitleDisplayMode(.inline)
+            .scrollIndicators(.hidden)
+            .scrollBounceBehavior(.always)
         }
-        .scrollIndicators(.hidden)
-        .scrollBounceBehavior(.always)
     }
 }
 
@@ -72,17 +72,7 @@ struct ExpensesView: View {
 
 extension ExpensesView {
     var TransactionsHeader: some View {
-        HStack {
-            Text("Transactions")
-                .font(.title2)
-                .bold()
-            Spacer()
-            NavigationLink(destination: AllExpensesView()) {
-                Text("View all")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
+        ListSectionHeaderView(sectionTitle: "Transactions", destination: AnyView(AllExpensesView()))
     }
 
     var AnalyticsHeader: some View {
