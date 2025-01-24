@@ -6,7 +6,7 @@
 //
 
 import Observation
-import SwiftUICore
+import SwiftUI
 
 protocol SavingViewModelProtocol: Observable {
     var savingGoal: SavingGoal? { get }
