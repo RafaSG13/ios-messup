@@ -17,12 +17,20 @@ struct SavingGoal: Identifiable, Hashable {
 // MARK: - Mock
 
 extension SavingGoal {
-    static let mock = SavingGoal(
-        name: "Summer Vacation in Europe",
-        completionDate: .fixed(Date().addingTimeInterval(60 * 60 * 24 * 180)), // 6 months from now
-        amount: 5000.0,
-        savingCategory: .vacation
-    )
+    static let mock = SavingGoal(name: "Vacation in Europe",
+                                 completionDate: .fixed(Date().addingTimeInterval(60 * 60 * 24 * 180)), // 6 months from now
+                                 amount: 5000.0,
+                                 savingCategory: .vacation)
+    static let mockArray: [SavingGoal] = [
+          SavingGoal(name: "Vacation in Europe", completionDate: .fixed(Date().addingTimeInterval(60 * 60 * 24 * 180)), amount: 5000.0, savingCategory: .vacation),
+          SavingGoal(name: "Buy a New Car", completionDate: .fixed(Date().addingTimeInterval(60 * 60 * 24 * 365)), amount: 20000.0, savingCategory: .assetPurchase),
+          SavingGoal(name: "Emergency Fund", completionDate: .undefined, amount: 10000.0, savingCategory: .emergencyFund),
+          SavingGoal(name: "Home Renovation", completionDate: .fixed(Date().addingTimeInterval(60 * 60 * 24 * 90)), amount: 15000.0, savingCategory: .homeRenovation),
+          SavingGoal(name: "Child's Education Fund", completionDate: .fixed(Date().addingTimeInterval(60 * 60 * 24 * 365 * 5)), amount: 50000.0, savingCategory: .education),
+          SavingGoal(name: "Retirement Fund", completionDate: .undefined, amount: 250000.0, savingCategory: .retirement),
+          SavingGoal(name: "Start a Business", completionDate: .fixed(Date().addingTimeInterval(60 * 60 * 24 * 730)), amount: 100000.0, savingCategory: .entrepreneurship),
+          SavingGoal(name: "Wedding Celebration", completionDate: .fixed(Date().addingTimeInterval(60 * 60 * 24 * 365 / 2)), amount: 30000.0, savingCategory: .bigEvent)
+      ]
 }
 
 // MARK: - Completion Date
@@ -30,6 +38,13 @@ extension SavingGoal {
 enum CompletionDate: Equatable, Hashable {
     case undefined
     case fixed(Date)
+
+    var textValue: String {
+        switch self {
+        case .undefined: return "Undefined"
+        case .fixed(let date): return date.categoryFormattedDate()
+        }
+    }
 }
 
 // MARK: - Saving Category
@@ -52,7 +67,7 @@ enum SavingCategory: String, CaseIterable {
 
     var icon: String {
         switch self {
-        case .vacation: return "airplane"
+        case .vacation: return "sun.haze.fill"
         case .assetPurchase: return "house.fill"
         case .emergencyFund: return "shield.fill"
         case .liquidity: return "drop.fill"
@@ -71,14 +86,14 @@ enum SavingCategory: String, CaseIterable {
 
     var color: Color {
         switch self {
-        case .vacation: return .blue
+        case .vacation: return .yellow
         case .assetPurchase: return .teal
         case .emergencyFund: return .red
         case .liquidity: return .cyan
         case .education: return .purple
         case .retirement: return .orange
         case .debtRepayment: return .green
-        case .familySupport: return .yellow
+        case .familySupport: return .blue
         case .homeRenovation: return .brown
         case .healthCare: return .pink
         case .charity: return .red

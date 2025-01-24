@@ -22,4 +22,35 @@ extension Double {
             return "0.00 $"
         }
     }
+
+    func toAbbreviateMoneyString() -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencySymbol = "$"
+        formatter.maximumFractionDigits = 1
+        
+        let number: Double
+        let suffix: String
+        
+        if self >= 1_000_000_000_000 {
+            number = self / 1_000_000_000_000
+            suffix = "B"
+        } else if self >= 1_000_000_000 {
+            number = self / 1_000_000_000
+            suffix = "B"
+        } else if self >= 1_000_000 {
+            number = self / 1_000_000
+            suffix = "M"
+        } else if self >= 1_000 {
+            number = self / 1_000
+            suffix = "k"
+        } else {
+            number = self
+            suffix = ""
+        }
+        
+        let formattedNumber = formatter.string(from: NSNumber(value: number)) ?? "$0.0"
+        return formattedNumber + suffix
+    }
 }
+
