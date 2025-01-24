@@ -5,8 +5,6 @@
 //  Created by Rafael Serrano Gamarra on 23/1/25.
 //
 
-import Foundation
-
 class ExpensesDataSourceSpy: ExpensesDataSourceProtocol {
 
     var readAllCalled: Bool = false

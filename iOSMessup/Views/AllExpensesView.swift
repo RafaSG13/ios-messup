@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AllExpensesView: View {
-    @Environment(ExpenseViewModel.self) var expensesVM
+    @Environment(\.expenseVM) var expensesVM
     @State private var selectedItem: Expense?
     @State var shouldPresentEditExpense = false
     @State var shouldPresentAddExpense = false
@@ -53,5 +53,4 @@ struct AllExpensesView: View {
 
 #Preview {
     AllExpensesView()
-        .environment(ExpenseViewModel(dataSource: ExpensesDataSourceSpy()))
 }

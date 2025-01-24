@@ -9,7 +9,7 @@ import SwiftUI
 import Charts
 
 struct WeeklyExpensesView: View {
-    @Environment(ExpenseViewModel.self) var expensesViewModel
+    @Environment(\.expenseVM) var expensesViewModel
 
     var body: some View {
         let data = buildData(for: expensesViewModel.getActualWeekExpenses())
@@ -96,5 +96,4 @@ extension WeeklyExpensesView {
 
 #Preview {
     WeeklyExpensesView()
-        .environment(ExpenseViewModel(dataSource: ExpensesDataSourceSpy()))
 }

@@ -15,12 +15,20 @@ struct Deposit: Identifiable, Hashable {
     var foundingSource: FoundingSource
 }
 
+// MARK: - Comparable Conformance
+
+extension Deposit: Comparable {
+    static func < (lhs: Deposit, rhs: Deposit) -> Bool {
+        return lhs.date < rhs.date
+    }
+}
+
 // MARK: Mocks
 
 extension Deposit {
-    static let mock: Deposit = Deposit(concept: "Monthly Salary", amount: 3000.0, date: Date(), foundingSource: .salary)
+    static var mock: Deposit = Deposit(concept: "Monthly Salary", amount: 3000.0, date: Date(), foundingSource: .salary)
 
-    static let mockArray: [Deposit] = [
+    static var mockArray: [Deposit] = [
         Deposit(concept: "Freelance Payment", amount: 1200.0, date: Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 20))!, foundingSource: .freelance),
         Deposit(concept: "Bonus",amount: 500.0, date: Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 10))!, foundingSource: .bonuses),
         Deposit(concept: "Stock Dividends", amount: 250.0, date: Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 5))!, foundingSource: .investments),

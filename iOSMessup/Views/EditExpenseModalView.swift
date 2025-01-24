@@ -55,12 +55,11 @@ struct EditExpenseModalView: View {
                         dismiss()
                     }
                 }
-            }
+            }.buttonStyle(.plain)
         }
     }
 }
 
 #Preview {
     EditExpenseModalView(expense: .mock)
-        .environment(ExpenseViewModel(dataSource: ExpensesDataSourceSpy()))
 }

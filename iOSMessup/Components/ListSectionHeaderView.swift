@@ -12,7 +12,7 @@ struct ListSectionHeaderView: View {
     var destination: AnyView
     var body: some View {
         HStack {
-            Text("Transactions")
+            Text(sectionTitle)
                 .font(.title2)
                 .bold()
             Spacer()
