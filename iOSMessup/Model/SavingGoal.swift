@@ -17,11 +17,11 @@ struct SavingGoal: Identifiable, Hashable {
 // MARK: - Mock
 
 extension SavingGoal {
-    static let mock = SavingGoal(name: "Vacation in Europe",
+    static var mock = SavingGoal(name: "Vacation in Europe",
                                  completionDate: .fixed(Date().addingTimeInterval(60 * 60 * 24 * 180)), // 6 months from now
                                  amount: 5000.0,
                                  savingCategory: .vacation)
-    static let mockArray: [SavingGoal] = [
+    static var mockArray: [SavingGoal] = [
           SavingGoal(name: "Vacation in Europe", completionDate: .fixed(Date().addingTimeInterval(60 * 60 * 24 * 180)), amount: 5000.0, savingCategory: .vacation),
           SavingGoal(name: "Buy a New Car", completionDate: .fixed(Date().addingTimeInterval(60 * 60 * 24 * 365)), amount: 20000.0, savingCategory: .assetPurchase),
           SavingGoal(name: "Emergency Fund", completionDate: .undefined, amount: 10000.0, savingCategory: .emergencyFund),

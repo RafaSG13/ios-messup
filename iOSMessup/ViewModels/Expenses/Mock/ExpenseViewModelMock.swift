@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ExpenseViewModelMock: ExpenseViewModelProtocol {
+@Observable class ExpenseViewModelMock: ExpenseViewModelProtocol {
     var expenses: [Expense] = Expense.mockArray
     
     func loadExpenses() async throws {

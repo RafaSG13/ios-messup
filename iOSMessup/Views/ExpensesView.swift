@@ -9,7 +9,7 @@ import SwiftUI
 import Charts
 
 struct ExpensesView: View {
-    @Environment(ExpenseViewModel.self) var expensesVM
+    @Environment(\.expenseVM) var expensesVM
     @State private var shouldPresentAddExpense = false
 
     private enum ViewTraits {
@@ -87,5 +87,4 @@ extension ExpensesView {
 
 #Preview {
     ExpensesView()
-        .environment(ExpenseViewModel(dataSource: ExpensesDataSourceSpy()))
 }

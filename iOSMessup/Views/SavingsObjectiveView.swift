@@ -8,10 +8,7 @@
 import SwiftUI
 
 struct SavingsObjectiveView: View {
-    let linearGradient = LinearGradient(colors: [.cyan, .mint, .green],
-                                        startPoint: .leading, endPoint: .trailing)
-    @State var savingGoal: SavingGoal = SavingGoal.mockArray.randomElement() ?? SavingGoal.mock
-    var deposits: [Deposit] = Deposit.mockArray
+    @Environment(\.savingVM) private var savingViewModel
 
     var body: some View {
         NavigationStack {
@@ -24,7 +21,7 @@ struct SavingsObjectiveView: View {
 
                     VStack(alignment: .leading) {
                         ListSectionHeaderView(sectionTitle: "Recent Deposits", destination: AnyView(Text("Deposits")))
-                        ForEach(deposits) { deposit in
+                        ForEach(savingViewModel.deposits) { deposit in
                             DepositCellView(deposit: deposit)
                         }
                     }
@@ -53,9 +50,6 @@ struct SavingsObjectiveView: View {
             .scrollBounceBehavior(.always)
             .navigationTitle("Saving Goal")
             .navigationBarTitleDisplayMode(.inline)
-        }
-        .onAppear {
-            savingGoal = SavingGoal.mockArray.randomElement() ?? SavingGoal.mock
         }
     }
 }
@@ -93,7 +87,7 @@ extension SavingsObjectiveView {
                                 .foregroundStyle(.yellow.opacity(0.1))
                         )
 
-                    Text("of \(savingGoal.amount.toAbbreviateMoneyString()) 🏁")
+                    Text("of \(savingViewModel.savingGoal?.amount.toAbbreviateMoneyString() ?? "0$") 🏁")
                 }.font(.subheadline)
 
                 Spacer()
@@ -101,34 +95,35 @@ extension SavingsObjectiveView {
                     .font(.largeTitle)
                     .foregroundStyle(.green)
             }
-            ProgressBar(progress: 0.9, progressColor: linearGradient)
+            ProgressBar(progress: 0.9,
+                        progressColor: LinearGradient(colors: [.cyan, .mint, .green],
+                                                      startPoint: .leading, endPoint: .trailing))
         }
     }
 
     var GoalSummarySectionView: some View {
-        let color = savingGoal.savingCategory.color
+        let color = savingViewModel.savingGoal?.savingCategory.color ?? .clear
         return VStack(spacing: 0) {
             Rectangle()
                 .frame(height: 1)
                 .foregroundStyle(.secondary.opacity(0.5))
             HStack {
-                Image(systemName: savingGoal.savingCategory.icon)
+                Image(systemName: savingViewModel.savingGoal?.savingCategory.icon ?? "home")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 120, height: 120)
-                    .foregroundStyle(savingGoal.savingCategory.color)
+                    .foregroundStyle(savingViewModel.savingGoal?.savingCategory.color ?? .clear)
                     .padding(.leading)
-//                    .symbolEffect(.wiggle, options: .speed(0.1), isActive: true)
                 Spacer()
                 VStack(alignment: .trailing, spacing: 0) {
-                    Text(savingGoal.name)
+                    Text(savingViewModel.savingGoal?.name ?? "")
                         .font(.title3)
                         .bold()
                         .padding(.bottom, 20)
-                    Text(savingGoal.savingCategory.rawValue + " Date")
+                    Text((savingViewModel.savingGoal?.savingCategory.rawValue ?? "") + " Date")
                         .foregroundStyle(.secondary)
                         .padding(.bottom, 5)
-                    Text(savingGoal.completionDate.textValue)
+                    Text(savingViewModel.savingGoal?.completionDate.textValue ?? "")
                         .font(.title)
                         .bold()
                         .padding(.bottom, 10)
@@ -176,7 +171,7 @@ extension SavingsObjectiveView {
                                        lineWidth: 15,
                                        progressColor: .blue,
                                        backgroundColor: .secondary.opacity(0.3)) {
-                circularProgressLabel(progress: savingGoal.amount.toAbbreviateMoneyString(),
+                circularProgressLabel(progress: savingViewModel.savingGoal?.amount.toAbbreviateMoneyString() ?? "",
                                       subtitle: "Required",
                                       backgroundColor: .secondary,
                                       progressColor: .blue)

@@ -7,18 +7,6 @@
 
 import Foundation
 import Observation
-import SwiftUI
-
-protocol ExpenseViewModelProtocol {
-    var expenses: [Expense] { get }
-    func loadExpenses() async throws
-    func lastExpenses(limit: Int) -> [Expense]
-    func getActualWeekExpenses() -> [Expense]
-    func calculateTotalSpent() -> Double
-    func updateExpense(with newValue: Expense) async throws
-    func addExpense(_ expense: Expense) async throws
-    func delete(removeAt indices: IndexSet) async throws
-}
 
 @Observable class ExpenseViewModel: ExpenseViewModelProtocol {
     private(set) var expenses: [Expense] = []
@@ -47,10 +35,8 @@ protocol ExpenseViewModelProtocol {
     }
 
     func updateExpense(with newValue: Expense) async throws {
-        if let index = expenses.firstIndex(where: { $0.id == newValue.id }) {
-            expenses[index] = newValue
-            try? await dataSource.update(newValue)
-        }
+        expenses = expenses.map { $0.id == newValue.id ? newValue : $0 }
+        try await dataSource.update(newValue)
     }
 
     func addExpense(_ expense: Expense) async throws{
