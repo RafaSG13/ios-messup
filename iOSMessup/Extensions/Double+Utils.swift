@@ -52,5 +52,10 @@ extension Double {
         let formattedNumber = formatter.string(from: NSNumber(value: number)) ?? "$0.0"
         return formattedNumber + suffix
     }
+
+    func formatToPercentageString() -> String {
+        let percentage = Int((self * 100).rounded())
+        return "\(percentage)%"
+    }
 }
 

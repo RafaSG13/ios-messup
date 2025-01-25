@@ -67,6 +67,7 @@ import Observation
 
     func calculateActualProgress() -> Double {
         guard let savingGoal = savingGoal else { return 0 }
-        return calculateTotalFounded() / savingGoal.amount
+        let result = calculateTotalFounded() / savingGoal.amount
+        return result >= 1 ? 1 : result
     }
 }

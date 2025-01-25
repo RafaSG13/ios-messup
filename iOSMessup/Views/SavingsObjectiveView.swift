@@ -74,10 +74,12 @@ extension SavingsObjectiveView {
     }
     
     var ProgressSectionView: some View {
-        VStack(spacing: 5) {
+        let actualProgress = savingViewModel.calculateActualProgress()
+        let actualFounded = savingViewModel.calculateTotalFounded().toAbbreviateMoneyString()
+        return VStack(spacing: 5) {
             HStack {
                 HStack {
-                    Text("$12K")
+                    Text(actualFounded)
                         .font(.subheadline)
                         .foregroundStyle(.yellow)
                         .bold()
@@ -91,11 +93,11 @@ extension SavingsObjectiveView {
                 }.font(.subheadline)
 
                 Spacer()
-                Text("33%")
+                Text(actualProgress.formatToPercentageString())
                     .font(.largeTitle)
                     .foregroundStyle(.green)
             }
-            ProgressBar(progress: 0.9,
+            ProgressBar(progress: savingViewModel.calculateActualProgress(),
                         progressColor: LinearGradient(colors: [.cyan, .mint, .green],
                                                       startPoint: .leading, endPoint: .trailing))
         }
@@ -148,21 +150,24 @@ extension SavingsObjectiveView {
     }
     
     var CircularProgressSection: some View {
-        HStack(spacing: 30) {
-            CircularSavingProgressView(progress: 0.45,
+        let actualProgress = savingViewModel.calculateActualProgress()
+        let actualFounded = savingViewModel.calculateTotalFounded().toAbbreviateMoneyString()
+        let remainingAmount = (savingViewModel.savingGoal?.amount ?? 0) - savingViewModel.calculateTotalFounded()
+        return HStack(spacing: 30) {
+            CircularSavingProgressView(progress: actualProgress,
                                        lineWidth: 15,
                                        progressColor: .green,
                                        backgroundColor: .secondary.opacity(0.3)) {
-                circularProgressLabel(progress: "1.6K",
+                circularProgressLabel(progress: actualFounded,
                                       subtitle: "Earned",
                                       backgroundColor: .secondary,
                                       progressColor: .green)
             }
-            CircularSavingProgressView(progress: 0.55,
+            CircularSavingProgressView(progress: 1 - actualProgress,
                                        lineWidth: 15,
                                        progressColor: .yellow,
                                        backgroundColor: .secondary.opacity(0.3)) {
-                circularProgressLabel(progress: "1.4K",
+                circularProgressLabel(progress: remainingAmount.toAbbreviateMoneyString(),
                                       subtitle: "Left",
                                       backgroundColor: .secondary,
                                       progressColor: .yellow)

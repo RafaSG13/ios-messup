@@ -7,13 +7,15 @@
 
 import Foundation
 
+/// This mock is mainly used to compile `Previews`. This is not intended to use in production code or even in testing.
+
 @Observable class ExpenseViewModelMock: ExpenseViewModelProtocol {
     var expenses: [Expense] = Expense.mockArray
-    
+
     func loadExpenses() async throws {
         // Intentionally unimplemented
     }
-    
+
     func lastExpenses(limit: Int) -> [Expense] {
         Expense.mockArray.suffix(limit)
     }
@@ -21,22 +23,22 @@ import Foundation
     func calculateTotalSpent() -> Double {
         return expenses.reduce(0) { $0 + $1.amount }
     }
-    
+
     func getActualWeekExpenses() -> [Expense] {
         expenses.filter { expense in
             Calendar.current.isDateInThisWeek(expense.date)
         }
     }
-    
+
     func updateExpense(with newValue: Expense) {
         // Intentionally unimplemented
     }
-    
+
     func addExpense(_ expense: Expense) {
         // Intentionally unimplemented
 
     }
-    
+
     func delete(removeAt indices: IndexSet) {
         // Intentionally unimplemented
     }

@@ -9,7 +9,7 @@ import Foundation
 @testable import iOSMessup
 import Testing
 
-class ExpenseViewModelTests {
+struct ExpenseViewModelTests {
 
     @Test func addNewExpense() async throws {
         let spy = ExpensesDataSourceSpy()
