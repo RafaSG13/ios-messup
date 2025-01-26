@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Deposit: Identifiable, Hashable {
+struct Deposit: Identifiable, Hashable, Equatable {
     var id: String = UUID().uuidString
     var concept: String
     var amount: Double

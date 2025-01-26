@@ -9,7 +9,8 @@ import SwiftUI
 
 struct SavingsObjectiveView: View {
     @Environment(\.savingVM) private var savingViewModel
-
+    @State private var selectedDeposit: Deposit?
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -18,11 +19,12 @@ struct SavingsObjectiveView: View {
                         .padding(.horizontal)
                     GoalSummarySectionView
                     CircularProgressSection
-
+                    
                     VStack(alignment: .leading) {
                         ListSectionHeaderView(sectionTitle: "Recent Deposits", destination: AnyView(Text("Deposits")))
                         ForEach(savingViewModel.deposits) { deposit in
                             DepositCellView(deposit: deposit)
+                                .selectableCell(selectedItem: $selectedDeposit)
                         }
                     }
                     .padding(.horizontal)

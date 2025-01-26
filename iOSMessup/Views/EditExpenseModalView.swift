@@ -9,9 +9,14 @@ import SwiftUI
 
 struct EditExpenseModalView: View {
     @Environment(\.dismiss) private var dismiss
-    @State var expense: Expense
+    @State private var expense: Expense
 
-    var onSubmit: ((_ expense: Expense) async throws -> Void)?
+    private var onSubmit: (_ expense: Expense) async throws -> Void
+    
+    init(expense: Expense, onSubmit: @escaping (_: Expense) async throws -> Void) {
+        self.expense = expense
+        self.onSubmit = onSubmit
+    }
 
     var body: some View {
         NavigationView {
@@ -50,7 +55,7 @@ struct EditExpenseModalView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
                         Task {
-                            try? await onSubmit?(expense)
+                            try? await onSubmit(expense)
                         }
                         dismiss()
                     }
@@ -61,5 +66,5 @@ struct EditExpenseModalView: View {
 }
 
 #Preview {
-    EditExpenseModalView(expense: .mock)
+    EditExpenseModalView(expense: .mock, onSubmit: { _ in })
 }
