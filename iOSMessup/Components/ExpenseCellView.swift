@@ -72,7 +72,7 @@ struct ExpenseCellView: View {
 //MARK: - ExpenseCellView + SelectableCell
 
 extension ExpenseCellView {
-    func selectableCell(selectedItem: Binding<Expense?>, _ onTap: (() -> Void)? = nil) -> some View {
-        self.modifier(SelectableCell(selectedItem: selectedItem, ownItem: self.expense, onTap: onTap))
+    func selectableCell(_ onTap: @escaping () -> Void) -> some View {
+        self.modifier(SelectableCell(onTap: onTap))
     }
 }

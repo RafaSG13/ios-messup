@@ -14,23 +14,35 @@ struct AllExpensesView: View {
     @State var shouldPresentAddExpense = false
 
     var body: some View {
-        List {
-            ForEach(expensesVM.expenses, id: \.self) { expense in
-                ExpenseCellView(expense: expense)
-                    .selectableCell(selectedItem: $selectedItem)
-                    .onChange(of: selectedItem) { _, newValue in
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        ScrollView {
+            LazyVStack(spacing: 15) {
+                ForEach(expensesVM.expenses) { expense in
+                    ExpenseCellView(expense: expense)
+                        .selectableCell {
+                            selectedItem = expense
+                        }
+                        .onChange(of: selectedItem) { _, newValue in
                             shouldPresentEditExpense = newValue != nil
                         }
-                    }
+//                    Button {
+//                        selectedItem = expense
+//                    } label: {
+//                        ExpenseCellView(expense: expense)
+//                            .onChange(of: selectedItem) { _, newValue in
+//                                shouldPresentEditExpense = newValue != nil
+//                            }
+//                    }
+//                    .buttonStyle(.plain)
                     .listRowSeparator(.hidden)
-            }.onDelete { indexSet in
-                Task {
-                    try await expensesVM.delete(removeAt: indexSet)
+                }.onDelete { indexSet in
+                    Task {
+                        try await expensesVM.delete(removeAt: indexSet)
+                    }
                 }
             }
         }
-        .listStyle(.plain)
+        .scrollIndicators(.hidden)
+        .padding(.horizontal)
         .navigationTitle("All transactions")
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
