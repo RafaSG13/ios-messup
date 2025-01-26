@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Charts
 
 struct ExpensesView: View {
     @Environment(\.expenseVM) var expensesVM
@@ -32,21 +31,26 @@ struct ExpensesView: View {
                         .frame(height: 150)
                     
                     VStack(spacing: ViewTraits.headerSpacing) {
-                        AnalyticsHeader
+                        HStack {
+                            Text("Analytics")
+                                .font(.title2)
+                                .bold()
+                            Spacer()
+                        }
                         WeeklyExpensesView()
                             .frame(height: 150)
                     }
                     
                     VStack(spacing: ViewTraits.headerSpacing) {
-                        TransactionsHeader
+                        ListSectionHeaderView(sectionTitle: "Transactions", destination: AnyView(AllExpensesView()))
                         VStack(spacing: 15) {
                             ForEach(expensesVM.lastExpenses(limit: Constants.maximumNumberOfExpenses)) { expense in
                                 ExpenseCellView(expense: expense)
-                                    .selectableCell(selectedItem: $selectedItem)
+                                    .selectableCell {
+                                        selectedItem = expense
+                                    }
                                     .onChange(of: selectedItem) { _, newValue in
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                             shouldPresentEditExpense = newValue != nil
-                                        }
                                     }
                                     .listRowSeparator(.hidden)
                             }
@@ -76,23 +80,6 @@ struct ExpensesView: View {
             .navigationBarTitleDisplayMode(.inline)
             .scrollIndicators(.hidden)
             .scrollBounceBehavior(.always)
-        }
-    }
-}
-
-//MARK: - View Components
-
-extension ExpensesView {
-    var TransactionsHeader: some View {
-        ListSectionHeaderView(sectionTitle: "Transactions", destination: AnyView(AllExpensesView()))
-    }
-
-    var AnalyticsHeader: some View {
-        HStack {
-            Text("Analytics")
-                .font(.title2)
-                .bold()
-            Spacer()
         }
     }
 }

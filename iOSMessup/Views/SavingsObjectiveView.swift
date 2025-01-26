@@ -24,7 +24,9 @@ struct SavingsObjectiveView: View {
                         ListSectionHeaderView(sectionTitle: "Recent Deposits", destination: AnyView(Text("Deposits")))
                         ForEach(savingViewModel.deposits) { deposit in
                             DepositCellView(deposit: deposit)
-                                .selectableCell(selectedItem: $selectedDeposit)
+                                .selectableCell {
+                                    selectedDeposit = deposit
+                                }
                         }
                     }
                     .padding(.horizontal)

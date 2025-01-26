@@ -64,7 +64,7 @@ struct DepositCellView: View {
 //MARK: - DepositCellView + SelectableCell
 
 extension DepositCellView {
-    func selectableCell(selectedItem: Binding<Deposit?>, _ onTap: (() -> Void)? = nil) -> some View {
-        self.modifier(SelectableCell(selectedItem: selectedItem, ownItem: self.deposit, onTap: onTap))
+    func selectableCell(_ onTap: @escaping () -> Void) -> some View {
+        self.modifier(SelectableCell(onTap: onTap))
     }
 }
