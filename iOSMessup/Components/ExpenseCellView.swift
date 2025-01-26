@@ -55,6 +55,8 @@ struct ExpenseCellView: View {
     }
 }
 
+//MARK: - Previews
+
 #Preview {
     ScrollView {
         LazyVStack {
@@ -65,4 +67,12 @@ struct ExpenseCellView: View {
     }
     .scrollIndicators(.hidden)
     .padding()
+}
+
+//MARK: - ExpenseCellView + SelectableCell
+
+extension ExpenseCellView {
+    func selectableCell(selectedItem: Binding<Expense?>, _ onTap: (() -> Void)? = nil) -> some View {
+        self.modifier(SelectableCell(selectedItem: selectedItem, ownItem: self.expense, onTap: onTap))
+    }
 }

@@ -11,6 +11,8 @@ import Charts
 struct ExpensesView: View {
     @Environment(\.expenseVM) var expensesVM
     @State private var shouldPresentAddExpense = false
+    @State private var shouldPresentEditExpense = false
+    @State private var selectedItem: Expense?
 
     private enum ViewTraits {
         static let generalViewPadding: CGFloat = 20
@@ -19,7 +21,7 @@ struct ExpensesView: View {
     }
 
     private enum Constants {
-        static let maximumNumberOfExpenses = 5
+        static let maximumNumberOfExpenses = 8
     }
 
     var body: some View {
@@ -40,6 +42,13 @@ struct ExpensesView: View {
                         VStack(spacing: 15) {
                             ForEach(expensesVM.lastExpenses(limit: Constants.maximumNumberOfExpenses)) { expense in
                                 ExpenseCellView(expense: expense)
+                                    .selectableCell(selectedItem: $selectedItem)
+                                    .onChange(of: selectedItem) { _, newValue in
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                            shouldPresentEditExpense = newValue != nil
+                                        }
+                                    }
+                                    .listRowSeparator(.hidden)
                             }
                         }
                     }
@@ -59,6 +68,9 @@ struct ExpensesView: View {
                 }
                 .addExpenseSheet(isPresented: $shouldPresentAddExpense,
                                  onSubmit: expensesVM.addExpense)
+                .editExpenseSheet(isPresented: $shouldPresentEditExpense,
+                                  selectedItem: $selectedItem,
+                                  onSubmit: expensesVM.updateExpense(with:))
             }
             .navigationTitle("Expenses")
             .navigationBarTitleDisplayMode(.inline)

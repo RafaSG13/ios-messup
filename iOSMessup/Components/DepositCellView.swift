@@ -55,7 +55,16 @@ struct DepositCellView: View {
     }
 }
 
+//MARK: - Previews
 
 #Preview {
     DepositCellView(deposit: Deposit.mock)
+}
+
+//MARK: - DepositCellView + SelectableCell
+
+extension DepositCellView {
+    func selectableCell(selectedItem: Binding<Deposit?>, _ onTap: (() -> Void)? = nil) -> some View {
+        self.modifier(SelectableCell(selectedItem: selectedItem, ownItem: self.deposit, onTap: onTap))
+    }
 }

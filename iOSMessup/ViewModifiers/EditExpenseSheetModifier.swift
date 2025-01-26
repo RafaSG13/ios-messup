@@ -10,7 +10,7 @@ import SwiftUI
 struct EditExpenseSheetModifier: ViewModifier {
     @Binding var isPresented: Bool
     @Binding var selectedItem: Expense?
-    var onSubmit: ((_ expense: Expense) async throws -> Void)?
+    var onSubmit: (_ expense: Expense) async throws -> Void
 
     func body(content: Content) -> some View {
         content
@@ -25,13 +25,12 @@ struct EditExpenseSheetModifier: ViewModifier {
 
     private func resetSelectedItem() {
         selectedItem = nil
-        isPresented = false
     }
 }
 
 
 extension View {
-    func editExpenseSheet(isPresented: Binding<Bool>, selectedItem: Binding<Expense?>, onSubmit: ((_ expense: Expense) async throws -> Void)?) -> some View {
+    func editExpenseSheet(isPresented: Binding<Bool>, selectedItem: Binding<Expense?>, onSubmit: @escaping (_ expense: Expense) async throws -> Void) -> some View {
         self.modifier(EditExpenseSheetModifier(isPresented: isPresented,
                                                selectedItem: selectedItem,
                                                onSubmit: onSubmit))

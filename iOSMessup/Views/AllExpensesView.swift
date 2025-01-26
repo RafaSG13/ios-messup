@@ -17,14 +17,13 @@ struct AllExpensesView: View {
         List {
             ForEach(expensesVM.expenses, id: \.self) { expense in
                 ExpenseCellView(expense: expense)
+                    .selectableCell(selectedItem: $selectedItem)
+                    .onChange(of: selectedItem) { _, newValue in
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            shouldPresentEditExpense = newValue != nil
+                        }
+                    }
                     .listRowSeparator(.hidden)
-                    .onTapGesture {
-                        selectedItem = expense
-                    }
-                    .onChange(of: selectedItem) {
-                        guard selectedItem != nil else { return }
-                        shouldPresentEditExpense = true
-                    }
             }.onDelete { indexSet in
                 Task {
                     try await expensesVM.delete(removeAt: indexSet)

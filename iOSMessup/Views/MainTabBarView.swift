@@ -15,7 +15,7 @@ enum Tab: Int, CaseIterable {
 }
 
 struct MainTabBarView: View {
-    @State var activeTab: Tab = .expenses
+    @State private var activeTab: Tab = .expenses
     var body: some View {
         TabView(selection: $activeTab) {
             ExpensesView()
