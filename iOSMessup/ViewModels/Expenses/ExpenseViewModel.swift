@@ -34,6 +34,11 @@ import Observation
         }
     }
 
+    func filteredExpenses(on searchTerm: String) -> [Expense] {
+        guard !searchTerm.isEmpty, searchTerm.count > 3 else { return expenses }
+        return expenses.filter { $0.name.lowercased().contains(searchTerm.lowercased()) }
+    }
+
     func updateExpense(with newValue: Expense) async throws {
         expenses = expenses.map { $0.id == newValue.id ? newValue : $0 }
         try await dataSource.update(newValue)

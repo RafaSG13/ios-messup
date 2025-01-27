@@ -28,7 +28,6 @@ struct MainTabBarView: View {
                 .tabItem { Label("Social groups", systemImage: "person.3.fill") }
                 .tag(Tab.socialGroups)
         }
-        .tint(.black)
     }
 }
 
