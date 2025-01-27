@@ -14,6 +14,7 @@ struct HideTabBarAfterScrollingThreshold: ViewModifier {
     @State private var lastOffset: CGFloat = 0
     @State private var currentOffset: CGFloat = 0
     @State private var shouldHideTabBar = false
+    //TODO: Check if scrollThresholds should be a @State
     @State var scrollThreshold: CGFloat
     @State private var timer: Timer?
     
