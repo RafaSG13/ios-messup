@@ -13,6 +13,7 @@ protocol ExpenseViewModelProtocol: Observable {
     func lastExpenses(limit: Int) -> [Expense]
     func getActualWeekExpenses() -> [Expense]
     func calculateTotalSpent() -> Double
+    func filteredExpenses(on searchTerm: String) -> [Expense] 
     func updateExpense(with newValue: Expense) async throws
     func addExpense(_ expense: Expense) async throws
     func delete(removeAt indices: IndexSet) async throws

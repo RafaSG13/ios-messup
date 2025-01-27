@@ -16,7 +16,7 @@ struct LoadingScreen: View {
     
     var body: some View {
         ZStack{
-            Color.accentColor.ignoresSafeArea()
+            Color.mintAccent.ignoresSafeArea()
             VStack(spacing: 40) {
                 Image("logoImage")
                     .resizable()

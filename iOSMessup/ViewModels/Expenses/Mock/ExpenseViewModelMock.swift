@@ -30,6 +30,11 @@ import Foundation
         }
     }
 
+    func filteredExpenses(on searchTerm: String) -> [Expense]  {
+        // Intentionally unimplemented
+        return Expense.mockArray
+    }
+
     func updateExpense(with newValue: Expense) {
         // Intentionally unimplemented
     }

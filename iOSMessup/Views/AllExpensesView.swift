@@ -10,13 +10,15 @@ import SwiftUI
 struct AllExpensesView: View {
     @Environment(\.expenseVM) var expensesVM
     @State private var selectedItem: Expense?
-    @State var shouldPresentEditExpense = false
-    @State var shouldPresentAddExpense = false
-
+    @State private var shouldPresentEditExpense = false
+    @State private var shouldPresentAddExpense = false
+    @State private var searchText = ""
+    @State private var searchScope: Category? = nil
+    
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 15) {
-                ForEach(expensesVM.expenses) { expense in
+                ForEach(expensesVM.filteredExpenses(on: searchText)) { expense in
                     ExpenseCellView(expense: expense)
                         .selectableCell {
                             selectedItem = expense
@@ -24,15 +26,6 @@ struct AllExpensesView: View {
                         .onChange(of: selectedItem) { _, newValue in
                             shouldPresentEditExpense = newValue != nil
                         }
-//                    Button {
-//                        selectedItem = expense
-//                    } label: {
-//                        ExpenseCellView(expense: expense)
-//                            .onChange(of: selectedItem) { _, newValue in
-//                                shouldPresentEditExpense = newValue != nil
-//                            }
-//                    }
-//                    .buttonStyle(.plain)
                     .listRowSeparator(.hidden)
                 }.onDelete { indexSet in
                     Task {
@@ -41,6 +34,7 @@ struct AllExpensesView: View {
                 }
             }
         }
+        .searchable(text: $searchText)
         .scrollIndicators(.hidden)
         .padding(.horizontal)
         .navigationTitle("All transactions")
@@ -63,5 +57,7 @@ struct AllExpensesView: View {
 }
 
 #Preview {
-    AllExpensesView()
+    NavigationStack {
+        AllExpensesView()
+    }
 }
