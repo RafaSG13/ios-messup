@@ -42,7 +42,7 @@ struct ExpensesView: View {
                     }
                     
                     VStack(spacing: ViewTraits.headerSpacing) {
-                        ListSectionHeaderView(sectionTitle: "Transactions", destination: AnyView(AllExpensesView()))
+                        ListSectionHeaderView(sectionTitle: "Transactions", route: .transactionList)
                         VStack(spacing: 15) {
                             ForEach(expensesVM.lastExpenses(limit: Constants.maximumNumberOfExpenses)) { expense in
                                 ExpenseCellView(expense: expense)

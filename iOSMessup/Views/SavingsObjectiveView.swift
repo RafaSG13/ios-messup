@@ -21,7 +21,7 @@ struct SavingsObjectiveView: View {
                     CircularProgressSection
                     
                     VStack(alignment: .leading) {
-                        ListSectionHeaderView(sectionTitle: "Recent Deposits", destination: AnyView(Text("Deposits")))
+                        ListSectionHeaderView(sectionTitle: "Recent Deposits", route: .depositList)
                         ForEach(savingViewModel.deposits) { deposit in
                             DepositCellView(deposit: deposit)
                                 .selectableCell {

@@ -14,6 +14,7 @@
 		AA0B192B2D43E8E200B02095 /* ListSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0B192A2D43E8E100B02095 /* ListSectionHeaderView.swift */; };
 		AA1214DE2D42F2EC00787FD2 /* SavingGoal.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1214DD2D42F2EC00787FD2 /* SavingGoal.swift */; };
 		AA1214E22D42F66A00787FD2 /* Deposit.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1214E12D42F66600787FD2 /* Deposit.swift */; };
+		AA31E12F2D48022A004BA303 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA31E12E2D480227004BA303 /* Route.swift */; };
 		AA422C292D4141B500F108B8 /* MainTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA422C282D4141B500F108B8 /* MainTabBarView.swift */; };
 		AA51462F2D40450600FE93E5 /* iOSMessupApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51462E2D40450600FE93E5 /* iOSMessupApp.swift */; };
 		AA5146312D40450600FE93E5 /* ExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5146302D40450600FE93E5 /* ExpensesView.swift */; };
@@ -76,6 +77,7 @@
 		AA0B192A2D43E8E100B02095 /* ListSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSectionHeaderView.swift; sourceTree = "<group>"; };
 		AA1214DD2D42F2EC00787FD2 /* SavingGoal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingGoal.swift; sourceTree = "<group>"; };
 		AA1214E12D42F66600787FD2 /* Deposit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deposit.swift; sourceTree = "<group>"; };
+		AA31E12E2D480227004BA303 /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		AA422C282D4141B500F108B8 /* MainTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarView.swift; sourceTree = "<group>"; };
 		AA51462B2D40450600FE93E5 /* iOSMessup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSMessup.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA51462E2D40450600FE93E5 /* iOSMessupApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSMessupApp.swift; sourceTree = "<group>"; };
@@ -142,6 +144,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AA31E12D2D480200004BA303 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				AA31E12E2D480227004BA303 /* Route.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
 		AA5146222D40450600FE93E5 = {
 			isa = PBXGroup;
 			children = (
@@ -170,6 +180,7 @@
 				AA51465A2D4047C500FE93E5 /* Components */,
 				AA5146672D40533500FE93E5 /* Extensions */,
 				AA51465D2D4048B100FE93E5 /* Model */,
+				AA31E12D2D480200004BA303 /* Navigation */,
 				AA5146352D40450700FE93E5 /* Preview Content */,
 				AA6D45C52D4249CC0014A95F /* ViewModels */,
 				AA6D45B92D41B0D20014A95F /* ViewModifiers */,
@@ -527,6 +538,7 @@
 				AA5146662D40531500FE93E5 /* Double+Utils.swift in Sources */,
 				AA0B19232D42FF6A00B02095 /* ProgressBar.swift in Sources */,
 				AA6EE0BE2D426DE300E0F7D3 /* EditExpenseSheetModifier.swift in Sources */,
+				AA31E12F2D48022A004BA303 /* Route.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

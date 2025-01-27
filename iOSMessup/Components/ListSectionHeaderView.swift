@@ -9,14 +9,14 @@ import SwiftUI
 
 struct ListSectionHeaderView: View {
     var sectionTitle: String
-    var destination: AnyView
+    var route: Route
     var body: some View {
         HStack {
             Text(sectionTitle)
                 .font(.title2)
                 .bold()
             Spacer()
-            NavigationLink(destination: destination) {
+            NavigationLink(destination: route.destination) {
                 Text("View all")
                     .font(.caption)
                     .foregroundStyle(.secondary)

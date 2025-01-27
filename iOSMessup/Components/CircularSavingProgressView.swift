@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CircularSavingProgressView<Label: View>: View {
+    //TODO: Check if progress should be a @State
     @State var progress: CGFloat = 0.25
     var lineWidth: CGFloat = 30
     var progressColor: Color = .pink
