@@ -16,27 +16,26 @@ struct AllExpensesView: View {
     @State private var searchScope: Category? = nil
     
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 15) {
-                ForEach(expensesVM.filteredExpenses(on: searchText)) { expense in
-                    ExpenseCellView(expense: expense)
-                        .selectableCell {
-                            selectedItem = expense
-                        }
-                        .onChange(of: selectedItem) { _, newValue in
-                            shouldPresentEditExpense = newValue != nil
-                        }
-                    .listRowSeparator(.hidden)
-                }.onDelete { indexSet in
-                    Task {
-                        try await expensesVM.delete(removeAt: indexSet)
+        List {
+            ForEach(expensesVM.filteredExpenses(on: searchText)) { expense in
+                ExpenseCellView(expense: expense)
+                    .selectableCell {
+                        selectedItem = expense
                     }
+                    .onChange(of: selectedItem) { _, newValue in
+                        shouldPresentEditExpense = newValue != nil
+                    }
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 7.5, leading: 20, bottom: 7.5, trailing: 20))
+            }.onDelete { indexSet in
+                Task {
+                    try await expensesVM.delete(removeAt: indexSet)
                 }
             }
         }
-        .searchable(text: $searchText)
+        .listStyle(.plain)
+        .searchable(text: $searchText, placement: .toolbar)
         .scrollIndicators(.hidden)
-        .padding(.horizontal)
         .navigationTitle("All transactions")
         .navigationBarTitleDisplayMode(.large)
         .toolbar {

@@ -46,6 +46,8 @@
 		AA832E6A2D415B9200940F78 /* AllExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA832E692D415B9200940F78 /* AllExpensesView.swift */; };
 		AA832E6C2D4173EC00940F78 /* EditExpenseModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA832E6B2D4173EC00940F78 /* EditExpenseModalView.swift */; };
 		AAACDF602D442AEF0037C771 /* SavingDataSourceSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAACDF5F2D442AD80037C771 /* SavingDataSourceSpy.swift */; };
+		AAAD165B2D496B4A0044D6C4 /* CustomSwipeScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD165A2D496B380044D6C4 /* CustomSwipeScrollView.swift */; };
+		AAC242042D48F4B3002A829C /* CategoryPieChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC242032D48F4A1002A829C /* CategoryPieChart.swift */; };
 		AAD271442D4410B300D906B8 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AAD271432D4410B300D906B8 /* SplashScreen.storyboard */; };
 		AAF91FDE2D4648DF003FDE4C /* SelectableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF91FDD2D4648DF003FDE4C /* SelectableCell.swift */; };
 		AAF9F59A2D429DF00085FD44 /* ExpenseViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF9F5992D429DE60085FD44 /* ExpenseViewModelTests.swift */; };
@@ -112,6 +114,8 @@
 		AA832E692D415B9200940F78 /* AllExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllExpensesView.swift; sourceTree = "<group>"; };
 		AA832E6B2D4173EC00940F78 /* EditExpenseModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExpenseModalView.swift; sourceTree = "<group>"; };
 		AAACDF5F2D442AD80037C771 /* SavingDataSourceSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingDataSourceSpy.swift; sourceTree = "<group>"; };
+		AAAD165A2D496B380044D6C4 /* CustomSwipeScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSwipeScrollView.swift; sourceTree = "<group>"; };
+		AAC242032D48F4A1002A829C /* CategoryPieChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPieChart.swift; sourceTree = "<group>"; };
 		AAD271432D4410B300D906B8 /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
 		AAF91FDD2D4648DF003FDE4C /* SelectableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableCell.swift; sourceTree = "<group>"; };
 		AAF9F5992D429DE60085FD44 /* ExpenseViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModelTests.swift; sourceTree = "<group>"; };
@@ -210,6 +214,8 @@
 		AA51465A2D4047C500FE93E5 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				AAAD165A2D496B380044D6C4 /* CustomSwipeScrollView.swift */,
+				AAC242032D48F4A1002A829C /* CategoryPieChart.swift */,
 				AA0B192A2D43E8E100B02095 /* ListSectionHeaderView.swift */,
 				AA0B19282D43E62C00B02095 /* DepositCellView.swift */,
 				AA0B19262D43D99800B02095 /* CircularSavingProgressView.swift */,
@@ -509,6 +515,7 @@
 				AA5146312D40450600FE93E5 /* ExpensesView.swift in Sources */,
 				AA668EA32D441E12005E714D /* SavingDataSource.swift in Sources */,
 				AA7923D52D413C5800768849 /* SocialGroupsView.swift in Sources */,
+				AAAD165B2D496B4A0044D6C4 /* CustomSwipeScrollView.swift in Sources */,
 				AA1214DE2D42F2EC00787FD2 /* SavingGoal.swift in Sources */,
 				AA51462F2D40450600FE93E5 /* iOSMessupApp.swift in Sources */,
 				AAACDF602D442AEF0037C771 /* SavingDataSourceSpy.swift in Sources */,
@@ -517,6 +524,7 @@
 				AA6D45C72D4249DB0014A95F /* ExpenseViewModel.swift in Sources */,
 				AAF91FDE2D4648DF003FDE4C /* SelectableCell.swift in Sources */,
 				AA6D45B82D41ABBD0014A95F /* AddExpenseViewModal.swift in Sources */,
+				AAC242042D48F4B3002A829C /* CategoryPieChart.swift in Sources */,
 				AA668EA12D441BB9005E714D /* SavingViewModel.swift in Sources */,
 				AA6EE0C02D4277A300E0F7D3 /* ExpensesDataSource.swift in Sources */,
 				AA422C292D4141B500F108B8 /* MainTabBarView.swift in Sources */,
