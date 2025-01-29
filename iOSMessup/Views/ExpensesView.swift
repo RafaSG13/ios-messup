@@ -14,8 +14,6 @@ struct ExpensesView: View {
     @State private var selectedItem: Expense?
 
     private enum ViewTraits {
-        static let generalViewPadding: CGFloat = 20
-        static let interSectionSpacing: CGFloat = 28
         static let headerSpacing: CGFloat = 10
     }
 
@@ -24,62 +22,62 @@ struct ExpensesView: View {
     }
 
     var body: some View {
+        @State var lastExpenses = expensesVM.lastExpenses(limit: Constants.maximumNumberOfExpenses)
         NavigationStack {
             ScrollView {
-                VStack(spacing: ViewTraits.interSectionSpacing) {
+                LazyVStack {
                     TotalBalanceCardView(total: expensesVM.calculateTotalSpent())
                         .frame(height: 150)
-                    
-                    VStack(spacing: ViewTraits.headerSpacing) {
-                        HStack {
-                            Text("Analytics")
-                                .font(.title2)
-                                .bold()
-                            Spacer()
-                        }
+                        .padding(.horizontal)
+                        .padding(.top)
+
+                    VStack(alignment: .leading, spacing: ViewTraits.headerSpacing) {
+                        Text("Analytics")
+                            .font(.title2.bold())
                         WeeklyExpensesView()
                             .frame(height: 150)
-                    }
-                    
+                    }.padding()
+
                     VStack(spacing: ViewTraits.headerSpacing) {
                         ListSectionHeaderView(sectionTitle: "Transactions", route: .transactionList)
-                        VStack(spacing: 15) {
-                            ForEach(expensesVM.lastExpenses(limit: Constants.maximumNumberOfExpenses)) { expense in
-                                ExpenseCellView(expense: expense)
-                                    .selectableCell {
-                                        selectedItem = expense
-                                    }
-                                    .onChange(of: selectedItem) { _, newValue in
-                                            shouldPresentEditExpense = newValue != nil
-                                    }
-                                    .listRowSeparator(.hidden)
+                            .padding(.horizontal)
+
+                        MUCustomVerticalForEach(items: lastExpenses,
+                                                selection: $selectedItem) { expense in
+                            ExpenseCellView(expense: expense)
+                        } onTap: { _ in }
+                        onDelete: { indexSet in
+                            Task {
+                                try await expensesVM.delete(removeAt: indexSet)
                             }
+                        }
+                        .onChange(of: selectedItem) { _, new in
+                            shouldPresentEditExpense = new != nil
                         }
                     }
                 }
-                .padding(ViewTraits.generalViewPadding)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Image(systemName: "line.horizontal.3")
-                    }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            shouldPresentAddExpense.toggle()
-                        } label: {
-                            Image(systemName: "plus")
-                        }.buttonStyle(.plain)
-                    }
-                }
-                .addExpenseSheet(isPresented: $shouldPresentAddExpense,
-                                 onSubmit: expensesVM.addExpense)
-                .editExpenseSheet(isPresented: $shouldPresentEditExpense,
-                                  selectedItem: $selectedItem,
-                                  onSubmit: expensesVM.updateExpense(with:))
             }
             .navigationTitle("Expenses")
             .navigationBarTitleDisplayMode(.inline)
             .scrollIndicators(.hidden)
             .scrollBounceBehavior(.always)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Image(systemName: "line.horizontal.3")
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        shouldPresentAddExpense.toggle()
+                    } label: {
+                        Image(systemName: "plus")
+                    }.buttonStyle(.plain)
+                }
+            }
+            .addExpenseSheet(isPresented: $shouldPresentAddExpense,
+                             onSubmit: expensesVM.addExpense)
+            .editExpenseSheet(isPresented: $shouldPresentEditExpense,
+                              selectedItem: $selectedItem,
+                              onSubmit: expensesVM.updateExpense(with:))
         }
     }
 }

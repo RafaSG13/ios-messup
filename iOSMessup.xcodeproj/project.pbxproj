@@ -14,6 +14,7 @@
 		AA0B192B2D43E8E200B02095 /* ListSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0B192A2D43E8E100B02095 /* ListSectionHeaderView.swift */; };
 		AA1214DE2D42F2EC00787FD2 /* SavingGoal.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1214DD2D42F2EC00787FD2 /* SavingGoal.swift */; };
 		AA1214E22D42F66A00787FD2 /* Deposit.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1214E12D42F66600787FD2 /* Deposit.swift */; };
+		AA2CA68F2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2CA68E2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift */; };
 		AA31E12F2D48022A004BA303 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA31E12E2D480227004BA303 /* Route.swift */; };
 		AA422C292D4141B500F108B8 /* MainTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA422C282D4141B500F108B8 /* MainTabBarView.swift */; };
 		AA51462F2D40450600FE93E5 /* iOSMessupApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51462E2D40450600FE93E5 /* iOSMessupApp.swift */; };
@@ -47,7 +48,6 @@
 		AA832E6A2D415B9200940F78 /* AllExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA832E692D415B9200940F78 /* AllExpensesView.swift */; };
 		AA832E6C2D4173EC00940F78 /* EditExpenseModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA832E6B2D4173EC00940F78 /* EditExpenseModalView.swift */; };
 		AAACDF602D442AEF0037C771 /* SavingDataSourceSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAACDF5F2D442AD80037C771 /* SavingDataSourceSpy.swift */; };
-		AAAD165B2D496B4A0044D6C4 /* CustomSwipeScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAD165A2D496B380044D6C4 /* CustomSwipeScrollView.swift */; };
 		AAC242042D48F4B3002A829C /* CategoryPieChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC242032D48F4A1002A829C /* CategoryPieChart.swift */; };
 		AAD271442D4410B300D906B8 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AAD271432D4410B300D906B8 /* SplashScreen.storyboard */; };
 		AAF91FDE2D4648DF003FDE4C /* SelectableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF91FDD2D4648DF003FDE4C /* SelectableCell.swift */; };
@@ -79,6 +79,7 @@
 		AA0B192A2D43E8E100B02095 /* ListSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSectionHeaderView.swift; sourceTree = "<group>"; };
 		AA1214DD2D42F2EC00787FD2 /* SavingGoal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingGoal.swift; sourceTree = "<group>"; };
 		AA1214E12D42F66600787FD2 /* Deposit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deposit.swift; sourceTree = "<group>"; };
+		AA2CA68E2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUCustomVerticalForEach.swift; sourceTree = "<group>"; };
 		AA31E12E2D480227004BA303 /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		AA422C282D4141B500F108B8 /* MainTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarView.swift; sourceTree = "<group>"; };
 		AA51462B2D40450600FE93E5 /* iOSMessup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSMessup.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -116,7 +117,6 @@
 		AA832E692D415B9200940F78 /* AllExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllExpensesView.swift; sourceTree = "<group>"; };
 		AA832E6B2D4173EC00940F78 /* EditExpenseModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExpenseModalView.swift; sourceTree = "<group>"; };
 		AAACDF5F2D442AD80037C771 /* SavingDataSourceSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingDataSourceSpy.swift; sourceTree = "<group>"; };
-		AAAD165A2D496B380044D6C4 /* CustomSwipeScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSwipeScrollView.swift; sourceTree = "<group>"; };
 		AAC242032D48F4A1002A829C /* CategoryPieChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPieChart.swift; sourceTree = "<group>"; };
 		AAD271432D4410B300D906B8 /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
 		AAF91FDD2D4648DF003FDE4C /* SelectableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableCell.swift; sourceTree = "<group>"; };
@@ -148,6 +148,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AA2CA6902D4A8A5B003DDE38 /* Lists */ = {
+			isa = PBXGroup;
+			children = (
+				AA0B192A2D43E8E100B02095 /* ListSectionHeaderView.swift */,
+				AA2CA68E2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift */,
+			);
+			path = Lists;
+			sourceTree = "<group>";
+		};
 		AA31E12D2D480200004BA303 /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
@@ -225,15 +234,11 @@
 		AA51465A2D4047C500FE93E5 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				AAAD165A2D496B380044D6C4 /* CustomSwipeScrollView.swift */,
-				AAC242032D48F4A1002A829C /* CategoryPieChart.swift */,
-				AA0B192A2D43E8E100B02095 /* ListSectionHeaderView.swift */,
-				AA0B19282D43E62C00B02095 /* DepositCellView.swift */,
-				AA0B19262D43D99800B02095 /* CircularSavingProgressView.swift */,
-				AA0B19222D42FF5F00B02095 /* ProgressBar.swift */,
-				AA51465B2D4047DE00FE93E5 /* ExpenseCellView.swift */,
+				AA2CA6902D4A8A5B003DDE38 /* Lists */,
+				AADC88572D4A364000C2B784 /* Progress */,
+				AADC88562D4A362A00C2B784 /* Cells */,
+				AADC88552D4A361B00C2B784 /* Charts */,
 				AA51466A2D40592500FE93E5 /* TotalBalanceCardView.swift */,
-				AA51466C2D40EC0F00FE93E5 /* WeeklyExpensesView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -361,6 +366,33 @@
 				AAACDF5F2D442AD80037C771 /* SavingDataSourceSpy.swift */,
 			);
 			path = Mock;
+			sourceTree = "<group>";
+		};
+		AADC88552D4A361B00C2B784 /* Charts */ = {
+			isa = PBXGroup;
+			children = (
+				AA51466C2D40EC0F00FE93E5 /* WeeklyExpensesView.swift */,
+				AAC242032D48F4A1002A829C /* CategoryPieChart.swift */,
+			);
+			path = Charts;
+			sourceTree = "<group>";
+		};
+		AADC88562D4A362A00C2B784 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				AA51465B2D4047DE00FE93E5 /* ExpenseCellView.swift */,
+				AA0B19282D43E62C00B02095 /* DepositCellView.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		AADC88572D4A364000C2B784 /* Progress */ = {
+			isa = PBXGroup;
+			children = (
+				AA0B19222D42FF5F00B02095 /* ProgressBar.swift */,
+				AA0B19262D43D99800B02095 /* CircularSavingProgressView.swift */,
+			);
+			path = Progress;
 			sourceTree = "<group>";
 		};
 		AAF9F5982D429DDA0085FD44 /* Expense */ = {
@@ -515,6 +547,7 @@
 				AA0B192B2D43E8E200B02095 /* ListSectionHeaderView.swift in Sources */,
 				AA6A71B22D44304C004720CB /* ExpenseViewModelMock.swift in Sources */,
 				AA1214E22D42F66A00787FD2 /* Deposit.swift in Sources */,
+				AA2CA68F2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift in Sources */,
 				AA832E6A2D415B9200940F78 /* AllExpensesView.swift in Sources */,
 				AA0B19272D43D9A200B02095 /* CircularSavingProgressView.swift in Sources */,
 				AA51465C2D4047DE00FE93E5 /* ExpenseCellView.swift in Sources */,
@@ -526,7 +559,6 @@
 				AA5146312D40450600FE93E5 /* ExpensesView.swift in Sources */,
 				AA668EA32D441E12005E714D /* SavingDataSource.swift in Sources */,
 				AA7923D52D413C5800768849 /* SocialGroupsView.swift in Sources */,
-				AAAD165B2D496B4A0044D6C4 /* CustomSwipeScrollView.swift in Sources */,
 				AA1214DE2D42F2EC00787FD2 /* SavingGoal.swift in Sources */,
 				AA51462F2D40450600FE93E5 /* iOSMessupApp.swift in Sources */,
 				AAACDF602D442AEF0037C771 /* SavingDataSourceSpy.swift in Sources */,
