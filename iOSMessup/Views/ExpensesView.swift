@@ -25,21 +25,19 @@ struct ExpensesView: View {
         @State var lastExpenses = expensesVM.lastExpenses(limit: Constants.maximumNumberOfExpenses)
         NavigationStack {
             ScrollView {
-                Section {
+                LazyVStack {
                     TotalBalanceCardView(total: expensesVM.calculateTotalSpent())
                         .frame(height: 150)
                         .padding(.horizontal)
                         .padding(.top)
-                }
-                Section {
+
                     VStack(alignment: .leading, spacing: ViewTraits.headerSpacing) {
                         Text("Analytics")
                             .font(.title2.bold())
                         WeeklyExpensesView()
                             .frame(height: 150)
                     }.padding()
-                }
-                Section {
+
                     VStack(spacing: ViewTraits.headerSpacing) {
                         ListSectionHeaderView(sectionTitle: "Transactions", route: .transactionList)
                             .padding(.horizontal)
