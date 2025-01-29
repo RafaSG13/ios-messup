@@ -225,15 +225,12 @@
 		AA51465A2D4047C500FE93E5 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				AADC88572D4A364000C2B784 /* Progress */,
+				AADC88562D4A362A00C2B784 /* Cells */,
+				AADC88552D4A361B00C2B784 /* Charts */,
 				AAAD165A2D496B380044D6C4 /* CustomSwipeScrollView.swift */,
-				AAC242032D48F4A1002A829C /* CategoryPieChart.swift */,
 				AA0B192A2D43E8E100B02095 /* ListSectionHeaderView.swift */,
-				AA0B19282D43E62C00B02095 /* DepositCellView.swift */,
-				AA0B19262D43D99800B02095 /* CircularSavingProgressView.swift */,
-				AA0B19222D42FF5F00B02095 /* ProgressBar.swift */,
-				AA51465B2D4047DE00FE93E5 /* ExpenseCellView.swift */,
 				AA51466A2D40592500FE93E5 /* TotalBalanceCardView.swift */,
-				AA51466C2D40EC0F00FE93E5 /* WeeklyExpensesView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -361,6 +358,33 @@
 				AAACDF5F2D442AD80037C771 /* SavingDataSourceSpy.swift */,
 			);
 			path = Mock;
+			sourceTree = "<group>";
+		};
+		AADC88552D4A361B00C2B784 /* Charts */ = {
+			isa = PBXGroup;
+			children = (
+				AA51466C2D40EC0F00FE93E5 /* WeeklyExpensesView.swift */,
+				AAC242032D48F4A1002A829C /* CategoryPieChart.swift */,
+			);
+			path = Charts;
+			sourceTree = "<group>";
+		};
+		AADC88562D4A362A00C2B784 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				AA51465B2D4047DE00FE93E5 /* ExpenseCellView.swift */,
+				AA0B19282D43E62C00B02095 /* DepositCellView.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		AADC88572D4A364000C2B784 /* Progress */ = {
+			isa = PBXGroup;
+			children = (
+				AA0B19222D42FF5F00B02095 /* ProgressBar.swift */,
+				AA0B19262D43D99800B02095 /* CircularSavingProgressView.swift */,
+			);
+			path = Progress;
 			sourceTree = "<group>";
 		};
 		AAF9F5982D429DDA0085FD44 /* Expense */ = {
