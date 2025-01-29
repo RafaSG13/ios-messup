@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-fileprivate struct SwipeAction<T: Identifiable>: Identifiable {
+fileprivate struct SwipeAction<T: Identifiable & Equatable>: Identifiable {
     var item: T
     var offset: CGFloat = 0
 
@@ -16,118 +16,151 @@ fileprivate struct SwipeAction<T: Identifiable>: Identifiable {
     }
 }
 
-struct MUCustomForEach<T: Identifiable, Content: View>: View {
-    var items: [T]
+struct MUCustomForEach<T: Identifiable & Equatable, Content: View>: View {
+    @Binding var items: [T]
+    @Binding var selectedItem: T?
     var content: (T) -> Content
+    var onTap: (T) -> Void
     var onDelete: (Int) -> Void
-
-    init(items: [T], content: @escaping (T) -> Content, onDelete: @escaping (Int) -> Void) {
-        self.items = items
-        self.content = content
-        self.onDelete = onDelete
-    }
-
     @State private var swipeCandidates: [SwipeAction<T>] = []
 
+    private enum ViewTraits {
+        static var viewPadding: CGFloat { 20 }
+    }
+
+    //MARK: - Custom View Properties
+
+    var rowTint: Color? = nil
+
     var body: some View {
-            ForEach(swipeCandidates) { candidate in
-                let index = swipeCandidates.firstIndex(where: { $0.id == candidate.id }) ?? 0
+        ForEach(swipeCandidates) { candidate in
+            if let index = swipeCandidates.firstIndex(where: { $0.id == candidate.id }) {
                 content(candidate.item)
                     .onTapGesture {
+                        selectedItem = candidate.item
                         if swipeCandidates[index].offset < 0 {
-                            resetOffSetOnTap(for: index)
-                        }
-                        else {
-                            //tap action
+                            resetOffset(for: index)
+                        } else {
+                            onTap(candidate.item)
                         }
                     }
-                    .padding(.horizontal)
-                    .background()
                     .gesture(DragGesture()
-                        .onChanged {
-                            onChange(translation: $0.translation.width, for: index)
-                        }.onEnded { _ in
-                            onEnd(for: index)
-                        })
-                    .offset(x: swipeCandidates[index].offset, y: 0)
+                        .onChanged { onChange(translation: $0.translation.width, for: index) }
+                        .onEnded { _ in onEnd(for: index) }
+                    )
+                    .padding(.horizontal)
+                    .background(rowTint ?? Color(.systemBackground))
+                    .overlay(isSelected(candidate.item) ? Color.secondary.opacity(0.3) : .clear)
+                    .offset(x: swipeCandidates[index].offset)
                     .background {
-                        ZStack {
-                            Color.red
-                            HStack {
-                                Spacer()
-                                Button("Delete") {
-                                    onDelete(index)
-                                    removeItem(at: index)
-                                }
-                                .fontWeight(.medium)
-                                .foregroundStyle(.white)
-                                .padding(.trailing)
-                            }
-                        }
+                        DeleteActionView(for: index)
                     }
-            }.onAppear { populateSwipeCandidates() }
+            }
+        }
+        .onAppear { syncSwipeCandidates() }
+        .onChange(of: items) {
+            syncSwipeCandidates()
+        }
     }
 }
 
-//MARK: Private Methods
+//MARK: - Custom View Components
 
 private extension MUCustomForEach {
-
-    func onChange(translation: CGFloat, for index: Int) {
-        if translation < 0 {
-            withAnimation {
-                swipeCandidates[index].offset = translation
+    
+    @ViewBuilder func DeleteActionView(for index: Int) -> some View {
+        ZStack {
+            Color.red
+                .padding(.leading, ViewTraits.viewPadding + swipeCandidates[index].offset)
+            HStack {
+                Spacer()
+                Button("Delete") {
+                    deleteItem(at: index)
+                }
+                .fontWeight(.medium)
+                .foregroundStyle(.white)
+                .padding(.trailing, ViewTraits.viewPadding)
             }
-        } else if translation > 0 && swipeCandidates[index].offset < 0 {
-            withAnimation {
+        }
+    }
+}
+
+// MARK: - Private Methods
+
+private extension MUCustomForEach {
+    
+    func onChange(translation: CGFloat, for index: Int) {
+        guard index < swipeCandidates.count else { return }
+
+        withAnimation {
+            if translation < 0 {
+                swipeCandidates[index].offset = translation
+            } else if translation > 0 && swipeCandidates[index].offset <= 0 {
                 swipeCandidates[index].offset = translation
             }
         }
     }
 
     func onEnd(for index: Int) {
+        guard index < swipeCandidates.count else { return }
+        
         let removeThreshold: CGFloat = UIScreen.main.bounds.width * (2/3)
+        let candidate = swipeCandidates[index]
 
-        if swipeCandidates[index].offset > 0 {
-            withAnimation {
+        withAnimation(.default.speed(1)) {
+            if candidate.offset == 0 {
+                return
+            } else if candidate.offset > 0 {
                 swipeCandidates[index].offset = 0
+            } else if candidate.offset < -removeThreshold {
+                deleteItem(at: index)
+            } else {
+                swipeCandidates[index].offset = -100
             }
-        } else if swipeCandidates[index].offset < -removeThreshold {
-            withAnimation {
-                onDelete(index)
-                removeItem(at: index)
-            }
-        } else if swipeCandidates[index].offset < -100 || swipeCandidates[index].offset < 0 {
-            withAnimation { swipeCandidates[index].offset = -100 }
         }
     }
 
-    func resetOffSetOnTap(for index: Int) {
-        if swipeCandidates[index].offset < 0 {
-            withAnimation { swipeCandidates[index].offset = 0 }
-        }
+    func resetOffset(for index: Int) {
+        guard index < swipeCandidates.count else { return }
+        withAnimation { swipeCandidates[index].offset = 0 }
     }
 
-    func populateSwipeCandidates() {
+    func syncSwipeCandidates() {
         swipeCandidates = items.map { SwipeAction(item: $0) }
     }
 
-    func removeItem(at index: Int) {
-        _ = withAnimation {  swipeCandidates.remove(at: index) }
+    func deleteItem(at index: Int) {
+        guard index < swipeCandidates.count else { return }
+        withAnimation {
+            onDelete(index)
+            swipeCandidates.remove(at: index)
+        }
+    }
+
+    func isSelected(_ item: T) -> Bool {
+        selectedItem?.id == item.id
     }
 }
 
-//MARK: - Previews
+// MARK: - Preview
 
 #Preview {
+    @Previewable @State var mockItems = Expense.mockArray
+    @Previewable @State var selectedItem: Expense?
+
     NavigationStack {
         ScrollView {
-            MUCustomForEach(items: Expense.mockArray) { expense in
+            MUCustomForEach(items: $mockItems, selectedItem: $selectedItem) { expense in
                 ExpenseCellView(expense: expense)
-            } onDelete: { index in
-                print("Deleting item \(Expense.mockArray[index].name)")
-                Expense.mockArray.remove(at: index)
+            } onTap: { _ in
+                print("Tapped item")
             }
-        }.scrollIndicators(.hidden)
+            onDelete: { index in
+                print("Deleting item \(mockItems[index].name)")
+                mockItems.remove(at: index)
+            }
+        }
+        .scrollIndicators(.hidden)
     }
 }
+
