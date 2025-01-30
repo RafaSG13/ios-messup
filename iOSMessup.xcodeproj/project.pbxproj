@@ -42,6 +42,9 @@
 		AA6EE0BE2D426DE300E0F7D3 /* EditExpenseSheetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6EE0BD2D426DE300E0F7D3 /* EditExpenseSheetModifier.swift */; };
 		AA6EE0C02D4277A300E0F7D3 /* ExpensesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6EE0BF2D4277A300E0F7D3 /* ExpensesDataSource.swift */; };
 		AA6EE0C62D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6EE0C52D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift */; };
+		AA76D1122D4BDB45003D541D /* SideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA76D1112D4BDB37003D541D /* SideMenu.swift */; };
+		AA76D1152D4BEB82003D541D /* DrawerOptionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA76D1142D4BEB78003D541D /* DrawerOptionButton.swift */; };
+		AA76D1192D4C2D9D003D541D /* SideMenuContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA76D1182D4C2D95003D541D /* SideMenuContentView.swift */; };
 		AA7923D32D413C3600768849 /* SavingsObjectiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7923D22D413C3600768849 /* SavingsObjectiveView.swift */; };
 		AA7923D52D413C5800768849 /* SocialGroupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7923D42D413C5800768849 /* SocialGroupsView.swift */; };
 		AA8235A72D44054E005CCA48 /* LoadingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8235A62D440549005CCA48 /* LoadingScreen.swift */; };
@@ -111,6 +114,9 @@
 		AA6EE0BD2D426DE300E0F7D3 /* EditExpenseSheetModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExpenseSheetModifier.swift; sourceTree = "<group>"; };
 		AA6EE0BF2D4277A300E0F7D3 /* ExpensesDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesDataSource.swift; sourceTree = "<group>"; };
 		AA6EE0C52D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesDataSourceSpy.swift; sourceTree = "<group>"; };
+		AA76D1112D4BDB37003D541D /* SideMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenu.swift; sourceTree = "<group>"; };
+		AA76D1142D4BEB78003D541D /* DrawerOptionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerOptionButton.swift; sourceTree = "<group>"; };
+		AA76D1182D4C2D95003D541D /* SideMenuContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuContentView.swift; sourceTree = "<group>"; };
 		AA7923D22D413C3600768849 /* SavingsObjectiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingsObjectiveView.swift; sourceTree = "<group>"; };
 		AA7923D42D413C5800768849 /* SocialGroupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialGroupsView.swift; sourceTree = "<group>"; };
 		AA8235A62D440549005CCA48 /* LoadingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingScreen.swift; sourceTree = "<group>"; };
@@ -222,6 +228,7 @@
 		AA5146592D4047C100FE93E5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				AA76D1102D4BDB1A003D541D /* Profile */,
 				AA8235A52D440541005CCA48 /* Splash */,
 				AA6D45C32D42499B0014A95F /* SocialGroups */,
 				AA6D45C22D4249710014A95F /* Savings */,
@@ -234,6 +241,7 @@
 		AA51465A2D4047C500FE93E5 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				AA76D1132D4BEB6A003D541D /* Button */,
 				AA2CA6902D4A8A5B003DDE38 /* Lists */,
 				AADC88572D4A364000C2B784 /* Progress */,
 				AADC88562D4A362A00C2B784 /* Cells */,
@@ -337,6 +345,23 @@
 				AA6EE0C52D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift */,
 			);
 			path = Mock;
+			sourceTree = "<group>";
+		};
+		AA76D1102D4BDB1A003D541D /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				AA76D1182D4C2D95003D541D /* SideMenuContentView.swift */,
+				AA76D1112D4BDB37003D541D /* SideMenu.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		AA76D1132D4BEB6A003D541D /* Button */ = {
+			isa = PBXGroup;
+			children = (
+				AA76D1142D4BEB78003D541D /* DrawerOptionButton.swift */,
+			);
+			path = Button;
 			sourceTree = "<group>";
 		};
 		AA8235A52D440541005CCA48 /* Splash */ = {
@@ -539,10 +564,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA76D1122D4BDB45003D541D /* SideMenu.swift in Sources */,
 				AA6A71B62D443205004720CB /* SavingViewModelProtocol.swift in Sources */,
 				AA51465F2D4048E800FE93E5 /* Expense.swift in Sources */,
 				AA6A71B82D44329C004720CB /* SavingViewModelMock.swift in Sources */,
 				AA6D45BD2D41B5A90014A95F /* UIApplication+Keyboard.swift in Sources */,
+				AA76D1152D4BEB82003D541D /* DrawerOptionButton.swift in Sources */,
 				AA56E0B32D44FFC2009F7058 /* HideTabBarAfterScrollingThreshold.swift in Sources */,
 				AA0B192B2D43E8E200B02095 /* ListSectionHeaderView.swift in Sources */,
 				AA6A71B22D44304C004720CB /* ExpenseViewModelMock.swift in Sources */,
@@ -573,6 +600,7 @@
 				AA422C292D4141B500F108B8 /* MainTabBarView.swift in Sources */,
 				AA0B19292D43E63500B02095 /* DepositCellView.swift in Sources */,
 				AA6D45BB2D41B0E40014A95F /* AddExpenseSheetViewModifier.swift in Sources */,
+				AA76D1192D4C2D9D003D541D /* SideMenuContentView.swift in Sources */,
 				AA0B19252D43147F00B02095 /* Date+Utils.swift in Sources */,
 				AA51466B2D40592500FE93E5 /* TotalBalanceCardView.swift in Sources */,
 				AA5146662D40531500FE93E5 /* Double+Utils.swift in Sources */,

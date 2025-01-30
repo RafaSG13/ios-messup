@@ -11,6 +11,8 @@ struct ExpensesView: View {
     @Environment(\.expenseVM) var expensesVM
     @State private var shouldPresentAddExpense = false
     @State private var shouldPresentEditExpense = false
+    @State private var shouldShowSideMenu = false
+
     @State private var selectedItem: Expense?
 
     private enum ViewTraits {
@@ -24,60 +26,67 @@ struct ExpensesView: View {
     var body: some View {
         @State var lastExpenses = expensesVM.lastExpenses(limit: Constants.maximumNumberOfExpenses)
         NavigationStack {
-            ScrollView {
-                LazyVStack {
-                    TotalBalanceCardView(total: expensesVM.calculateTotalSpent())
-                        .frame(height: 150)
-                        .padding(.horizontal)
-                        .padding(.top)
-
-                    VStack(alignment: .leading, spacing: ViewTraits.headerSpacing) {
-                        Text("Analytics")
-                            .font(.title2.bold())
-                        WeeklyExpensesView()
+            ZStack {
+                ScrollView {
+                    LazyVStack {
+                        TotalBalanceCardView(total: expensesVM.calculateTotalSpent())
                             .frame(height: 150)
-                    }.padding()
-
-                    VStack(spacing: ViewTraits.headerSpacing) {
-                        ListSectionHeaderView(sectionTitle: "Transactions", route: .transactionList)
                             .padding(.horizontal)
-
-                        MUCustomVerticalForEach(items: lastExpenses,
-                                                selection: $selectedItem) { expense in
-                            ExpenseCellView(expense: expense)
-                        } onTap: { _ in }
-                        onDelete: { indexSet in
-                            Task {
-                                try await expensesVM.delete(removeAt: indexSet)
+                            .padding(.top)
+                        
+                        VStack(alignment: .leading, spacing: ViewTraits.headerSpacing) {
+                            Text("Analytics")
+                                .font(.title2.bold())
+                            WeeklyExpensesView()
+                                .frame(height: 150)
+                        }.padding()
+                        
+                        VStack(spacing: ViewTraits.headerSpacing) {
+                            ListSectionHeaderView(sectionTitle: "Transactions", route: .transactionList)
+                                .padding(.horizontal)
+                            
+                            MUCustomVerticalForEach(items: lastExpenses,
+                                                    selection: $selectedItem) { expense in
+                                ExpenseCellView(expense: expense)
+                            } onTap: { _ in }
+                            onDelete: { indexSet in
+                                Task {
+                                    try await expensesVM.delete(removeAt: indexSet)
+                                }
                             }
-                        }
-                        .onChange(of: selectedItem) { _, new in
-                            shouldPresentEditExpense = new != nil
+                            .onChange(of: selectedItem) { _, new in
+                                shouldPresentEditExpense = new != nil
+                            }
                         }
                     }
                 }
-            }
-            .navigationTitle("Expenses")
-            .navigationBarTitleDisplayMode(.inline)
-            .scrollIndicators(.hidden)
-            .scrollBounceBehavior(.always)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Image(systemName: "line.horizontal.3")
+                .navigationTitle("Expenses")
+                .navigationBarTitleDisplayMode(.inline)
+                .scrollIndicators(.hidden)
+                .scrollBounceBehavior(.always)
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            shouldShowSideMenu.toggle()
+                        } label: {
+                            Image(systemName: "line.horizontal.3")
+                        }
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            shouldPresentAddExpense.toggle()
+                        } label: {
+                            Image(systemName: "plus")
+                        }.buttonStyle(.plain)
+                    }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        shouldPresentAddExpense.toggle()
-                    } label: {
-                        Image(systemName: "plus")
-                    }.buttonStyle(.plain)
-                }
+                .addExpenseSheet(isPresented: $shouldPresentAddExpense,
+                                 onSubmit: expensesVM.addExpense)
+                .editExpenseSheet(isPresented: $shouldPresentEditExpense,
+                                  selectedItem: $selectedItem,
+                                  onSubmit: expensesVM.updateExpense(with:))
+                SideMenu(isShowing: $shouldShowSideMenu)
             }
-            .addExpenseSheet(isPresented: $shouldPresentAddExpense,
-                             onSubmit: expensesVM.addExpense)
-            .editExpenseSheet(isPresented: $shouldPresentEditExpense,
-                              selectedItem: $selectedItem,
-                              onSubmit: expensesVM.updateExpense(with:))
         }
     }
 }
