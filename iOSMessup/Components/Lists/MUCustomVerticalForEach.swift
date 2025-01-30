@@ -30,9 +30,9 @@ struct MUCustomVerticalForEach<T: Identifiable & Equatable, Content: View>: View
     private enum ViewTraits {
         static var viewPadding: CGFloat { 20 }
     }
-    
+
     //MARK: - Initializer
-    
+
     init(items: [T],
          selection: Binding<T?>,
          content: @escaping (T) -> Content,
