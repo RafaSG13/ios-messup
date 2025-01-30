@@ -1,0 +1,29 @@
+# Xcode
+*.xcworkspace/
+*.xcuserdata/
+DerivedData/
+.idea/
+*.xcuserstate
+
+# Swift Package Manager
+Packages/
+.build/
+
+# Carthage
+Carthage/Build/
+
+# CocoaPods
+Pods/
+*.lock
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+
+# Archives
+*.xcarchive/
+
+# Personal Xcode Settings
+iOSMessup.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
