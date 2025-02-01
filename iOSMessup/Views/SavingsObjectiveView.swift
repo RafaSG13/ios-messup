@@ -34,18 +34,11 @@ struct SavingsObjectiveView: View {
                 }
             }
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .primaryAction) {
                     Button {
                         print("Add Deposit tapped")
                     } label: {
                         Image(systemName: "plus")
-                    }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        print("Edit Goal tapped")
-                    } label: {
-                        Image(systemName: "pencil")
                     }
                 }
             }

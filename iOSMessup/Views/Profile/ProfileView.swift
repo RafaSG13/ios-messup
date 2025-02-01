@@ -10,37 +10,29 @@ import SwiftUI
 import SwiftUI
 
 struct ProfileView: View {
+    @State private var selectedRow: ProfileRowModel?
+
     var body: some View {
         NavigationStack {
             VStack {
-                // Profile Header
-                VStack {
-                    Image(systemName: "person.crop.circle")
-                        .resizable()
-                        .frame(width: 100, height: 100)
-                        .foregroundColor(.gray)
-                    
-                    Text("John Doe")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    
-                    Text("Edit Profile")
-                        .foregroundColor(.blue)
-                        .onTapGesture {
-                            // Acción para editar perfil
-                        }
-                }
+                ProfileHeader()
                 .padding()
-                
-                // Settings List
-                List {
-                    ProfileRow(icon: "gearshape.fill", title: "Settings", color: .gray)
-                    ProfileRow(icon: "lock.fill", title: "Change Password", color: .red)
-                    ProfileRow(icon: "envelope.fill", title: "Contact Us", color: .blue)
-                    ProfileRow(icon: "doc.text.fill", title: "Terms & Conditions", color: .green)
-                    ProfileRow(icon: "rectangle.portrait.and.arrow.right.fill", title: "Log Out", color: .orange)
+                .frame(height: 150)
+
+                List(ProfileRowModel.allCases, id: \.self) { row in
+                    Button {
+                        selectedRow = row
+                    } label: {
+                        ProfileRow(model: row)
+                    }
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(.init(top: 15, leading: 0, bottom: 15, trailing: 0))
+                    .onChange(of: selectedRow) { oldValue, newValue in
+                        print("Selected row changed from \(oldValue?.title ?? "nil") to \(newValue?.title ?? "nil")")
+                    }
                 }
                 .listStyle(.plain)
+                .scrollDisabled(true)
             }
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
@@ -48,56 +40,41 @@ struct ProfileView: View {
     }
 }
 
-struct ProfileRow: View {
-    var icon: String
-    var title: String
-    var color: Color
-
-    private enum ViewTraits {
-        static let imageSize: CGFloat = 30
-        static let imageInternalPadding: CGFloat = 5
-        static let generalPadding: CGFloat = 10
-        static let backgroundColor: Color = .secondary.opacity(0.15)
-        static let cornerRadius: CGFloat = 10
-        static let generalSpacing: CGFloat = 10
-        static let cellHeight: CGFloat = 70
-    }
-    
-    var body: some View {
-        HStack(spacing: ViewTraits.generalPadding) {
-            Image(systemName: icon)
-                .resizable()
-                .frame(width: ViewTraits.imageSize, height: ViewTraits.imageSize)
-                .aspectRatio(contentMode: .fill)
-                .padding(ViewTraits.imageInternalPadding)
-                .background(color)
-                .foregroundColor(.white)
-                .clipShape(.rect(cornerRadius: ViewTraits.cornerRadius))
-
-            VStack(alignment: .leading) {
-                Text(title)
-                    .bold()
-                    .font(.headline)
-//                Text(expense.paymentMethod.rawValue)
-//                    .font(.caption)
-            }
-            Spacer()
-            Image(systemName: "chevron.right")
-                .resizable()
-                .frame(width: 20, height: 20)
-                .aspectRatio(contentMode: .fill)
-                .foregroundColor(.gray)
-        }
-        .padding(ViewTraits.generalPadding)
-        .frame(maxWidth: .infinity)
-        .frame(height: ViewTraits.cellHeight)
-        .background(ViewTraits.backgroundColor)
-        .clipShape(.rect(cornerRadius: ViewTraits.cornerRadius))
-        .listRowSeparator(.hidden)
-    }
-}
-
 
 #Preview {
     ProfileView()
+}
+
+
+struct ProfileHeader: View {
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: .infinity)
+                .fill(.secondary.opacity(0.15))
+            HStack {
+                Image("logoImage")
+                    .resizable()
+                    .frame(width: 80, height: 80)
+                    .foregroundColor(.gray)
+                    .clipShape(.circle)
+                    .padding(.leading, 25)
+                    .padding(.trailing, 20)
+                
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("John Doe")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                    
+                    Text("Edit Profile")
+                        .font(.subheadline)
+                        .underline()
+                        .foregroundColor(.blue)
+                        .onTapGesture {
+                            // Acción para editar perfil
+                        }
+                }
+                Spacer()
+            }
+        }
+    }
 }
