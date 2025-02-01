@@ -12,6 +12,7 @@ enum Tab: Int, CaseIterable {
     case expenses
     case savings
     case socialGroups
+    case profile
 }
 
 struct MainTabBarView: View {
@@ -25,8 +26,11 @@ struct MainTabBarView: View {
                 .tabItem { Label("Savings", systemImage: "chart.pie.fill") }
                 .tag(Tab.savings)
             SocialGroupsView()
-                .tabItem { Label("Social groups", systemImage: "person.3.fill") }
+                .tabItem { Label("Social groups", systemImage: "bubble.left.and.bubble.right") }
                 .tag(Tab.socialGroups)
+            ProfileView()
+                .tabItem { Label("Profile", systemImage: "person.fill") }
+                .tag(Tab.profile)
         }
     }
 }

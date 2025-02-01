@@ -62,10 +62,7 @@ struct ExpensesView: View {
             .scrollIndicators(.hidden)
             .scrollBounceBehavior(.always)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Image(systemName: "line.horizontal.3")
-                }
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     Button {
                         shouldPresentAddExpense.toggle()
                     } label: {
