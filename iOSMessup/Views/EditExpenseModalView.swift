@@ -31,15 +31,27 @@ struct EditExpenseModalView: View {
                 Section(header: Text("Payment Method")) {
                     Picker(selection: $expense.paymentMethod, label: EmptyView()) {
                         ForEach(PaymentMethod.allCases, id: \.self) { paymentMethod in
-                            Text(paymentMethod.rawValue).tag(paymentMethod)
+                            HStack {
+                                Text(paymentMethod.rawValue)
+                                Spacer()
+                                Image(systemName: paymentMethod.icon)
+                                    .foregroundStyle(paymentMethod.color)
+                                    .symbolVariant(.fill)
+                            }.tag(paymentMethod)
                         }
                     }.pickerStyle(.inline)
                 }
                 
                 Section(header: Text("Category")) {
-                    Picker(selection: $expense.category, label: Text("Select a Category")) {
+                    Picker(selection: $expense.category, label: EmptyView()) {
                         ForEach(Category.allCases, id: \.self) { category in
-                            Text(category.rawValue).tag(category)
+                            HStack {
+                                Text(category.rawValue)
+                                Spacer()
+                                Image(systemName: category.icon)
+                                    .foregroundStyle(category.color)
+                                    .symbolVariant(.fill)
+                            }.tag(category)
                         }
                     }.pickerStyle(.navigationLink)
                 }

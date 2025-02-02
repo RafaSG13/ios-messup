@@ -14,7 +14,7 @@ enum Route {
     @ViewBuilder
     var destination: some View {
         switch self {
-        case .depositList: Text("Deposit List")
+        case .depositList: AllDepositsView()
         case .transactionList: AllExpensesView()
         }
     }

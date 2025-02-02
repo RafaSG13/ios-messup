@@ -70,4 +70,9 @@ import Observation
         let result = calculateTotalFounded() / savingGoal.amount
         return result >= 1 ? 1 : result
     }
+
+    func filteredDeposits(on searchTerm: String) -> [Deposit] {
+        guard !searchTerm.isEmpty, searchTerm.count > 3 else { return deposits }
+        return deposits.filter { $0.concept.lowercased().contains(searchTerm.lowercased()) }
+    }
 }

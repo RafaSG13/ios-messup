@@ -70,18 +70,30 @@ private extension AddExpenseViewModal {
         Section(header: Text("Payment Method")) {
             Picker(selection: $newExpense.paymentMethod, label: EmptyView()) {
                 ForEach(PaymentMethod.allCases, id: \.self) { method in
-                    Text(method.rawValue).tag(method)
+                    HStack {
+                        Text(method.rawValue)
+                        Spacer()
+                        Image(systemName: method.icon)
+                            .foregroundStyle(method.color)
+                            .symbolVariant(.fill)
+                    }.tag(method)
                 }
-            }.pickerStyle(.inline)
+            }
+            .pickerStyle(.inline)
         }
     }
 
     var CategorySection: some View {
         Section(header: Text("Category")) {
-            Picker(selection: $newExpense.category, label: Text("Select a Category")) {
+            Picker(selection: $newExpense.category, label: EmptyView()) {
                 ForEach(Category.allCases, id: \.self) { category in
-                    Text(category.rawValue).tag(category)
-                }
+                    HStack {
+                        Text(category.rawValue)
+                        Spacer()
+                        Image(systemName: category.icon)
+                            .foregroundStyle(category.color)
+                            .symbolVariant(.fill)
+                    }.tag(category)                }
             }
             .pickerStyle(.navigationLink)
         }

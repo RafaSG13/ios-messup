@@ -40,7 +40,7 @@ extension Deposit {
 
 // MARK: - FoundingSource
 
-enum FoundingSource: String, CaseIterable, Hashable {
+enum FoundingSource: String, CaseIterable, Hashable, Equatable {
     case salary = "Salary"
     case freelance = "Freelance"
     case investments = "Investments"
