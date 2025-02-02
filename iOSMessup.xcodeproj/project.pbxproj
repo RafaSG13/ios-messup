@@ -36,16 +36,19 @@
 		AA6A71B62D443205004720CB /* SavingViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6A71B52D443205004720CB /* SavingViewModelProtocol.swift */; };
 		AA6A71B82D44329C004720CB /* SavingViewModelMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6A71B72D44329C004720CB /* SavingViewModelMock.swift */; };
 		AA6D45B82D41ABBD0014A95F /* AddExpenseViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45B72D41ABBD0014A95F /* AddExpenseViewModal.swift */; };
-		AA6D45BB2D41B0E40014A95F /* AddExpenseSheetViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45BA2D41B0E40014A95F /* AddExpenseSheetViewModifier.swift */; };
+		AA6D45BB2D41B0E40014A95F /* ExpenseSheetViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45BA2D41B0E40014A95F /* ExpenseSheetViewModifier.swift */; };
 		AA6D45BD2D41B5A90014A95F /* UIApplication+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45BC2D41B5A90014A95F /* UIApplication+Keyboard.swift */; };
 		AA6D45C72D4249DB0014A95F /* ExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45C62D4249DB0014A95F /* ExpenseViewModel.swift */; };
-		AA6EE0BE2D426DE300E0F7D3 /* EditExpenseSheetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6EE0BD2D426DE300E0F7D3 /* EditExpenseSheetModifier.swift */; };
 		AA6EE0C02D4277A300E0F7D3 /* ExpensesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6EE0BF2D4277A300E0F7D3 /* ExpensesDataSource.swift */; };
 		AA6EE0C62D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6EE0C52D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift */; };
 		AA71A7682D4C3201003D5909 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA71A7672D4C31FD003D5909 /* ProfileView.swift */; };
 		AA7923D32D413C3600768849 /* SavingsObjectiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7923D22D413C3600768849 /* SavingsObjectiveView.swift */; };
 		AA7923D52D413C5800768849 /* SocialGroupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7923D42D413C5800768849 /* SocialGroupsView.swift */; };
 		AA7C76482D4E51E50000C530 /* ProfileCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7C76472D4E51DA0000C530 /* ProfileCellView.swift */; };
+		AA81393D2D4FB6C20097F51E /* EditDepositModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA81393C2D4FB6C20097F51E /* EditDepositModalView.swift */; };
+		AA81393F2D4FBE250097F51E /* AddDepositViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA81393E2D4FBE250097F51E /* AddDepositViewModal.swift */; };
+		AA8139412D4FC3660097F51E /* DepositSheetViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8139402D4FC3550097F51E /* DepositSheetViewModifier.swift */; };
+		AA8139432D4FC7AB0097F51E /* AllDepositsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8139422D4FC7A10097F51E /* AllDepositsView.swift */; };
 		AA8235A72D44054E005CCA48 /* LoadingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8235A62D440549005CCA48 /* LoadingScreen.swift */; };
 		AA832E6A2D415B9200940F78 /* AllExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA832E692D415B9200940F78 /* AllExpensesView.swift */; };
 		AA832E6C2D4173EC00940F78 /* EditExpenseModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA832E6B2D4173EC00940F78 /* EditExpenseModalView.swift */; };
@@ -107,16 +110,19 @@
 		AA6A71B52D443205004720CB /* SavingViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingViewModelProtocol.swift; sourceTree = "<group>"; };
 		AA6A71B72D44329C004720CB /* SavingViewModelMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingViewModelMock.swift; sourceTree = "<group>"; };
 		AA6D45B72D41ABBD0014A95F /* AddExpenseViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseViewModal.swift; sourceTree = "<group>"; };
-		AA6D45BA2D41B0E40014A95F /* AddExpenseSheetViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseSheetViewModifier.swift; sourceTree = "<group>"; };
+		AA6D45BA2D41B0E40014A95F /* ExpenseSheetViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseSheetViewModifier.swift; sourceTree = "<group>"; };
 		AA6D45BC2D41B5A90014A95F /* UIApplication+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Keyboard.swift"; sourceTree = "<group>"; };
 		AA6D45C62D4249DB0014A95F /* ExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModel.swift; sourceTree = "<group>"; };
-		AA6EE0BD2D426DE300E0F7D3 /* EditExpenseSheetModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExpenseSheetModifier.swift; sourceTree = "<group>"; };
 		AA6EE0BF2D4277A300E0F7D3 /* ExpensesDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesDataSource.swift; sourceTree = "<group>"; };
 		AA6EE0C52D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesDataSourceSpy.swift; sourceTree = "<group>"; };
 		AA71A7672D4C31FD003D5909 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		AA7923D22D413C3600768849 /* SavingsObjectiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingsObjectiveView.swift; sourceTree = "<group>"; };
 		AA7923D42D413C5800768849 /* SocialGroupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialGroupsView.swift; sourceTree = "<group>"; };
 		AA7C76472D4E51DA0000C530 /* ProfileCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCellView.swift; sourceTree = "<group>"; };
+		AA81393C2D4FB6C20097F51E /* EditDepositModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDepositModalView.swift; sourceTree = "<group>"; };
+		AA81393E2D4FBE250097F51E /* AddDepositViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDepositViewModal.swift; sourceTree = "<group>"; };
+		AA8139402D4FC3550097F51E /* DepositSheetViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepositSheetViewModifier.swift; sourceTree = "<group>"; };
+		AA8139422D4FC7A10097F51E /* AllDepositsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllDepositsView.swift; sourceTree = "<group>"; };
 		AA8235A62D440549005CCA48 /* LoadingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingScreen.swift; sourceTree = "<group>"; };
 		AA832E692D415B9200940F78 /* AllExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllExpensesView.swift; sourceTree = "<group>"; };
 		AA832E6B2D4173EC00940F78 /* EditExpenseModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExpenseModalView.swift; sourceTree = "<group>"; };
@@ -291,10 +297,10 @@
 		AA6D45B92D41B0D20014A95F /* ViewModifiers */ = {
 			isa = PBXGroup;
 			children = (
+				AA8139402D4FC3550097F51E /* DepositSheetViewModifier.swift */,
 				AAF91FDD2D4648DF003FDE4C /* SelectableCell.swift */,
 				AA56E0B22D44FFC2009F7058 /* HideTabBarAfterScrollingThreshold.swift */,
-				AA6D45BA2D41B0E40014A95F /* AddExpenseSheetViewModifier.swift */,
-				AA6EE0BD2D426DE300E0F7D3 /* EditExpenseSheetModifier.swift */,
+				AA6D45BA2D41B0E40014A95F /* ExpenseSheetViewModifier.swift */,
 			);
 			path = ViewModifiers;
 			sourceTree = "<group>";
@@ -302,6 +308,9 @@
 		AA6D45C22D4249710014A95F /* Savings */ = {
 			isa = PBXGroup;
 			children = (
+				AA8139422D4FC7A10097F51E /* AllDepositsView.swift */,
+				AA81393E2D4FBE250097F51E /* AddDepositViewModal.swift */,
+				AA81393C2D4FB6C20097F51E /* EditDepositModalView.swift */,
 				AA7923D22D413C3600768849 /* SavingsObjectiveView.swift */,
 			);
 			name = Savings;
@@ -556,6 +565,7 @@
 				AA6A71B62D443205004720CB /* SavingViewModelProtocol.swift in Sources */,
 				AA51465F2D4048E800FE93E5 /* Expense.swift in Sources */,
 				AA6A71B82D44329C004720CB /* SavingViewModelMock.swift in Sources */,
+				AA81393D2D4FB6C20097F51E /* EditDepositModalView.swift in Sources */,
 				AA6D45BD2D41B5A90014A95F /* UIApplication+Keyboard.swift in Sources */,
 				AA56E0B32D44FFC2009F7058 /* HideTabBarAfterScrollingThreshold.swift in Sources */,
 				AA0B192B2D43E8E200B02095 /* ListSectionHeaderView.swift in Sources */,
@@ -566,6 +576,7 @@
 				AA0B19272D43D9A200B02095 /* CircularSavingProgressView.swift in Sources */,
 				AA51465C2D4047DE00FE93E5 /* ExpenseCellView.swift in Sources */,
 				AA7C76482D4E51E50000C530 /* ProfileCellView.swift in Sources */,
+				AA8139432D4FC7AB0097F51E /* AllDepositsView.swift in Sources */,
 				AA7923D32D413C3600768849 /* SavingsObjectiveView.swift in Sources */,
 				AA71A7682D4C3201003D5909 /* ProfileView.swift in Sources */,
 				AA8235A72D44054E005CCA48 /* LoadingScreen.swift in Sources */,
@@ -578,6 +589,7 @@
 				AA1214DE2D42F2EC00787FD2 /* SavingGoal.swift in Sources */,
 				AA51462F2D40450600FE93E5 /* iOSMessupApp.swift in Sources */,
 				AAACDF602D442AEF0037C771 /* SavingDataSourceSpy.swift in Sources */,
+				AA8139412D4FC3660097F51E /* DepositSheetViewModifier.swift in Sources */,
 				AA51466F2D40ECB400FE93E5 /* Calendar+Utils.swift in Sources */,
 				AA832E6C2D4173EC00940F78 /* EditExpenseModalView.swift in Sources */,
 				AA6D45C72D4249DB0014A95F /* ExpenseViewModel.swift in Sources */,
@@ -588,12 +600,12 @@
 				AA6EE0C02D4277A300E0F7D3 /* ExpensesDataSource.swift in Sources */,
 				AA422C292D4141B500F108B8 /* MainTabBarView.swift in Sources */,
 				AA0B19292D43E63500B02095 /* DepositCellView.swift in Sources */,
-				AA6D45BB2D41B0E40014A95F /* AddExpenseSheetViewModifier.swift in Sources */,
+				AA6D45BB2D41B0E40014A95F /* ExpenseSheetViewModifier.swift in Sources */,
+				AA81393F2D4FBE250097F51E /* AddDepositViewModal.swift in Sources */,
 				AA0B19252D43147F00B02095 /* Date+Utils.swift in Sources */,
 				AA51466B2D40592500FE93E5 /* TotalBalanceCardView.swift in Sources */,
 				AA5146662D40531500FE93E5 /* Double+Utils.swift in Sources */,
 				AA0B19232D42FF6A00B02095 /* ProgressBar.swift in Sources */,
-				AA6EE0BE2D426DE300E0F7D3 /* EditExpenseSheetModifier.swift in Sources */,
 				AA31E12F2D48022A004BA303 /* Route.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

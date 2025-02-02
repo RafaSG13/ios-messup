@@ -22,6 +22,7 @@ protocol SavingViewModelProtocol: Observable {
     func deleteDeposits(removeAt indices: IndexSet) async throws
     func updateDeposit(with newValue: Deposit) async throws
     func calculateActualProgress() -> Double
+    func filteredDeposits(on searchTerm: String) -> [Deposit]
 }
 
 struct SavingViewModelKey: EnvironmentKey {

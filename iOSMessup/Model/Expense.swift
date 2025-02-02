@@ -51,6 +51,26 @@ enum PaymentMethod: String, CaseIterable, Hashable {
     case debitCard = "Debit Card"
     case paypal = "Paypal"
     case other = "Other"
+
+    var icon: String {
+        switch self {
+        case .cash: return "banknote"
+        case .creditCard: return "creditcard.fill"
+        case .debitCard: return "creditcard"
+        case .paypal: return "cart.fill"
+        case .other: return "questionmark.circle.fill"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .cash: return .green
+        case .creditCard: return .blue
+        case .debitCard: return .purple
+        case .paypal: return .teal
+        case .other: return .gray
+        }
+    }
 }
 
 // MARK: - Expense Categories

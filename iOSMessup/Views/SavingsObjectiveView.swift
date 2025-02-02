@@ -9,7 +9,9 @@ import SwiftUI
 
 struct SavingsObjectiveView: View {
     @Environment(\.savingVM) private var savingViewModel
-    @State private var selectedDeposit: Deposit?
+    @State private var selectedDeposit: Deposit? = nil
+    @State private var shouldPresentAddDepositModal: Bool = false
+    @State private var shouldPresentEditDepositModal: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -27,6 +29,9 @@ struct SavingsObjectiveView: View {
                                 .selectableCell {
                                     selectedDeposit = deposit
                                 }
+                                .onChange(of: selectedDeposit) { _, newValue in
+                                    shouldPresentEditDepositModal = newValue != nil
+                                }
                         }
                     }
                     .padding(.horizontal)
@@ -36,7 +41,7 @@ struct SavingsObjectiveView: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
-                        print("Add Deposit tapped")
+                        shouldPresentAddDepositModal = true
                     } label: {
                         Image(systemName: "plus")
                     }
@@ -47,6 +52,12 @@ struct SavingsObjectiveView: View {
             .scrollBounceBehavior(.always)
             .navigationTitle("Saving Goal")
             .navigationBarTitleDisplayMode(.inline)
+            .editDepositSheet(isPresented: $shouldPresentEditDepositModal, selectedDeposit: $selectedDeposit) { deposit in
+                try await savingViewModel.updateDeposit(with: deposit)
+            }
+            .addDepositSheet(isPresented: $shouldPresentAddDepositModal) { deposit in
+                try await savingViewModel.createDeposit(deposit)
+            }
         }
     }
 }

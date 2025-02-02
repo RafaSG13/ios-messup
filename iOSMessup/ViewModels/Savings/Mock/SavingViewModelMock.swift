@@ -53,4 +53,9 @@ import Foundation
         guard let savingGoal = savingGoal else { return 0 }
         return calculateTotalFounded() / savingGoal.amount
     }
+
+    func filteredDeposits(on searchTerm: String) -> [Deposit] {
+        guard !searchTerm.isEmpty, searchTerm.count > 3 else { return deposits }
+        return deposits.filter { $0.concept.lowercased().contains(searchTerm.lowercased()) }
+    }
 }
