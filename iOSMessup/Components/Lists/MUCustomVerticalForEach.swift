@@ -54,7 +54,7 @@ struct MUCustomVerticalForEach<T: Identifiable & Equatable, Content: View>: View
                             onTapGesture(for: index, item: candidate.item)
                         }
                         .gesture(DragGesture()
-                            .onChanged { onChange(translation: $0.translation.width, for: index) }
+                            .onChanged { onChange(translation: $0.translation, for: index) }
                             .onEnded { _ in onEnd(for: index) }
                         )
                         .padding(.horizontal)
@@ -99,8 +99,9 @@ private extension MUCustomVerticalForEach {
 
 private extension MUCustomVerticalForEach {
 
-    func onChange(translation: CGFloat, for index: Int) {
-        guard index < swipeCandidates.count else { return }
+    func onChange(translation: CGSize, for index: Int) {
+        guard index < swipeCandidates.count,
+              abs(translation.width) > abs(translation.height) else { return }
 
         withAnimation {
             if swipedIndex != index {
@@ -108,10 +109,10 @@ private extension MUCustomVerticalForEach {
                 swipedIndex = index
             }
 
-            if translation < 0 {
-                swipeCandidates[index].offset = translation
-            } else if translation > 0 && swipeCandidates[index].offset < 0 {
-                swipeCandidates[index].offset = translation
+            if translation.width < 0 {
+                swipeCandidates[index].offset = translation.width
+            } else if translation.width > 0 && swipeCandidates[index].offset < 0 {
+                swipeCandidates[index].offset = translation.width
             }
         }
     }
