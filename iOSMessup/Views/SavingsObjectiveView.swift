@@ -24,17 +24,14 @@ struct SavingsObjectiveView: View {
                     
                     VStack(alignment: .leading) {
                         ListSectionHeaderView(sectionTitle: "Recent Deposits", route: .depositList)
-                        ForEach(savingViewModel.deposits) { deposit in
+                            .padding(.horizontal)
+                        MUCustomVerticalForEach(items: savingViewModel.deposits, selection: $selectedDeposit) { deposit in
                             DepositCellView(deposit: deposit)
-                                .selectableCell {
-                                    selectedDeposit = deposit
-                                }
                                 .onChange(of: selectedDeposit) { _, newValue in
                                     shouldPresentEditDepositModal = newValue != nil
                                 }
                         }
                     }
-                    .padding(.horizontal)
                     Spacer()
                 }
             }
