@@ -39,10 +39,8 @@ struct CategoryPieChart: View {
 
                 WeeklyExpensesView()
                     .frame(width: proxy.size.width)
-
             }
- 
         }.scrollTargetBehavior(.paging)
-            .padding(20)
+            .padding(MUSpacer.size05)
     }
 }

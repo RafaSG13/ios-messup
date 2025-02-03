@@ -57,8 +57,8 @@ struct ProfileHeader: View {
                     .frame(width: 80, height: 80)
                     .foregroundColor(.gray)
                     .clipShape(.circle)
-                    .padding(.leading, 25)
-                    .padding(.trailing, 20)
+                    .padding(.leading, MUSpacer.size06)
+                    .padding(.trailing, MUSpacer.size05)
                 
                 VStack(alignment: .leading, spacing: 5) {
                     Text("John Doe")

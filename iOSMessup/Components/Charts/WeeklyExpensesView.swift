@@ -41,7 +41,7 @@ struct WeeklyExpensesView: View {
                             .font(.caption)
                             .bold()
                             .foregroundColor(.white)
-                            .padding(4)
+                            .padding(MUSpacer.size02)
                             .cornerRadius(4)
                     }
                 }

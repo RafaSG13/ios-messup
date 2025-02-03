@@ -55,6 +55,7 @@
 		AAACDF602D442AEF0037C771 /* SavingDataSourceSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAACDF5F2D442AD80037C771 /* SavingDataSourceSpy.swift */; };
 		AAC242042D48F4B3002A829C /* CategoryPieChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC242032D48F4A1002A829C /* CategoryPieChart.swift */; };
 		AAD271442D4410B300D906B8 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AAD271432D4410B300D906B8 /* SplashScreen.storyboard */; };
+		AAD5E9012D510BA00058DD18 /* MUSpacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD5E9002D510B9A0058DD18 /* MUSpacer.swift */; };
 		AAF91FDE2D4648DF003FDE4C /* SelectableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF91FDD2D4648DF003FDE4C /* SelectableCell.swift */; };
 		AAF9F59A2D429DF00085FD44 /* ExpenseViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF9F5992D429DE60085FD44 /* ExpenseViewModelTests.swift */; };
 /* End PBXBuildFile section */
@@ -129,6 +130,7 @@
 		AAACDF5F2D442AD80037C771 /* SavingDataSourceSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingDataSourceSpy.swift; sourceTree = "<group>"; };
 		AAC242032D48F4A1002A829C /* CategoryPieChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPieChart.swift; sourceTree = "<group>"; };
 		AAD271432D4410B300D906B8 /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
+		AAD5E9002D510B9A0058DD18 /* MUSpacer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUSpacer.swift; sourceTree = "<group>"; };
 		AAF91FDD2D4648DF003FDE4C /* SelectableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableCell.swift; sourceTree = "<group>"; };
 		AAF9F5992D429DE60085FD44 /* ExpenseViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModelTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -245,6 +247,7 @@
 		AA51465A2D4047C500FE93E5 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				AAD5E8FF2D510B940058DD18 /* Utils */,
 				AA2CA6902D4A8A5B003DDE38 /* Lists */,
 				AADC88572D4A364000C2B784 /* Progress */,
 				AADC88562D4A362A00C2B784 /* Cells */,
@@ -388,6 +391,14 @@
 				AAACDF5F2D442AD80037C771 /* SavingDataSourceSpy.swift */,
 			);
 			path = Mock;
+			sourceTree = "<group>";
+		};
+		AAD5E8FF2D510B940058DD18 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				AAD5E9002D510B9A0058DD18 /* MUSpacer.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		AADC88552D4A361B00C2B784 /* Charts */ = {
@@ -565,6 +576,7 @@
 				AA6A71B62D443205004720CB /* SavingViewModelProtocol.swift in Sources */,
 				AA51465F2D4048E800FE93E5 /* Expense.swift in Sources */,
 				AA6A71B82D44329C004720CB /* SavingViewModelMock.swift in Sources */,
+				AAD5E9012D510BA00058DD18 /* MUSpacer.swift in Sources */,
 				AA81393D2D4FB6C20097F51E /* EditDepositModalView.swift in Sources */,
 				AA6D45BD2D41B5A90014A95F /* UIApplication+Keyboard.swift in Sources */,
 				AA56E0B32D44FFC2009F7058 /* HideTabBarAfterScrollingThreshold.swift in Sources */,

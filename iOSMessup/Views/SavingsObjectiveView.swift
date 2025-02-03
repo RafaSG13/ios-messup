@@ -88,7 +88,7 @@ extension SavingsObjectiveView {
                         .font(.subheadline)
                         .foregroundStyle(.yellow)
                         .bold()
-                        .padding(4)
+                        .padding(MUSpacer.size02)
                         .background(
                             RoundedRectangle(cornerRadius: 5)
                                 .foregroundStyle(.yellow.opacity(0.1))
@@ -126,18 +126,18 @@ extension SavingsObjectiveView {
                     Text(savingViewModel.savingGoal?.name ?? "")
                         .font(.title3)
                         .bold()
-                        .padding(.bottom, 20)
+                        .padding(.bottom, MUSpacer.size05)
                     Text((savingViewModel.savingGoal?.savingCategory.rawValue ?? "") + " Date")
                         .foregroundStyle(.secondary)
-                        .padding(.bottom, 5)
+                        .padding(.bottom, MUSpacer.size02)
                     Text(savingViewModel.savingGoal?.completionDate.textValue ?? "")
                         .font(.title)
                         .bold()
-                        .padding(.bottom, 10)
+                        .padding(.bottom, MUSpacer.size03)
                     Text("In 122 days")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                        .padding(3)
+                        .padding(MUSpacer.size02)
                         .background(
                             RoundedRectangle(cornerRadius: 5).fill(.ultraThinMaterial)
                         )
@@ -188,7 +188,7 @@ extension SavingsObjectiveView {
             }
         }
         .padding(.vertical)
-        .padding(.horizontal, 25)
+        .padding(.horizontal, MUSpacer.size06)
     }
 }
 
