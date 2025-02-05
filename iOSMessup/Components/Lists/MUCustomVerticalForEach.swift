@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-//MARK: - SwipeAction Model
-
-fileprivate struct SwipeAction<T: Identifiable & Equatable>: Identifiable {
+//MARK: - MUForEachItem Model
+ 
+struct MUForEachItem<T: Identifiable & Equatable>: Identifiable {
     var item: T
     var offset: CGFloat = 0
 
@@ -20,11 +20,10 @@ fileprivate struct SwipeAction<T: Identifiable & Equatable>: Identifiable {
 
 struct MUCustomVerticalForEach<T: Identifiable & Equatable, Content: View>: View {
     @Binding var selection: T?
-    var items: [T]
     var content: (T) -> Content
     var onTap: ((T) -> Void)?
     var onDelete: ((IndexSet) -> Void)?
-    @State private var swipeCandidates: [SwipeAction<T>] = []
+    @State private var items: [MUForEachItem<T>] = []
     @State private var swipedIndex: Int? = nil
 
     private enum ViewTraits {
@@ -33,7 +32,7 @@ struct MUCustomVerticalForEach<T: Identifiable & Equatable, Content: View>: View
 
     //MARK: - Initializer
 
-    init(items: [T],
+    init(items: [MUForEachItem<T>],
          selection: Binding<T?>,
          content: @escaping (T) -> Content,
          onTap: ((T) -> Void)? = nil,
@@ -47,11 +46,11 @@ struct MUCustomVerticalForEach<T: Identifiable & Equatable, Content: View>: View
 
     var body: some View {
         LazyVStack(alignment: .leading, spacing: 10) {
-            ForEach(swipeCandidates) { candidate in
-                if let index = swipeCandidates.firstIndex(where: { $0.id == candidate.id }) {
-                    content(candidate.item)
+            ForEach(items) { item in
+                if let index = items.firstIndex(where: { $0.id == item.id }) {
+                    content(item.item)
                         .onTapGesture {
-                            onTapGesture(for: index, item: candidate.item)
+                            onTapGesture(for: index, item: item.item)
                         }
                         .gesture(DragGesture()
                             .onChanged { onChange(translation: $0.translation, for: index) }
@@ -59,13 +58,12 @@ struct MUCustomVerticalForEach<T: Identifiable & Equatable, Content: View>: View
                         )
                         .padding(.horizontal)
                         .background(Color(.systemBackground))
-                        .offset(x: swipeCandidates[index].offset)
+                        .offset(x: items[index].offset)
                         .background(DeleteActionView(for: index))
-                        .overlay(SelectedViewOverlay(candidate.item))
+                        .overlay(SelectedViewOverlay(item.item))
                 }
             }
         }
-        .task { syncSwipeCandidates() }
     }
 }
 
@@ -76,7 +74,7 @@ private extension MUCustomVerticalForEach {
     @ViewBuilder func DeleteActionView(for index: Int) -> some View {
         ZStack {
             Color.red
-                .padding(.leading, ViewTraits.viewPadding + swipeCandidates[index].offset)
+                .padding(.leading, ViewTraits.viewPadding + items[index].offset)
             HStack {
                 Spacer()
                 Button("Delete") {
@@ -100,7 +98,7 @@ private extension MUCustomVerticalForEach {
 private extension MUCustomVerticalForEach {
 
     func onChange(translation: CGSize, for index: Int) {
-        guard index < swipeCandidates.count,
+        guard index < items.count,
               abs(translation.width) > abs(translation.height) else { return }
 
         withAnimation {
@@ -110,37 +108,37 @@ private extension MUCustomVerticalForEach {
             }
 
             if translation.width < 0 {
-                swipeCandidates[index].offset = translation.width
-            } else if translation.width > 0 && swipeCandidates[index].offset < 0 {
-                swipeCandidates[index].offset = translation.width
+                items[index].offset = translation.width
+            } else if translation.width > 0 && items[index].offset < 0 {
+                items[index].offset = translation.width
             }
         }
     }
 
     func onEnd(for index: Int) {
-        guard index < swipeCandidates.count else { return }
+        guard index < items.count else { return }
 
         let removeThreshold: CGFloat = UIScreen.main.bounds.width * (2/3)
-        let candidate = swipeCandidates[index]
+        let candidate = items[index]
 
         withAnimation(.default) {
             switch candidate.offset {
             case 0:
                 swipedIndex = nil
             case let offset where offset > 0:
-                swipeCandidates[index].offset = 0
+                items[index].offset = 0
                 swipedIndex = nil
             case let offset where offset < -removeThreshold:
                 deleteItem(at: index)
             default:
-                swipeCandidates[index].offset = -100
+                items[index].offset = -100
             }
         }
     }
 
     func onTapGesture(for index: Int, item: T) {
         withAnimation(.default) {
-            if swipeCandidates[index].offset < 0 {
+            if items[index].offset < 0 {
                 resetOffset(for: index)
             } else {
                 selection = item
@@ -150,29 +148,25 @@ private extension MUCustomVerticalForEach {
     }
 
     func resetOffset(for index: Int) {
-        guard index < swipeCandidates.count else { return }
+        guard index < items.count else { return }
         withAnimation {
-            swipeCandidates[index].offset = 0
+            items[index].offset = 0
             swipedIndex = nil
         }
     }
 
     func resetAllOffsets(except index: Int) {
-        for i in swipeCandidates.indices where i != index {
-            swipeCandidates[i].offset = 0
+        for i in items.indices where i != index {
+            items[i].offset = 0
         }
     }
 
-    func syncSwipeCandidates() {
-        swipeCandidates = items.map { SwipeAction(item: $0) }
-    }
-
     func deleteItem(at index: Int) {
-        guard index < swipeCandidates.count else { return }
+        guard index < items.count else { return }
         let indexSet = IndexSet(integer: index)
         withAnimation {
             onDelete?(indexSet)
-            swipeCandidates.remove(at: index)
+            items.remove(at: index)
             swipedIndex = nil
         }
     }
@@ -181,7 +175,7 @@ private extension MUCustomVerticalForEach {
 // MARK: - Preview
 
 #Preview {
-    @Previewable @State var mockItems = Expense.mockArray
+    @Previewable @State var mockItems = Expense.mockArray.map { MUForEachItem(item: $0) }
     @Previewable @State var selection: Expense?
     @Previewable @State var shouldEdit: Bool = false
 

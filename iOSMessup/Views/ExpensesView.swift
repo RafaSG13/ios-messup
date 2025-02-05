@@ -42,7 +42,7 @@ struct ExpensesView: View {
                         ListSectionHeaderView(sectionTitle: "Transactions", route: .transactionList)
                             .padding(.horizontal)
 
-                        MUCustomVerticalForEach(items: lastExpenses,
+                        MUCustomVerticalForEach(items: lastExpenses.map { MUForEachItem(item: $0)},
                                                 selection: $selectedItem) { expense in
                             ExpenseCellView(expense: expense)
                         } onTap: { _ in }
