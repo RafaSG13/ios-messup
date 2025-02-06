@@ -30,14 +30,8 @@ struct EditDepositModalView: View {
 
                 Section(header: Text("Founding Source")) {
                     Picker(selection: $deposit.foundingSource, label: EmptyView()) {
-                        ForEach(FoundingSource.allCases, id: \.self) { category in
-                            HStack {
-                                Text(category.rawValue)
-                                Spacer()
-                                Image(systemName: category.icon)
-                                    .foregroundStyle(category.color)
-                                    .symbolVariant(.fill)
-                            }.tag(category)
+                        ForEach(FoundingSource.allCases, id: \.self) { source in
+                            FoundingSourcePickerView(foundingSource: source)
                         }
                     }.pickerStyle(.navigationLink)
                 }
@@ -52,14 +46,28 @@ struct EditDepositModalView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        Task {
-                            try? await onSubmit(deposit)
-                        }
+                        Task { try? await onSubmit(deposit) }
                         dismiss()
                     }
                 }
             }.buttonStyle(.plain)
         }
+    }
+}
+
+//MARK: - Founding Source Picker View
+
+struct FoundingSourcePickerView: View {
+    let foundingSource: FoundingSource
+
+    var body: some View {
+        HStack {
+            Text(foundingSource.rawValue)
+            Spacer()
+            Image(systemName: foundingSource.icon)
+                .foregroundStyle(foundingSource.color)
+                .symbolVariant(.fill)
+        }.tag(foundingSource)
     }
 }
 

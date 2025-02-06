@@ -40,13 +40,9 @@ struct ProfileView: View {
     }
 }
 
+// MARK: - ProfileHeader
 
-#Preview {
-    ProfileView()
-}
-
-
-struct ProfileHeader: View {
+fileprivate struct ProfileHeader: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: .infinity)
@@ -77,4 +73,8 @@ struct ProfileHeader: View {
             }
         }
     }
+}
+
+#Preview {
+    ProfileView()
 }
