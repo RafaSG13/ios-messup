@@ -18,23 +18,18 @@ struct AddDepositViewModal: View {
     var body: some View {
         NavigationView {
             Form {
-                DetailsSection
-                PaymentMethodSection
+                DetailsSection(newDeposit: $newDeposit)
+                PaymentMethodSection(newDeposit: $newDeposit)
             }
             .navigationTitle("Add Deposit")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
+                    Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        Task {
-                           try? await onSubmit?(newDeposit)
-                        }
+                        Task { try? await onSubmit?(newDeposit) }
                         dismiss()
                     }
                     .disabled(newDeposit.concept.isEmpty || newDeposit.amount <= 0)
@@ -54,8 +49,9 @@ struct AddDepositViewModal: View {
 
 //MARK: View Components
 
-private extension AddDepositViewModal {
-    var DetailsSection: some View {
+fileprivate struct DetailsSection: View {
+    @Binding var newDeposit: Deposit
+    var body: some View {
         Section(header: Text("Details")) {
             TextField("Concept", text: $newDeposit.concept)
             TextField("Amount", value: $newDeposit.amount, format: .currency(code: "USD"))
@@ -63,8 +59,11 @@ private extension AddDepositViewModal {
             DatePicker("Date", selection: $newDeposit.date, displayedComponents: .date)
         }
     }
+}
 
-    var PaymentMethodSection: some View {
+fileprivate struct PaymentMethodSection: View {
+    @Binding var newDeposit: Deposit
+    var body: some View {
         Section(header: Text("Founding Source")) {
             Picker(selection: $newDeposit.foundingSource, label: EmptyView()) {
                 ForEach(FoundingSource.allCases, id: \.self) { source in

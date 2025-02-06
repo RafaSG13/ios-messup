@@ -18,7 +18,7 @@ struct ExpensesView: View {
     }
 
     private enum Constants {
-        static let maximumNumberOfExpenses = 8
+        static let maximumNumberOfExpenses = 6
     }
 
     var body: some View {
@@ -26,17 +26,8 @@ struct ExpensesView: View {
         NavigationStack {
             ScrollView {
                 LazyVStack {
-                    TotalBalanceCardView(total: expensesVM.calculateTotalSpent())
-                        .frame(height: 150)
-                        .padding(.horizontal)
-                        .padding(.top)
-
-                    VStack(alignment: .leading, spacing: ViewTraits.headerSpacing) {
-                        Text("Analytics")
-                            .font(.title2.bold())
-                        WeeklyExpensesView()
-                            .frame(height: 150)
-                    }.padding()
+                    AnalyticsSection()
+                        .padding()
 
                     VStack(spacing: ViewTraits.headerSpacing) {
                         ListSectionHeaderView(sectionTitle: "Transactions", route: .transactionList)
@@ -47,9 +38,7 @@ struct ExpensesView: View {
                             ExpenseCellView(expense: expense)
                         } onTap: { _ in }
                         onDelete: { indexSet in
-                            Task {
-                                try await expensesVM.delete(removeAt: indexSet)
-                            }
+                            Task { try await expensesVM.delete(removeAt: indexSet) }
                         }
                         .onChange(of: selectedItem) { _, new in
                             shouldPresentEditExpense = new != nil
@@ -63,10 +52,8 @@ struct ExpensesView: View {
             .scrollBounceBehavior(.always)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button {
+                    Button("", systemImage: "plus") {
                         shouldPresentAddExpense.toggle()
-                    } label: {
-                        Image(systemName: "plus")
                     }.buttonStyle(.plain)
                 }
             }
@@ -75,6 +62,19 @@ struct ExpensesView: View {
             .editExpenseSheet(isPresented: $shouldPresentEditExpense,
                               selectedItem: $selectedItem,
                               onSubmit: expensesVM.updateExpense(with:))
+        }
+    }
+}
+
+//MARK: - View Components
+
+fileprivate struct AnalyticsSection: View {
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text("Analytics")
+                .font(.title2.bold())
+            WeeklyExpensesView()
+                .frame(height: 200)
         }
     }
 }

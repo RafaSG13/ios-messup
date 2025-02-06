@@ -8,38 +8,41 @@
 import SwiftUI
 
 struct AddExpenseViewModal: View {
-    @Environment(\.dismiss) var dismiss
-    @State private var newExpense: Expense = Expense(name: "",
-                                                     amount: 0.0,
-                                                     date: Date(),
-                                                     paymentMethod: .cash,
-                                                     category: .miscellaneous)
+    @Environment(\.dismiss) private var dismiss
+    @State private var name: String = ""
+    @State private var amount: Double = .zero
+    @State private var date: Date = .now
+    @State private var paymentMethod: PaymentMethod = .cash
+    @State private var category: Category = .miscellaneous
+
     var onSubmit: ((_ expense: Expense) async throws -> Void)?
 
     var body: some View {
         NavigationView {
             Form {
-                DetailsSection
-                PaymentMethodSection
-                CategorySection
+                DetailsSection(name: $name, amount: $amount, date: $date)
+                PaymentMethodSection(paymentMethod: $paymentMethod)
+                CategorySection(category: $category)
             }
             .navigationTitle("Add Expense")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
+                    Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
                         Task {
-                           try? await onSubmit?(newExpense)
+                            let newExpense = Expense(name: name,
+                                                     amount: amount,
+                                                     date: date,
+                                                     paymentMethod: paymentMethod,
+                                                     category: category)
+                            try? await onSubmit?(newExpense)
                         }
                         dismiss()
                     }
-                    .disabled(newExpense.name.isEmpty || newExpense.amount <= 0)
+                    .disabled(name.isEmpty || amount <= 0)
                 }
                 ToolbarItem(placement: .keyboard) {
                     HStack {
@@ -56,19 +59,26 @@ struct AddExpenseViewModal: View {
 
 //MARK: View Components
 
-private extension AddExpenseViewModal {
-    var DetailsSection: some View {
+fileprivate struct DetailsSection: View {
+    @Binding var name: String
+    @Binding var amount: Double
+    @Binding var date: Date
+
+    var body: some View {
         Section(header: Text("Details")) {
-            TextField("Name", text: $newExpense.name)
-            TextField("Amount", value: $newExpense.amount, format: .currency(code: "USD"))
+            TextField("Name", text: $name)
+            TextField("Amount", value: $amount, format: .currency(code: "USD"))
                 .keyboardType(.decimalPad)
-            DatePicker("Date", selection: $newExpense.date, displayedComponents: .date)
+            DatePicker("Date", selection: $date, displayedComponents: .date)
         }
     }
+}
 
-    var PaymentMethodSection: some View {
+fileprivate struct PaymentMethodSection: View {
+    @Binding var paymentMethod: PaymentMethod
+    var body: some View {
         Section(header: Text("Payment Method")) {
-            Picker(selection: $newExpense.paymentMethod, label: EmptyView()) {
+            Picker(selection: $paymentMethod, label: EmptyView()) {
                 ForEach(PaymentMethod.allCases, id: \.self) { method in
                     HStack {
                         Text(method.rawValue)
@@ -82,10 +92,13 @@ private extension AddExpenseViewModal {
             .pickerStyle(.inline)
         }
     }
+}
 
-    var CategorySection: some View {
+fileprivate struct CategorySection: View {
+    @Binding var category: Category
+    var body: some View {
         Section(header: Text("Category")) {
-            Picker(selection: $newExpense.category, label: EmptyView()) {
+            Picker(selection: $category, label: EmptyView()) {
                 ForEach(Category.allCases, id: \.self) { category in
                     HStack {
                         Text(category.rawValue)

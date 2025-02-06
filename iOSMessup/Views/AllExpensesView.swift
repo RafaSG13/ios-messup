@@ -13,7 +13,6 @@ struct AllExpensesView: View {
     @State private var shouldPresentEditExpense = false
     @State private var shouldPresentAddExpense = false
     @State private var searchText = ""
-    @State private var searchScope: Category? = nil
     
     var body: some View {
         List {
