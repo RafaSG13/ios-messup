@@ -25,13 +25,14 @@ protocol SavingViewModelProtocol: Observable {
     func filteredDeposits(on searchTerm: String) -> [Deposit]
 }
 
-struct SavingViewModelKey: EnvironmentKey {
-    static let defaultValue: any SavingViewModelProtocol = SavingViewModelMock()
-}
+//struct SavingViewModelKey: EnvironmentKey {
+//    static let defaultValue: any SavingViewModelProtocol = SavingViewModelMock()
+//}
 
 extension EnvironmentValues {
-    var savingVM: any SavingViewModelProtocol {
-        get { self[SavingViewModelKey.self] }
-        set { self[SavingViewModelKey.self] = newValue }
-    }
+    @Entry var savingVM: SavingViewModelProtocol = SavingViewModelMock()
+//    var savingVM: any SavingViewModelProtocol {
+//        get { self[SavingViewModelKey.self] }
+//        set { self[SavingViewModelKey.self] = newValue }
+//    }
 }
