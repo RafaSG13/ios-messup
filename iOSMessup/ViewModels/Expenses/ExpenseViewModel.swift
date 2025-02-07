@@ -54,4 +54,9 @@ import Observation
         expenses.remove(atOffsets: indices)
         try? await dataSource.deleteAll(expensesToDelete)
     }
+
+    func delete(_ expense: Expense) async throws {
+        expenses.removeAll { $0.id == expense.id }
+        try? await dataSource.delete(expense)
+    }
 }

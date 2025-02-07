@@ -22,7 +22,6 @@ struct ExpensesView: View {
     }
 
     var body: some View {
-        @State var lastExpenses = expensesVM.lastExpenses(limit: Constants.maximumNumberOfExpenses)
         NavigationStack {
             ScrollView {
                 LazyVStack {
@@ -33,12 +32,12 @@ struct ExpensesView: View {
                         ListSectionHeaderView(sectionTitle: "Transactions", route: .transactionList)
                             .padding(.horizontal)
 
-                        MUCustomVerticalForEach(items: lastExpenses.map { MUForEachItem(item: $0)},
+                        MUCustomVerticalForEach(items: expensesVM.lastExpenses(limit: Constants.maximumNumberOfExpenses),
                                                 selection: $selectedItem) { expense in
                             ExpenseCellView(expense: expense)
                         } onTap: { _ in }
-                        onDelete: { indexSet in
-                            Task { try await expensesVM.delete(removeAt: indexSet) }
+                        onDelete: { expense, _ in
+                            Task { try await expensesVM.delete(expense) }
                         }
                         .onChange(of: selectedItem) { _, new in
                             shouldPresentEditExpense = new != nil

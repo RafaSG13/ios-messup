@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SavingsObjectiveView: View {
-    @Environment(\.savingVM) private var savingViewModel
+    @Environment(\.savingVM) private var savingVM
     @State private var selectedDeposit: Deposit? = nil
     @State private var shouldPresentAddDepositModal: Bool = false
     @State private var shouldPresentEditDepositModal: Bool = false
@@ -25,12 +25,14 @@ struct SavingsObjectiveView: View {
                     VStack(alignment: .leading) {
                         ListSectionHeaderView(sectionTitle: "Recent Deposits", route: .depositList)
                             .padding(.horizontal)
-                        MUCustomVerticalForEach(items: savingViewModel.deposits.map { MUForEachItem(item: $0) },
+                        MUCustomVerticalForEach(items: savingVM.deposits,
                                                 selection: $selectedDeposit) { deposit in
                             DepositCellView(deposit: deposit)
-                                .onChange(of: selectedDeposit) { _, newValue in
-                                    shouldPresentEditDepositModal = newValue != nil
-                                }
+                        } onDelete: { deposit, _ in
+                            Task { try await savingVM.deleteDeposit(deposit) }
+                        }
+                        .onChange(of: selectedDeposit) { _, newValue in
+                            shouldPresentEditDepositModal = newValue != nil
                         }
                     }
                     Spacer()
@@ -51,10 +53,10 @@ struct SavingsObjectiveView: View {
             .navigationTitle("Saving Goal")
             .navigationBarTitleDisplayMode(.inline)
             .editDepositSheet(isPresented: $shouldPresentEditDepositModal, selectedDeposit: $selectedDeposit) { deposit in
-                try await savingViewModel.updateDeposit(with: deposit)
+                try await savingVM.updateDeposit(with: deposit)
             }
             .addDepositSheet(isPresented: $shouldPresentAddDepositModal) { deposit in
-                try await savingViewModel.createDeposit(deposit)
+                try await savingVM.createDeposit(deposit)
             }
         }
     }
@@ -80,8 +82,8 @@ extension SavingsObjectiveView {
     }
     
     var ProgressSectionView: some View {
-        let actualProgress = savingViewModel.calculateActualProgress()
-        let actualFounded = savingViewModel.calculateTotalFounded().toAbbreviateMoneyString()
+        let actualProgress = savingVM.calculateActualProgress()
+        let actualFounded = savingVM.calculateTotalFounded().toAbbreviateMoneyString()
         return VStack(spacing: 5) {
             HStack {
                 HStack {
@@ -95,7 +97,7 @@ extension SavingsObjectiveView {
                                 .foregroundStyle(.yellow.opacity(0.1))
                         )
 
-                    Text("of \(savingViewModel.savingGoal?.amount.toAbbreviateMoneyString() ?? "0$") 🏁")
+                    Text("of \(savingVM.savingGoal?.amount.toAbbreviateMoneyString() ?? "0$") 🏁")
                 }.font(.subheadline)
 
                 Spacer()
@@ -103,35 +105,35 @@ extension SavingsObjectiveView {
                     .font(.largeTitle)
                     .foregroundStyle(.green)
             }
-            ProgressBar(progress: savingViewModel.calculateActualProgress(),
+            ProgressBar(progress: savingVM.calculateActualProgress(),
                         progressColor: LinearGradient(colors: [.cyan, .mint, .green],
                                                       startPoint: .leading, endPoint: .trailing))
         }
     }
 
     var GoalSummarySectionView: some View {
-        let color = savingViewModel.savingGoal?.savingCategory.color ?? .clear
+        let color = savingVM.savingGoal?.savingCategory.color ?? .clear
         return VStack(spacing: 0) {
             Rectangle()
                 .frame(height: 1)
                 .foregroundStyle(.secondary.opacity(0.5))
             HStack {
-                Image(systemName: savingViewModel.savingGoal?.savingCategory.icon ?? "home")
+                Image(systemName: savingVM.savingGoal?.savingCategory.icon ?? "home")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 120, height: 120)
-                    .foregroundStyle(savingViewModel.savingGoal?.savingCategory.color ?? .clear)
+                    .foregroundStyle(savingVM.savingGoal?.savingCategory.color ?? .clear)
                     .padding(.leading)
                 Spacer()
                 VStack(alignment: .trailing, spacing: 0) {
-                    Text(savingViewModel.savingGoal?.name ?? "")
+                    Text(savingVM.savingGoal?.name ?? "")
                         .font(.title3)
                         .bold()
                         .padding(.bottom, MUSpacer.size05)
-                    Text((savingViewModel.savingGoal?.savingCategory.rawValue ?? "") + " Date")
+                    Text((savingVM.savingGoal?.savingCategory.rawValue ?? "") + " Date")
                         .foregroundStyle(.secondary)
                         .padding(.bottom, MUSpacer.size02)
-                    Text(savingViewModel.savingGoal?.completionDate.textValue ?? "")
+                    Text(savingVM.savingGoal?.completionDate.textValue ?? "")
                         .font(.title)
                         .bold()
                         .padding(.bottom, MUSpacer.size03)
@@ -156,9 +158,9 @@ extension SavingsObjectiveView {
     }
     
     var CircularProgressSection: some View {
-        let actualProgress = savingViewModel.calculateActualProgress()
-        let actualFounded = savingViewModel.calculateTotalFounded().toAbbreviateMoneyString()
-        let remainingAmount = (savingViewModel.savingGoal?.amount ?? 0) - savingViewModel.calculateTotalFounded()
+        let actualProgress = savingVM.calculateActualProgress()
+        let actualFounded = savingVM.calculateTotalFounded().toAbbreviateMoneyString()
+        let remainingAmount = (savingVM.savingGoal?.amount ?? 0) - savingVM.calculateTotalFounded()
         return HStack(spacing: 30) {
             CircularSavingProgressView(progress: actualProgress,
                                        lineWidth: 15,
@@ -182,7 +184,7 @@ extension SavingsObjectiveView {
                                        lineWidth: 15,
                                        progressColor: .blue,
                                        backgroundColor: .secondary.opacity(0.3)) {
-                circularProgressLabel(progress: savingViewModel.savingGoal?.amount.toAbbreviateMoneyString() ?? "",
+                circularProgressLabel(progress: savingVM.savingGoal?.amount.toAbbreviateMoneyString() ?? "",
                                       subtitle: "Required",
                                       backgroundColor: .secondary,
                                       progressColor: .blue)

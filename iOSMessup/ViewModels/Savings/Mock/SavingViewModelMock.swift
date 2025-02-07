@@ -10,6 +10,7 @@ import Foundation
 /// This mock is mainly used to compile `Previews`. This is not intended to use in production code or even in testing.
 
 @Observable class SavingViewModelMock: SavingViewModelProtocol {
+    
     var deposits: [Deposit] = Deposit.mockArray
     var savingGoal: SavingGoal? = SavingGoal.mockArray.randomElement()
 
@@ -34,6 +35,10 @@ import Foundation
     }
 
     func deleteSavingGoal() async throws {
+        // Intentionally unimplemented
+    }
+
+    func deleteDeposit(_ deposit: Deposit) async throws {
         // Intentionally unimplemented
     }
 

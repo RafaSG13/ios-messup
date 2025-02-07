@@ -20,18 +20,12 @@ protocol SavingViewModelProtocol: Observable {
     func deleteSavingGoal() async throws
     func createDeposit(_ deposit: Deposit) async throws
     func deleteDeposits(removeAt indices: IndexSet) async throws
+    func deleteDeposit(_ deposit: Deposit) async throws
     func updateDeposit(with newValue: Deposit) async throws
     func calculateActualProgress() -> Double
     func filteredDeposits(on searchTerm: String) -> [Deposit]
 }
 
-struct SavingViewModelKey: EnvironmentKey {
-    static let defaultValue: any SavingViewModelProtocol = SavingViewModelMock()
-}
-
 extension EnvironmentValues {
-    var savingVM: any SavingViewModelProtocol {
-        get { self[SavingViewModelKey.self] }
-        set { self[SavingViewModelKey.self] = newValue }
-    }
+    @Entry() var savingVM: SavingViewModelProtocol = SavingViewModelMock()
 }
