@@ -7,7 +7,7 @@
 import Observation
 import SwiftUI
 
-protocol ExpenseViewModelProtocol: Observable {
+protocol ExpenseViewModelProtocol: AnyObject, Observable {
     var expenses: [Expense] { get }
     func loadExpenses() async throws
     func lastExpenses(limit: Int) -> [Expense]
@@ -17,16 +17,9 @@ protocol ExpenseViewModelProtocol: Observable {
     func updateExpense(with newValue: Expense) async throws
     func addExpense(_ expense: Expense) async throws
     func delete(removeAt indices: IndexSet) async throws
-}
-
-struct ExpenseViewModelKey: EnvironmentKey {
-    // you can also set the real user service as the default value
-    static let defaultValue: any ExpenseViewModelProtocol = ExpenseViewModelMock()
+    func delete(_ expense: Expense) async throws
 }
 
 extension EnvironmentValues {
-    var expenseVM: any ExpenseViewModelProtocol {
-        get { self[ExpenseViewModelKey.self] }
-        set { self[ExpenseViewModelKey.self] = newValue }
-    }
+    @Entry() var expenseVM: ExpenseViewModelProtocol = ExpenseViewModelMock()
 }

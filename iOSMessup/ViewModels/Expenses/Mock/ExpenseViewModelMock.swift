@@ -41,10 +41,13 @@ import Foundation
 
     func addExpense(_ expense: Expense) {
         // Intentionally unimplemented
-
     }
 
     func delete(removeAt indices: IndexSet) {
+        // Intentionally unimplemented
+    }
+
+    func delete(_ expense: Expense) async throws {
         // Intentionally unimplemented
     }
 }

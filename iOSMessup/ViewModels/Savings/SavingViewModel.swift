@@ -57,6 +57,11 @@ import Observation
         try? await dataSource.deleteAll(depositsToDelete)
     }
 
+    func deleteDeposit(_ deposit: Deposit) async throws {
+        deposits.removeAll { $0.id == deposit.id }
+        try? await dataSource.delete(deposit)
+    }
+
     func lastDeposits(limit: Int) -> [Deposit] {
         return deposits.sorted().suffix(limit)
     }

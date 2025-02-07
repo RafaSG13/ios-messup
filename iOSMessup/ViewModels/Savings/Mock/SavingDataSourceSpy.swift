@@ -14,6 +14,7 @@ class SavingDataSourceSpy: SavingsDataSourceProtocol {
     var updateGoalCalled: Bool = false
     var updateDepositCalled: Bool = false
     var deleteGoalCalled: Bool = false
+    var deleteDepositCalled: Bool = false
     var deleteAllDepositsCalled: Bool = false
 
     var readAllDepositsResponse: [Deposit] = []
@@ -47,6 +48,10 @@ class SavingDataSourceSpy: SavingsDataSourceProtocol {
 
     func delete(_ goal: SavingGoal) async throws {
         deleteGoalCalled = true
+    }
+
+    func delete(_ deposit: Deposit) async throws {
+        deleteDepositCalled = true
     }
 
     func deleteAll(_ deposits: [Deposit]) async throws {

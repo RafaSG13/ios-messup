@@ -10,11 +10,11 @@ import SwiftUI
 //MARK: - MUForEachItem Model
 
 struct MUCustomVerticalForEach<T: Identifiable & Equatable, Content: View>: View {
-    @State var items: [T] = []
+    @State private(set) var items: [T]
     @Binding var selection: T?
     var content: (T) -> Content
     var onTap: ((T) -> Void)?
-    var onDelete: ((IndexSet) -> Void)?
+    var onDelete: ((T, IndexSet) -> Void)?
 
     @State private var swipedIndex: Int? = nil
     @State private var swipedOffset: CGFloat = 0
@@ -131,7 +131,7 @@ private extension MUCustomVerticalForEach {
         guard index < items.count else { return }
         let indexSet = IndexSet(integer: index)
         withAnimation(.spring) {
-            onDelete?(indexSet)
+            onDelete?(items[index], indexSet)
             items.remove(at: index)
             resetOffset()
         }
@@ -152,8 +152,8 @@ private extension MUCustomVerticalForEach {
             } onTap: { value in
                 print("Tapped item \(selection?.name ?? "")")
             }
-            onDelete: { indexSet in
-                mockItems.remove(atOffsets: indexSet)
+            onDelete: { item, indexSet in
+                mockItems.removeAll { $0.id == item.id }
             }
             .onChange(of: selection) { _, newValue in
                 shouldEdit = newValue != nil

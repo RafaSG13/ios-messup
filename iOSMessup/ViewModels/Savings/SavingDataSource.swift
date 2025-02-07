@@ -17,6 +17,7 @@ protocol SavingsDataSourceProtocol {
     func update(_ goal: SavingGoal) async throws
     func update(_ deposit: Deposit) async throws
     func delete(_ goal: SavingGoal) async throws
+    func delete(_ deposit: Deposit) async throws
     func deleteAll(_ deposits: [Deposit]) async throws
 }
 
@@ -58,6 +59,11 @@ struct SavingDataSource: SavingsDataSourceProtocol {
     func delete(_ goal: SavingGoal) async throws {
         try await simulateNetworkDelay()
         // Intentionally unimplemented
+    }
+
+    func delete(_ deposit: Deposit) async throws {
+        try await simulateNetworkDelay()
+        Deposit.mockArray.removeAll(where: { $0.id == deposit.id })
     }
 
     func deleteAll(_ deposits: [Deposit]) async throws {
