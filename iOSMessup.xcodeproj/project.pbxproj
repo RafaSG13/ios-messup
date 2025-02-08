@@ -24,7 +24,6 @@
 		AA51465C2D4047DE00FE93E5 /* ExpenseCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51465B2D4047DE00FE93E5 /* ExpenseCellView.swift */; };
 		AA51465F2D4048E800FE93E5 /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51465E2D4048E800FE93E5 /* Expense.swift */; };
 		AA5146662D40531500FE93E5 /* Double+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5146652D40531500FE93E5 /* Double+Utils.swift */; };
-		AA51466B2D40592500FE93E5 /* TotalBalanceCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51466A2D40592500FE93E5 /* TotalBalanceCardView.swift */; };
 		AA51466D2D40EC0F00FE93E5 /* WeeklyExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51466C2D40EC0F00FE93E5 /* WeeklyExpensesView.swift */; };
 		AA51466F2D40ECB400FE93E5 /* Calendar+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51466E2D40ECB400FE93E5 /* Calendar+Utils.swift */; };
 		AA56E0AE2D4454FB009F7058 /* SavingViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA56E0AD2D4454F2009F7058 /* SavingViewModelTest.swift */; };
@@ -99,7 +98,6 @@
 		AA51465B2D4047DE00FE93E5 /* ExpenseCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseCellView.swift; sourceTree = "<group>"; };
 		AA51465E2D4048E800FE93E5 /* Expense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expense.swift; sourceTree = "<group>"; };
 		AA5146652D40531500FE93E5 /* Double+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Utils.swift"; sourceTree = "<group>"; };
-		AA51466A2D40592500FE93E5 /* TotalBalanceCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalBalanceCardView.swift; sourceTree = "<group>"; };
 		AA51466C2D40EC0F00FE93E5 /* WeeklyExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyExpensesView.swift; sourceTree = "<group>"; };
 		AA51466E2D40ECB400FE93E5 /* Calendar+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Calendar+Utils.swift"; sourceTree = "<group>"; };
 		AA56E0AD2D4454F2009F7058 /* SavingViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingViewModelTest.swift; sourceTree = "<group>"; };
@@ -252,7 +250,6 @@
 				AADC88572D4A364000C2B784 /* Progress */,
 				AADC88562D4A362A00C2B784 /* Cells */,
 				AADC88552D4A361B00C2B784 /* Charts */,
-				AA51466A2D40592500FE93E5 /* TotalBalanceCardView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -615,7 +612,6 @@
 				AA6D45BB2D41B0E40014A95F /* ExpenseSheetViewModifier.swift in Sources */,
 				AA81393F2D4FBE250097F51E /* AddDepositViewModal.swift in Sources */,
 				AA0B19252D43147F00B02095 /* Date+Utils.swift in Sources */,
-				AA51466B2D40592500FE93E5 /* TotalBalanceCardView.swift in Sources */,
 				AA5146662D40531500FE93E5 /* Double+Utils.swift in Sources */,
 				AA0B19232D42FF6A00B02095 /* ProgressBar.swift in Sources */,
 				AA31E12F2D48022A004BA303 /* Route.swift in Sources */,

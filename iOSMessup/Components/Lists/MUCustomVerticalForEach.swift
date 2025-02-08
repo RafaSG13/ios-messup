@@ -7,10 +7,8 @@
 
 import SwiftUI
 
-//MARK: - MUForEachItem Model
-
 struct MUCustomVerticalForEach<T: Identifiable & Equatable, Content: View>: View {
-    @State private(set) var items: [T]
+    @Binding var items: [T]
     @Binding var selection: T?
     var content: (T) -> Content
     var onTap: ((T) -> Void)?
@@ -18,31 +16,32 @@ struct MUCustomVerticalForEach<T: Identifiable & Equatable, Content: View>: View
 
     @State private var swipedIndex: Int? = nil
     @State private var swipedOffset: CGFloat = 0
+    @State private var addOpacity: Bool = false
 
     private enum ViewTraits {
         static var viewPadding: CGFloat { 20 }
     }
 
     var body: some View {
-        LazyVStack(alignment: .leading, spacing: 10) {
-            ForEach(items, id: \.id) { item in
-                if let index = items.firstIndex(where: { $0.id == item.id }) {
-                    content(item)
-                        .onTapGesture {
-                            onTapGesture(for: index, item: item)
-                        }
-                        .gesture(DragGesture()
-                            .onChanged { onChange(translation: $0.translation, for: index) }
-                            .onEnded { _ in onEnd(for: index) }
-                        )
-                        .padding(.horizontal)
-                        .background(Color(.systemBackground))
-                        .offset(x: swipedIndex == index ? swipedOffset : 0)
-                        .background(DeleteActionView(for: index))
-                        .overlay(SelectedViewOverlay(item))
-                        .animation(.bouncy, value: swipedOffset)
-                        .animation(.bouncy, value: swipedIndex)
-                }
+        ForEach(items, id: \.id) { item in
+            if let index = items.firstIndex(where: { $0.id == item.id }) {
+                content(item)
+                    .onTapGesture {
+                        performOnTapEffect()
+                        onTapGesture(for: index, item: item)
+                    }
+                    .gesture(DragGesture()
+                        .onChanged { onChange(translation: $0.translation, for: index) }
+                        .onEnded { _ in onEnd(for: index) }
+                    )
+                    .padding(.horizontal)
+                    .background(Color(.systemBackground))
+                    .offset(x: swipedIndex == index ? swipedOffset : 0)
+                    .background(DeleteActionView(for: index))
+                    .opacity((addOpacity && selection == item) ? 0.3 : 1)
+                    .animation(.bouncy, value: swipedOffset)
+                    .animation(.bouncy, value: swipedIndex)
+                    .animation(.easeInOut, value: addOpacity)
             }
         }
     }
@@ -51,7 +50,7 @@ struct MUCustomVerticalForEach<T: Identifiable & Equatable, Content: View>: View
 //MARK: - Custom View Components
 
 private extension MUCustomVerticalForEach {
-    
+
     @ViewBuilder func DeleteActionView(for index: Int) -> some View {
         if swipedIndex == index {
             ZStack {
@@ -71,17 +70,12 @@ private extension MUCustomVerticalForEach {
             Color.clear
         }
     }
-
-    @ViewBuilder func SelectedViewOverlay(_ item: T) -> some View {
-        selection?.id == item.id
-        ? Color.secondary.opacity(0.3) :  .clear
-    }
 }
 
 // MARK: - Private Methods
 
 private extension MUCustomVerticalForEach {
-    
+
     func onChange(translation: CGSize, for index: Int) {
         guard index < items.count,
               abs(translation.width) > abs(translation.height) else { return }
@@ -122,6 +116,13 @@ private extension MUCustomVerticalForEach {
         }
     }
 
+    func performOnTapEffect() {
+        addOpacity = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            addOpacity = false
+        }
+    }
+
     func resetOffset() {
         swipedOffset = 0
         swipedIndex = nil
@@ -147,21 +148,33 @@ private extension MUCustomVerticalForEach {
 
     NavigationStack {
         ScrollView {
-            MUCustomVerticalForEach(items: mockItems, selection: $selection) { expense in
-                ExpenseCellView(expense: expense)
-            } onTap: { value in
-                print("Tapped item \(selection?.name ?? "")")
+            LazyVStack {
+                MUCustomVerticalForEach(items: $mockItems, selection: $selection) { expense in
+                    ExpenseCellView(expense: expense)
+                } onTap: { value in
+                    print("Tapped item \(selection?.name ?? "")")
+                }
+                onDelete: { item, indexSet in
+                    mockItems.removeAll { $0.id == item.id }
+                }
+                .onChange(of: selection) { _, newValue in
+                    shouldEdit = newValue != nil
+                }
+                //                .editExpenseSheet(isPresented: $shouldEdit, selectedItem: $selection, onSubmit: { expense in
+                //                    print("Editing item: \(expense.name)")
+                //                })
+                .scrollIndicators(.hidden)
             }
-            onDelete: { item, indexSet in
-                mockItems.removeAll { $0.id == item.id }
-            }
-            .onChange(of: selection) { _, newValue in
-                shouldEdit = newValue != nil
-            }
-            .editExpenseSheet(isPresented: $shouldEdit, selectedItem: $selection, onSubmit: { expense in
-                print("Editing item: \(expense.name)")
-            })
-            .scrollIndicators(.hidden)
         }
+    }
+}
+
+
+#Preview {
+    @Previewable @State var mockItems = Expense.mockArray
+    @Previewable @State var selection: Expense?
+    @Previewable @State var shouldEdit: Bool = false
+
+    NavigationStack {
     }
 }
