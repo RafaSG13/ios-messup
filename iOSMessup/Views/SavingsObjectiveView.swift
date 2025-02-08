@@ -25,15 +25,15 @@ struct SavingsObjectiveView: View {
                     VStack(alignment: .leading) {
                         ListSectionHeaderView(sectionTitle: "Recent Deposits", route: .depositList)
                             .padding(.horizontal)
-                        MUCustomVerticalForEach(items: savingVM.deposits,
-                                                selection: $selectedDeposit) { deposit in
-                            DepositCellView(deposit: deposit)
-                        } onDelete: { deposit, _ in
-                            Task { try await savingVM.deleteDeposit(deposit) }
-                        }
-                        .onChange(of: selectedDeposit) { _, newValue in
-                            shouldPresentEditDepositModal = newValue != nil
-                        }
+//                        MUCustomVerticalForEach(items: savingVM.deposits,
+//                                                selection: $selectedDeposit) { deposit in
+//                            DepositCellView(deposit: deposit)
+//                        } onDelete: { deposit, _ in
+//                            Task { try await savingVM.deleteDeposit(deposit) }
+//                        }
+//                        .onChange(of: selectedDeposit) { _, newValue in
+//                            shouldPresentEditDepositModal = newValue != nil
+//                        }
                     }
                     Spacer()
                 }

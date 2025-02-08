@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ExpensesView: View {
     @Environment(\.expenseVM) var expensesVM
+    @State private var lastExpenses: [Expense] = []
     @State private var shouldPresentAddExpense = false
     @State private var shouldPresentEditExpense = false
     @State private var selectedItem: Expense?
@@ -24,18 +25,19 @@ struct ExpensesView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVStack {
+                VStack {
                     AnalyticsSection()
                         .padding()
 
-                    VStack(spacing: ViewTraits.headerSpacing) {
-                        ListSectionHeaderView(sectionTitle: "Transactions", route: .transactionList)
-                            .padding(.horizontal)
+                    LazyVStack(spacing: ViewTraits.headerSpacing) {
+                        ListSectionHeaderView(sectionTitle: "Transactions",
+                                              route: .transactionList)
+                        .padding(.horizontal)
 
-                        MUCustomVerticalForEach(items: expensesVM.lastExpenses(limit: Constants.maximumNumberOfExpenses),
+                        MUCustomVerticalForEach(items: $lastExpenses,
                                                 selection: $selectedItem) { expense in
                             ExpenseCellView(expense: expense)
-                        } onTap: { _ in }
+                        }
                         onDelete: { expense, _ in
                             Task { try await expensesVM.delete(expense) }
                         }
@@ -61,6 +63,8 @@ struct ExpensesView: View {
             .editExpenseSheet(isPresented: $shouldPresentEditExpense,
                               selectedItem: $selectedItem,
                               onSubmit: expensesVM.updateExpense(with:))
+        }.task {
+            lastExpenses = expensesVM.lastExpenses(limit: Constants.maximumNumberOfExpenses)
         }
     }
 }
