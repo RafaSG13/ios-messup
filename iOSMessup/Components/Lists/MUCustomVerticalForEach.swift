@@ -30,7 +30,8 @@ struct MUCustomVerticalForEach<T: Identifiable & Equatable, Content: View>: View
                         performOnTapEffect()
                         onTapGesture(for: index, item: item)
                     }
-                    .gesture(DragGesture()
+                    .simultaneousGesture(
+                        DragGesture(minimumDistance: 10, coordinateSpace: .local)
                         .onChanged { onChange(translation: $0.translation, for: index) }
                         .onEnded { _ in onEnd(for: index) }
                     )

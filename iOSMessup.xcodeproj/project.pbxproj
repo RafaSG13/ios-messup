@@ -41,6 +41,7 @@
 		AA6EE0C02D4277A300E0F7D3 /* ExpensesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6EE0BF2D4277A300E0F7D3 /* ExpensesDataSource.swift */; };
 		AA6EE0C62D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6EE0C52D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift */; };
 		AA71A7682D4C3201003D5909 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA71A7672D4C31FD003D5909 /* ProfileView.swift */; };
+		AA777CFB2D57B35B005B7734 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA777CFA2D57B359005B7734 /* User.swift */; };
 		AA7923D32D413C3600768849 /* SavingsObjectiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7923D22D413C3600768849 /* SavingsObjectiveView.swift */; };
 		AA7923D52D413C5800768849 /* SocialGroupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7923D42D413C5800768849 /* SocialGroupsView.swift */; };
 		AA7C76482D4E51E50000C530 /* ProfileCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7C76472D4E51DA0000C530 /* ProfileCellView.swift */; };
@@ -52,11 +53,29 @@
 		AA832E6A2D415B9200940F78 /* AllExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA832E692D415B9200940F78 /* AllExpensesView.swift */; };
 		AA832E6C2D4173EC00940F78 /* EditExpenseModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA832E6B2D4173EC00940F78 /* EditExpenseModalView.swift */; };
 		AAACDF602D442AEF0037C771 /* SavingDataSourceSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAACDF5F2D442AD80037C771 /* SavingDataSourceSpy.swift */; };
+		AAC000DC2DA43B8D00B5A11D /* UserDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000DB2DA43B8400B5A11D /* UserDataStore.swift */; };
+		AAC000DF2DA43CE800B5A11D /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000DE2DA43CDC00B5A11D /* JWTDecoder.swift */; };
+		AAC000E12DA43DE700B5A11D /* MUToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000E02DA43DE400B5A11D /* MUToken.swift */; };
+		AAC000E42DA43F9700B5A11D /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000E32DA43F9700B5A11D /* HTTPMethod.swift */; };
+		AAC000E72DA43FB500B5A11D /* MUClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000E62DA43FB500B5A11D /* MUClient.swift */; };
+		AAC000E92DA4401B00B5A11D /* LoginRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000E82DA4401B00B5A11D /* LoginRequest.swift */; };
+		AAC000EC2DA4420800B5A11D /* MURequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000EB2DA4420800B5A11D /* MURequest.swift */; };
+		AAC000EE2DA4421300B5A11D /* MUResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000ED2DA4421300B5A11D /* MUResponse.swift */; };
+		AAC000F12DA4429A00B5A11D /* LoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000F02DA4429A00B5A11D /* LoginResponse.swift */; };
+		AAC000F42DA4450A00B5A11D /* MUAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000F32DA4450A00B5A11D /* MUAPIError.swift */; };
+		AAC000F72DA449C500B5A11D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000F62DA449C500B5A11D /* LoginView.swift */; };
+		AAC000F92DA449F300B5A11D /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000F82DA449F300B5A11D /* RegistrationView.swift */; };
+		AAC000FB2DA44A8B00B5A11D /* AuthenticationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000FA2DA44A8000B5A11D /* AuthenticationModel.swift */; };
+		AAC000FE2DA4502B00B5A11D /* AuthenticationModelMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000FD2DA4502400B5A11D /* AuthenticationModelMock.swift */; };
+		AAC001002DA455F400B5A11D /* RegisterRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000FF2DA455ED00B5A11D /* RegisterRequest.swift */; };
+		AAC001022DA4563300B5A11D /* RegisterResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC001012DA4563300B5A11D /* RegisterResponse.swift */; };
 		AAC242042D48F4B3002A829C /* CategoryPieChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC242032D48F4A1002A829C /* CategoryPieChart.swift */; };
 		AAD271442D4410B300D906B8 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AAD271432D4410B300D906B8 /* SplashScreen.storyboard */; };
 		AAD5E9012D510BA00058DD18 /* MUSpacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD5E9002D510B9A0058DD18 /* MUSpacer.swift */; };
 		AAF91FDE2D4648DF003FDE4C /* SelectableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF91FDD2D4648DF003FDE4C /* SelectableCell.swift */; };
 		AAF9F59A2D429DF00085FD44 /* ExpenseViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF9F5992D429DE60085FD44 /* ExpenseViewModelTests.swift */; };
+		AAFB71B22D73235500A93202 /* UserErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB71B12D73234E00A93202 /* UserErrors.swift */; };
+		AAFB71B42D7324BB00A93202 /* AuthenticationModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB71B32D7324B300A93202 /* AuthenticationModelProtocol.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,6 +134,7 @@
 		AA6EE0BF2D4277A300E0F7D3 /* ExpensesDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesDataSource.swift; sourceTree = "<group>"; };
 		AA6EE0C52D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesDataSourceSpy.swift; sourceTree = "<group>"; };
 		AA71A7672D4C31FD003D5909 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		AA777CFA2D57B359005B7734 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		AA7923D22D413C3600768849 /* SavingsObjectiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingsObjectiveView.swift; sourceTree = "<group>"; };
 		AA7923D42D413C5800768849 /* SocialGroupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialGroupsView.swift; sourceTree = "<group>"; };
 		AA7C76472D4E51DA0000C530 /* ProfileCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCellView.swift; sourceTree = "<group>"; };
@@ -126,11 +146,29 @@
 		AA832E692D415B9200940F78 /* AllExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllExpensesView.swift; sourceTree = "<group>"; };
 		AA832E6B2D4173EC00940F78 /* EditExpenseModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExpenseModalView.swift; sourceTree = "<group>"; };
 		AAACDF5F2D442AD80037C771 /* SavingDataSourceSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingDataSourceSpy.swift; sourceTree = "<group>"; };
+		AAC000DB2DA43B8400B5A11D /* UserDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataStore.swift; sourceTree = "<group>"; };
+		AAC000DE2DA43CDC00B5A11D /* JWTDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTDecoder.swift; sourceTree = "<group>"; };
+		AAC000E02DA43DE400B5A11D /* MUToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUToken.swift; sourceTree = "<group>"; };
+		AAC000E32DA43F9700B5A11D /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
+		AAC000E62DA43FB500B5A11D /* MUClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUClient.swift; sourceTree = "<group>"; };
+		AAC000E82DA4401B00B5A11D /* LoginRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginRequest.swift; sourceTree = "<group>"; };
+		AAC000EB2DA4420800B5A11D /* MURequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MURequest.swift; sourceTree = "<group>"; };
+		AAC000ED2DA4421300B5A11D /* MUResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUResponse.swift; sourceTree = "<group>"; };
+		AAC000F02DA4429A00B5A11D /* LoginResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginResponse.swift; sourceTree = "<group>"; };
+		AAC000F32DA4450A00B5A11D /* MUAPIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUAPIError.swift; sourceTree = "<group>"; };
+		AAC000F62DA449C500B5A11D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		AAC000F82DA449F300B5A11D /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
+		AAC000FA2DA44A8000B5A11D /* AuthenticationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationModel.swift; sourceTree = "<group>"; };
+		AAC000FD2DA4502400B5A11D /* AuthenticationModelMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationModelMock.swift; sourceTree = "<group>"; };
+		AAC000FF2DA455ED00B5A11D /* RegisterRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterRequest.swift; sourceTree = "<group>"; };
+		AAC001012DA4563300B5A11D /* RegisterResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterResponse.swift; sourceTree = "<group>"; };
 		AAC242032D48F4A1002A829C /* CategoryPieChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPieChart.swift; sourceTree = "<group>"; };
 		AAD271432D4410B300D906B8 /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
 		AAD5E9002D510B9A0058DD18 /* MUSpacer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUSpacer.swift; sourceTree = "<group>"; };
 		AAF91FDD2D4648DF003FDE4C /* SelectableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableCell.swift; sourceTree = "<group>"; };
 		AAF9F5992D429DE60085FD44 /* ExpenseViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModelTests.swift; sourceTree = "<group>"; };
+		AAFB71B12D73234E00A93202 /* UserErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserErrors.swift; sourceTree = "<group>"; };
+		AAFB71B32D7324B300A93202 /* AuthenticationModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationModelProtocol.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,10 +235,12 @@
 		AA51462D2D40450600FE93E5 /* iOSMessup */ = {
 			isa = PBXGroup;
 			children = (
+				AAC000DA2DA43B7D00B5A11D /* Core */,
 				AA5146342D40450700FE93E5 /* iOSMessup.entitlements */,
 				AA51462E2D40450600FE93E5 /* iOSMessupApp.swift */,
 				AA5146322D40450700FE93E5 /* Assets.xcassets */,
 				AA51465A2D4047C500FE93E5 /* Components */,
+				AAFB71B02D73234700A93202 /* Error */,
 				AA5146672D40533500FE93E5 /* Extensions */,
 				AA51465D2D4048B100FE93E5 /* Model */,
 				AA31E12D2D480200004BA303 /* Navigation */,
@@ -232,6 +272,7 @@
 		AA5146592D4047C100FE93E5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				AAC000F52DA449BF00B5A11D /* Authentication */,
 				AA71A7662D4C31F6003D5909 /* Profile */,
 				AA8235A52D440541005CCA48 /* Splash */,
 				AA6D45C32D42499B0014A95F /* SocialGroups */,
@@ -257,6 +298,7 @@
 		AA51465D2D4048B100FE93E5 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				AA777CFA2D57B359005B7734 /* User.swift */,
 				AA1214E12D42F66600787FD2 /* Deposit.swift */,
 				AA1214DD2D42F2EC00787FD2 /* SavingGoal.swift */,
 				AA51465E2D4048E800FE93E5 /* Expense.swift */,
@@ -327,6 +369,7 @@
 		AA6D45C52D4249CC0014A95F /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				AA777CFC2D57B451005B7734 /* Authentication */,
 				AA668E9F2D441BA9005E714D /* Savings */,
 				AA6EE0C12D4286B300E0F7D3 /* Expenses */,
 			);
@@ -361,6 +404,16 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
+		AA777CFC2D57B451005B7734 /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				AAC000FC2DA4501600B5A11D /* Mock */,
+				AAC000FA2DA44A8000B5A11D /* AuthenticationModel.swift */,
+				AAFB71B32D7324B300A93202 /* AuthenticationModelProtocol.swift */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
 		AA8235A52D440541005CCA48 /* Splash */ = {
 			isa = PBXGroup;
 			children = (
@@ -386,6 +439,82 @@
 			children = (
 				AA6A71B72D44329C004720CB /* SavingViewModelMock.swift */,
 				AAACDF5F2D442AD80037C771 /* SavingDataSourceSpy.swift */,
+			);
+			path = Mock;
+			sourceTree = "<group>";
+		};
+		AAC000DA2DA43B7D00B5A11D /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				AAC000E22DA43F8A00B5A11D /* Network */,
+				AAC000DD2DA43CCF00B5A11D /* Authentication */,
+				AAC000DB2DA43B8400B5A11D /* UserDataStore.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		AAC000DD2DA43CCF00B5A11D /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				AAC000E02DA43DE400B5A11D /* MUToken.swift */,
+				AAC000DE2DA43CDC00B5A11D /* JWTDecoder.swift */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
+		AAC000E22DA43F8A00B5A11D /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				AAC000F22DA442AC00B5A11D /* Shared */,
+				AAC000E62DA43FB500B5A11D /* MUClient.swift */,
+				AAC000EA2DA4402000B5A11D /* Endpoints */,
+				AAC000EF2DA4428400B5A11D /* Responses */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		AAC000EA2DA4402000B5A11D /* Endpoints */ = {
+			isa = PBXGroup;
+			children = (
+				AAC000FF2DA455ED00B5A11D /* RegisterRequest.swift */,
+				AAC000E82DA4401B00B5A11D /* LoginRequest.swift */,
+			);
+			path = Endpoints;
+			sourceTree = "<group>";
+		};
+		AAC000EF2DA4428400B5A11D /* Responses */ = {
+			isa = PBXGroup;
+			children = (
+				AAC001012DA4563300B5A11D /* RegisterResponse.swift */,
+				AAC000F02DA4429A00B5A11D /* LoginResponse.swift */,
+			);
+			path = Responses;
+			sourceTree = "<group>";
+		};
+		AAC000F22DA442AC00B5A11D /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				AAC000F32DA4450A00B5A11D /* MUAPIError.swift */,
+				AAC000E32DA43F9700B5A11D /* HTTPMethod.swift */,
+				AAC000EB2DA4420800B5A11D /* MURequest.swift */,
+				AAC000ED2DA4421300B5A11D /* MUResponse.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		AAC000F52DA449BF00B5A11D /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				AAC000F82DA449F300B5A11D /* RegistrationView.swift */,
+				AAC000F62DA449C500B5A11D /* LoginView.swift */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
+		AAC000FC2DA4501600B5A11D /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				AAC000FD2DA4502400B5A11D /* AuthenticationModelMock.swift */,
 			);
 			path = Mock;
 			sourceTree = "<group>";
@@ -432,6 +561,14 @@
 				AAF9F5992D429DE60085FD44 /* ExpenseViewModelTests.swift */,
 			);
 			path = Expense;
+			sourceTree = "<group>";
+		};
+		AAFB71B02D73234700A93202 /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				AAFB71B12D73234E00A93202 /* UserErrors.swift */,
+			);
+			path = Error;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -574,11 +711,15 @@
 				AA51465F2D4048E800FE93E5 /* Expense.swift in Sources */,
 				AA6A71B82D44329C004720CB /* SavingViewModelMock.swift in Sources */,
 				AAD5E9012D510BA00058DD18 /* MUSpacer.swift in Sources */,
+				AAC000FB2DA44A8B00B5A11D /* AuthenticationModel.swift in Sources */,
+				AAC001022DA4563300B5A11D /* RegisterResponse.swift in Sources */,
 				AA81393D2D4FB6C20097F51E /* EditDepositModalView.swift in Sources */,
 				AA6D45BD2D41B5A90014A95F /* UIApplication+Keyboard.swift in Sources */,
 				AA56E0B32D44FFC2009F7058 /* HideTabBarAfterScrollingThreshold.swift in Sources */,
 				AA0B192B2D43E8E200B02095 /* ListSectionHeaderView.swift in Sources */,
+				AAFB71B42D7324BB00A93202 /* AuthenticationModelProtocol.swift in Sources */,
 				AA6A71B22D44304C004720CB /* ExpenseViewModelMock.swift in Sources */,
+				AAC001002DA455F400B5A11D /* RegisterRequest.swift in Sources */,
 				AA1214E22D42F66A00787FD2 /* Deposit.swift in Sources */,
 				AA2CA68F2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift in Sources */,
 				AA832E6A2D415B9200940F78 /* AllExpensesView.swift in Sources */,
@@ -589,31 +730,46 @@
 				AA7923D32D413C3600768849 /* SavingsObjectiveView.swift in Sources */,
 				AA71A7682D4C3201003D5909 /* ProfileView.swift in Sources */,
 				AA8235A72D44054E005CCA48 /* LoadingScreen.swift in Sources */,
+				AAC000FE2DA4502B00B5A11D /* AuthenticationModelMock.swift in Sources */,
+				AAC000DC2DA43B8D00B5A11D /* UserDataStore.swift in Sources */,
 				AA51466D2D40EC0F00FE93E5 /* WeeklyExpensesView.swift in Sources */,
 				AA6EE0C62D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift in Sources */,
 				AA6A71B42D4430FF004720CB /* ExpenseViewModelProtocol.swift in Sources */,
+				AAFB71B22D73235500A93202 /* UserErrors.swift in Sources */,
+				AA777CFB2D57B35B005B7734 /* User.swift in Sources */,
+				AAC000F92DA449F300B5A11D /* RegistrationView.swift in Sources */,
 				AA5146312D40450600FE93E5 /* ExpensesView.swift in Sources */,
+				AAC000F42DA4450A00B5A11D /* MUAPIError.swift in Sources */,
 				AA668EA32D441E12005E714D /* SavingDataSource.swift in Sources */,
+				AAC000DF2DA43CE800B5A11D /* JWTDecoder.swift in Sources */,
 				AA7923D52D413C5800768849 /* SocialGroupsView.swift in Sources */,
 				AA1214DE2D42F2EC00787FD2 /* SavingGoal.swift in Sources */,
 				AA51462F2D40450600FE93E5 /* iOSMessupApp.swift in Sources */,
 				AAACDF602D442AEF0037C771 /* SavingDataSourceSpy.swift in Sources */,
 				AA8139412D4FC3660097F51E /* DepositSheetViewModifier.swift in Sources */,
+				AAC000EE2DA4421300B5A11D /* MUResponse.swift in Sources */,
 				AA51466F2D40ECB400FE93E5 /* Calendar+Utils.swift in Sources */,
 				AA832E6C2D4173EC00940F78 /* EditExpenseModalView.swift in Sources */,
+				AAC000E72DA43FB500B5A11D /* MUClient.swift in Sources */,
 				AA6D45C72D4249DB0014A95F /* ExpenseViewModel.swift in Sources */,
+				AAC000F72DA449C500B5A11D /* LoginView.swift in Sources */,
 				AAF91FDE2D4648DF003FDE4C /* SelectableCell.swift in Sources */,
 				AA6D45B82D41ABBD0014A95F /* AddExpenseViewModal.swift in Sources */,
 				AAC242042D48F4B3002A829C /* CategoryPieChart.swift in Sources */,
 				AA668EA12D441BB9005E714D /* SavingViewModel.swift in Sources */,
+				AAC000F12DA4429A00B5A11D /* LoginResponse.swift in Sources */,
 				AA6EE0C02D4277A300E0F7D3 /* ExpensesDataSource.swift in Sources */,
 				AA422C292D4141B500F108B8 /* MainTabBarView.swift in Sources */,
 				AA0B19292D43E63500B02095 /* DepositCellView.swift in Sources */,
+				AAC000E92DA4401B00B5A11D /* LoginRequest.swift in Sources */,
 				AA6D45BB2D41B0E40014A95F /* ExpenseSheetViewModifier.swift in Sources */,
+				AAC000E12DA43DE700B5A11D /* MUToken.swift in Sources */,
 				AA81393F2D4FBE250097F51E /* AddDepositViewModal.swift in Sources */,
 				AA0B19252D43147F00B02095 /* Date+Utils.swift in Sources */,
+				AAC000E42DA43F9700B5A11D /* HTTPMethod.swift in Sources */,
 				AA5146662D40531500FE93E5 /* Double+Utils.swift in Sources */,
 				AA0B19232D42FF6A00B02095 /* ProgressBar.swift in Sources */,
+				AAC000EC2DA4420800B5A11D /* MURequest.swift in Sources */,
 				AA31E12F2D48022A004BA303 /* Route.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

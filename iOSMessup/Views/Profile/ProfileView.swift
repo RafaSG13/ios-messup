@@ -11,13 +11,14 @@ import SwiftUI
 
 struct ProfileView: View {
     @State private var selectedRow: ProfileRowModel?
+    @Environment(\.authVM) var authVM: AuthenticationModelProtocol
 
     var body: some View {
         NavigationStack {
             VStack {
                 ProfileHeader()
                 .padding()
-                .frame(height: 150)
+                .frame(height: 130)
 
                 List(ProfileRowModel.allCases, id: \.self) { row in
                     Button {
@@ -27,8 +28,12 @@ struct ProfileView: View {
                     }
                     .listRowSeparator(.hidden)
                     .listRowInsets(.init(top: 15, leading: 0, bottom: 15, trailing: 0))
-                    .onChange(of: selectedRow) { oldValue, newValue in
-                        print("Selected row changed from \(oldValue?.title ?? "nil") to \(newValue?.title ?? "nil")")
+                    .onChange(of: selectedRow) { _, newValue in
+                        if selectedRow == .logOut {
+                            Task {
+                                try await authVM.logout()
+                            }
+                        }
                     }
                 }
                 .listStyle(.plain)
@@ -45,17 +50,18 @@ struct ProfileView: View {
 fileprivate struct ProfileHeader: View {
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: .infinity)
-                .fill(.secondary.opacity(0.15))
+            RoundedRectangle(cornerRadius: 10)
+                .fill(.white.opacity(0.15))
+                .stroke(.accent.opacity(0.15), style: .init())
             HStack {
                 Image("logoImage")
                     .resizable()
-                    .frame(width: 80, height: 80)
+                    .frame(width: 70, height: 70)
                     .foregroundColor(.gray)
                     .clipShape(.circle)
-                    .padding(.leading, MUSpacer.size06)
-                    .padding(.trailing, MUSpacer.size05)
-                
+                    .padding(.leading, MUSpacer.size04)
+                    .padding(.trailing, MUSpacer.size04)
+
                 VStack(alignment: .leading, spacing: 5) {
                     Text("John Doe")
                         .font(.title3)

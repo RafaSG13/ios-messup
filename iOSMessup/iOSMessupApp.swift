@@ -11,6 +11,7 @@ import SwiftUI
 struct iOSMessupApp: App {
     var expenseViewModel = ExpenseViewModel(dataSource: ExpensesDataSource())
     var savingViewModel = SavingViewModel(dataSource: SavingDataSource())
+    var authenticationViewModel = AuthenticationModel()
 
     @State private var viewModelLoaded: Bool = false
 
@@ -36,9 +37,15 @@ struct iOSMessupApp: App {
         if viewModelLoaded == false {
             LoadingScreen()
         } else {
-            MainTabBarView()
-                .environment(\.expenseVM, expenseViewModel)
-                .environment(\.savingVM, savingViewModel)
+            if authenticationViewModel.isAuthenticated {
+                MainTabBarView()
+                    .environment(\.expenseVM, expenseViewModel)
+                    .environment(\.savingVM, savingViewModel)
+                    .environment(\.authVM, authenticationViewModel)
+            } else {
+                LoginView()
+                    .environment(\.authVM, authenticationViewModel)
+            }
         }
     }
 }
