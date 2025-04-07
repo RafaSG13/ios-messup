@@ -25,7 +25,7 @@ import Observation
         self.deposits = try await deposits
     }
 
-    func  createSavingGoal(_ goal: SavingGoal) async throws {
+    func createSavingGoal(_ goal: SavingGoal) async throws {
         self.savingGoal = goal
         try? await dataSource.create(goal)
     }
