@@ -7,62 +7,58 @@
 import SwiftUI
 
 struct LoginView: View {
-    @State private var email: String = ""
-    @State private var username: String = ""
-    @State private var password: String = ""
-    @Environment(\.authVM) var authVM: AuthenticationModelProtocol
-
+    @State private var email: String = "rafasrrg1@gmail.com"
+    @State private var password: String = "Contrasena_123"
+    @Environment(\.authVM) private var authVM: AuthenticationModelProtocol
+    
     var body: some View {
-        NavigationView {
-            VStack {
-                Text("Iniciar sesión")
-                    .font(.largeTitle)
-                    .bold()
-                    .padding(.bottom, 40)
-
-
-                TextField("Email", text: $email)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-                    .padding(.horizontal)
-                    .autocapitalization(.none)
-
-                TextField("Nombre de usuario", text: $username)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-                    .padding(.horizontal)
-                    .autocapitalization(.none)
+        ZStack {
+            Color.mintAccent
+                .opacity(0.4)
+                .ignoresSafeArea()
+            
+            VStack(spacing: 24) {
+                Image("logoPNG")
+                    .resizable()
+                    .frame(width: 300, height: 300)
+                    .aspectRatio(contentMode: .fit)
                 
-                SecureField("Contraseña", text: $password)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-                    .padding(.horizontal)
-
+                MUTextField(text: $email,
+                            placeholder: "Correo electrónico",
+                            headerText: "Correo electrónico",
+                            autocapitalization: .none)
+                
+                MUPasswordField(password: $password,
+                                headerText: "Contraseña")
+                
                 Button {
-                    Task {
-                        try await authVM.login(email: email, password: password)
-                    }
+                    loginAction()
                 } label: {
-                    Text("Iniciar sesión")
+                    Text("Iniciar Sesión")
                         .foregroundColor(.white)
+                        .bold()
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.blue)
+                        .background(Color.mint)
                         .cornerRadius(10)
-                        .padding(.horizontal)
                 }
                 
-                NavigationLink(destination: RegistrationView()) {
-                    Text("¿No tienes una cuenta? Regístrate")
-                        .foregroundColor(.blue)
-                        .padding(.top, 20)
-                }
+                
                 Spacer()
             }
             .padding()
+            .padding(.horizontal)
+        }
+        
+    }
+    
+    func loginAction() {
+        Task {
+            try await authVM.login(email: email, password: password)
         }
     }
+}
+
+#Preview {
+    LoginView()
 }

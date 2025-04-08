@@ -34,18 +34,30 @@ struct iOSMessupApp: App {
     }
 
     @ViewBuilder private func initApplication() -> some View {
-        if viewModelLoaded == false {
-            LoadingScreen()
-        } else {
-            if authenticationViewModel.isAuthenticated {
+
+        if authenticationViewModel.isAuthenticated {
+            if viewModelLoaded == false {
+                LoadingScreen()
+            } else {
                 MainTabBarView()
                     .environment(\.expenseVM, expenseViewModel)
                     .environment(\.savingVM, savingViewModel)
                     .environment(\.authVM, authenticationViewModel)
-            } else {
-                LoginView()
-                    .environment(\.authVM, authenticationViewModel)
             }
+        } else {
+            LoginView()
+                .environment(\.authVM, authenticationViewModel)
         }
+//
+//        if viewModelLoaded == false {
+//            LoadingScreen()
+//        } else {
+//            if authenticationViewModel.isAuthenticated {
+//
+//            } else {
+//                LoginView()
+//                    .environment(\.authVM, authenticationViewModel)
+//            }
+//        }
     }
 }

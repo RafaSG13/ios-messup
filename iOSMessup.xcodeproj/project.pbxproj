@@ -17,6 +17,7 @@
 		AA2CA68F2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2CA68E2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift */; };
 		AA31E12F2D48022A004BA303 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA31E12E2D480227004BA303 /* Route.swift */; };
 		AA422C292D4141B500F108B8 /* MainTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA422C282D4141B500F108B8 /* MainTabBarView.swift */; };
+		AA4F7B1E2DA5A88600FD598B /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F7B1D2DA5A88300FD598B /* LandingView.swift */; };
 		AA51462F2D40450600FE93E5 /* iOSMessupApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51462E2D40450600FE93E5 /* iOSMessupApp.swift */; };
 		AA5146312D40450600FE93E5 /* ExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5146302D40450600FE93E5 /* ExpensesView.swift */; };
 		AA5146332D40450700FE93E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA5146322D40450700FE93E5 /* Assets.xcassets */; };
@@ -106,6 +107,7 @@
 		AA2CA68E2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUCustomVerticalForEach.swift; sourceTree = "<group>"; };
 		AA31E12E2D480227004BA303 /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		AA422C282D4141B500F108B8 /* MainTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarView.swift; sourceTree = "<group>"; };
+		AA4F7B1D2DA5A88300FD598B /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		AA51462B2D40450600FE93E5 /* iOSMessup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSMessup.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA51462E2D40450600FE93E5 /* iOSMessupApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSMessupApp.swift; sourceTree = "<group>"; };
 		AA5146302D40450600FE93E5 /* ExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesView.swift; sourceTree = "<group>"; };
@@ -505,6 +507,7 @@
 		AAC000F52DA449BF00B5A11D /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				AA4F7B1D2DA5A88300FD598B /* LandingView.swift */,
 				AAC000F82DA449F300B5A11D /* RegistrationView.swift */,
 				AAC000F62DA449C500B5A11D /* LoginView.swift */,
 			);
@@ -708,6 +711,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA6A71B62D443205004720CB /* SavingViewModelProtocol.swift in Sources */,
+				AA4F7B1E2DA5A88600FD598B /* LandingView.swift in Sources */,
 				AA51465F2D4048E800FE93E5 /* Expense.swift in Sources */,
 				AA6A71B82D44329C004720CB /* SavingViewModelMock.swift in Sources */,
 				AAD5E9012D510BA00058DD18 /* MUSpacer.swift in Sources */,
