@@ -11,67 +11,101 @@ struct RegistrationView: View {
     @State private var email: String = "rafasrrg1@gmail.com"
     @State private var username: String = "Rafael"
     @State private var password: String = "Contrasena_123"
-    @State private var confirmPassword: String = "Contrasena_123"
-    @Environment(\.authVM) var authVM: AuthenticationModelProtocol
+    @Environment(\.authVM) private var authVM: AuthenticationModelProtocol
 
     var body: some View {
-        NavigationView {
-            VStack {
-                Text("Crear una cuenta")
-                    .font(.largeTitle)
-                    .bold()
-                    .padding(.bottom, 40)
-                
-                TextField("Nombre de usuario", text: $username)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-                    .padding(.horizontal)
-                    .autocapitalization(.none)
+        ZStack {
+            Color.mintAccent
+                .opacity(0.4)
+                .ignoresSafeArea()
 
-                TextField("Correo electrónico", text: $email)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-                    .padding(.horizontal)
-                    .autocapitalization(.none)
+            VStack(spacing: 24) {
+                Image("logoPNG")
+                    .resizable()
+                    .frame(width: 300, height: 300)
+                    .aspectRatio(contentMode: .fit)
 
-                SecureField("Contraseña", text: $password)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-                    .padding(.horizontal)
-                
-                SecureField("Confirmar contraseña", text: $confirmPassword)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-                    .padding(.horizontal)
+                MUTextField(text: $username,
+                            placeholder: "Nombre de usuario",
+                            headerText: "Nombre de usuario",
+                            autocapitalization: .words)
+
+                MUTextField(text: $email,
+                            placeholder: "Correo electrónico",
+                            headerText: "Correo electrónico",
+                            autocapitalization: .none)
+
+
+                MUPasswordField(password: $password,
+                                headerText: "Contraseña")
 
                 Button {
-                    Task {
-                        try await authVM.register(email: email, password: password, name: username)
-                    }
+                    registerAction()
                 } label: {
                     Text("Registrar cuenta")
                         .foregroundColor(.white)
+                        .bold()
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.blue)
+                        .background(Color.mint)
                         .cornerRadius(10)
-                        .padding(.horizontal)
-                }
-
-
-                Spacer()
-                
-                NavigationLink(destination: LoginView()) {
-                    Text("¿Ya tienes una cuenta? Inicia sesión")
-                        .foregroundColor(.blue)
-                        .padding(.top, 20)
                 }
             }
             .padding()
+            .padding(.horizontal)
+        }
+
+    }
+
+    func registerAction() {
+        Task {
+            try await authVM.register(email: email, password: password, name: username)
         }
     }
+
+}
+
+
+struct MUTextField: View {
+    @Binding var text: String
+    var placeholder: String
+    var headerText: String
+    var autocapitalization: UITextAutocapitalizationType = .none
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(headerText)
+                .font(.callout)
+                .foregroundColor(.accent)
+                .bold()
+            TextField(placeholder, text: $text)
+                .padding()
+                .background(.thinMaterial)
+                .cornerRadius(5)
+                .autocapitalization(autocapitalization)
+        }
+    }
+}
+
+
+struct MUPasswordField: View {
+    @Binding var password: String
+    var headerText: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(headerText)
+                .font(.callout)
+                .foregroundColor(.accent)
+                .bold()
+            SecureField("Contraseña", text: $password)
+                .padding()
+                .background(.thinMaterial)
+                .cornerRadius(5)
+        }
+    }
+}
+
+#Preview {
+    RegistrationView()
 }
