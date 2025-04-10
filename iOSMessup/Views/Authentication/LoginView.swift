@@ -5,46 +5,42 @@
 //  Created by Rafael Serrano Gamarra on 7/4/25.
 //
 import SwiftUI
+import SwiftUI
 
 struct LoginView: View {
-    @State private var email: String = "rafasrrg1@gmail.com"
-    @State private var password: String = "Contrasena_123"
+
     @Environment(\.authVM) private var authVM: AuthenticationModelProtocol
-    
+    @Environment(\.colorScheme) private var colorScheme: ColorScheme
+    @StateObject private var loginVM = LoginViewModel()
+
+
     var body: some View {
         ZStack {
-            Color.mintAccent
-                .opacity(0.4)
-                .ignoresSafeArea()
-            
             VStack(spacing: 24) {
-                Image("logoPNG")
-                    .resizable()
-                    .frame(width: 300, height: 300)
-                    .aspectRatio(contentMode: .fit)
-                
-                MUTextField(text: $email,
-                            placeholder: "Correo electrónico",
-                            headerText: "Correo electrónico",
+                MUTextField(text: $loginVM.email,
+                            placeholder: "Email",
+                            headerText: "Email",
                             autocapitalization: .none)
-                
-                MUPasswordField(password: $password,
-                                headerText: "Contraseña")
-                
+
+                MUPasswordField(password: $loginVM.password,
+                                headerText: "Password")
+
                 Button {
-                    loginAction()
+                    Task { await loginVM.loginAction(with: authVM) }
                 } label: {
                     Text("Iniciar Sesión")
-                        .foregroundColor(.white)
+                        .foregroundColor(colorScheme == .dark ? .black : .white)
                         .bold()
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(Color.mint)
                         .cornerRadius(10)
                 }
-                
-                
-                Spacer()
+                .alert("Error", isPresented: $loginVM.shouldPresentAlert, presenting: loginVM.error) { _ in
+                    Button("Close", role: .cancel) { loginVM.shouldPresentAlert = false }
+                } message: { error in
+                    Text((error as? LocalizedError)?.errorDescription ?? "Something went wrong.")
+                }
             }
             .padding()
             .padding(.horizontal)
@@ -61,4 +57,22 @@ struct LoginView: View {
 
 #Preview {
     LoginView()
+}
+
+// MARK: - ViewModel to wrap properties and logic
+
+class LoginViewModel: ObservableObject {
+    @Published var email: String = "rafasrrg13@gmail.com"
+    @Published var password: String = "Contrasena_123"
+    @Published var shouldPresentAlert: Bool = false
+    @Published var error: Error?
+
+    func loginAction(with authVM: AuthenticationModelProtocol) async {
+        do {
+            try await authVM.login(email: email, password: password)
+        } catch let error {
+            self.error = error
+            shouldPresentAlert = true
+        }
+    }
 }

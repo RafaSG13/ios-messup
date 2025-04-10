@@ -8,42 +8,56 @@
 import Foundation
 import Observation
 
+//TODO: Create datasources, token datasource, user datasource, etc.
+//TODO: Error Management
+
 @Observable final class AuthenticationModel: AuthenticationModelProtocol {
-    var isAuthenticated: Bool = false
+    var isAuthenticated: Bool
 
     init() {
-        self.isAuthenticated = UserDataStore.shared.accessToken != nil
+        self.isAuthenticated = UserDefaults.standard.object(forKey: TokenKeys.refreshToken) != nil
     }
 
     func login(email: String, password: String) async throws {
         let request = LoginRequest(email: email, password: password)
         do {
             let response = try await MUClient.shared.send(request, as: LoginResponse.self)
-            UserDataStore.shared.saveTokens(accessToken: response.accessToken, refreshToken: response.refreshToken)
+            saveTokens(accessToken: response.accessToken, refreshToken: response.refreshToken)
             isAuthenticated = true
         } catch {
-            isAuthenticated = false
+            throw AuthError.invalidCredentials
         }
     }
 
-    func logout() async throws {
-        UserDataStore.shared.accessToken = nil
-        UserDataStore.shared.refreshToken = nil
-        self.isAuthenticated = false
+    func logout() {
+        removeTokens()
+        isAuthenticated = false
     }
 
     func register(email: String, password: String, name: String) async throws {
         let request = RegisterRequest(email: email, password: password, name: name)
         do {
             let response = try await MUClient.shared.send(request, as: RegisterResponse.self)
-            UserDataStore.shared.saveTokens(accessToken: response.accessToken, refreshToken: response.refreshToken)
+            saveTokens(accessToken: response.accessToken, refreshToken: response.refreshToken)
             isAuthenticated = true
         } catch {
-            isAuthenticated = false
+            throw AuthError.userAlreadyExists
         }
     }
 
     func resetPassword() async throws {}
 
     func refresh() async throws {}
+
+    func saveTokens(accessToken: String, refreshToken: String) {
+        UserDefaults.standard.set(accessToken, forKey: TokenKeys.accessToken)
+        UserDefaults.standard.set(refreshToken, forKey: TokenKeys.refreshToken)
+        UserDataStore.shared.saveUserData(from: accessToken)
+    }
+
+    func removeTokens() {
+        UserDefaults.standard.removeObject(forKey: TokenKeys.accessToken)
+        UserDefaults.standard.removeObject(forKey: TokenKeys.refreshToken)
+        UserDataStore.shared.removeUserData()
+    }
 }

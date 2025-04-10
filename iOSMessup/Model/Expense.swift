@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Expense: Identifiable, Hashable, Equatable {
+struct Expense: Identifiable, Hashable, Equatable, Codable {
     var id: String = UUID().uuidString
     var name: String
     var amount: Double
@@ -45,7 +45,7 @@ extension Expense {
 
 // MARK: - PaymentMethods
 
-enum PaymentMethod: String, CaseIterable, Hashable {
+enum PaymentMethod: String, CaseIterable, Hashable, Codable {
     case cash = "Cash"
     case creditCard = "Credit Card"
     case debitCard = "Debit Card"
@@ -75,7 +75,7 @@ enum PaymentMethod: String, CaseIterable, Hashable {
 
 // MARK: - Expense Categories
 
-enum Category: String, CaseIterable, Hashable {
+enum Category: String, CaseIterable, Hashable, Codable {
     case entertainment = "Entertainment"
     case travel = "Travel"
     case food = "Food"
@@ -127,5 +127,26 @@ enum Category: String, CaseIterable, Hashable {
         case .charity: return .mint
         case .miscellaneous: return .secondary
         }
+    }
+}
+
+
+struct ExpenseResponse: Decodable {
+    let id: String
+    let name: String
+    let amount: Double
+    let date: Date
+    let paymentMethod: String
+    let category: String
+
+    func map() -> Expense {
+        return Expense(
+            id: id,
+            name: name,
+            amount: amount,
+            date: date,
+            paymentMethod: PaymentMethod(rawValue: paymentMethod) ?? .other,
+            category: Category(rawValue: category) ?? .miscellaneous
+        )
     }
 }

@@ -28,7 +28,25 @@
 		<key>iOSMessup.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>1</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>AA51462A2D40450600FE93E5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AA51463B2D40450700FE93E5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AA5146452D40450700FE93E5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

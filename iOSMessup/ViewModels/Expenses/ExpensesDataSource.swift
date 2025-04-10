@@ -18,13 +18,18 @@ protocol ExpensesDataSourceProtocol {
 
 struct ExpensesDataSource: ExpensesDataSourceProtocol {
     func readAll() async throws -> [Expense] {
-        try await simulateNetworkDelay()
-        return Expense.mockArray
+        do {
+            let request = GetAllExpensesRequest()
+            let expenses = try await MUClient.shared.send(request, as: [Expense].self)
+            return expenses
+        } catch {
+            return []
+        }
     }
 
     func create(_ expense: Expense) async throws {
-        try await simulateNetworkDelay()
-        Expense.mockArray.append(expense)
+        let request = CreateExpenseRequest(expense: expense)
+        let expense = try await MUClient.shared.send(request, as: Expense.self)
     }
     
     func delete(_ expense: Expense) async throws {

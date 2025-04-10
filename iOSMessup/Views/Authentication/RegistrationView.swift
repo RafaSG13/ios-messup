@@ -8,61 +8,49 @@
 import SwiftUI
 
 struct RegistrationView: View {
-    @State private var email: String = "rafasrrg1@gmail.com"
-    @State private var username: String = "Rafael"
+    @State private var email: String = "rafasrrg13@gmail.com"
+    @State private var username: String = "Rafael Serrano Gamarra"
     @State private var password: String = "Contrasena_123"
     @Environment(\.authVM) private var authVM: AuthenticationModelProtocol
-
+    
+    @Environment(\.colorScheme) private var colorScheme: ColorScheme
+    
     var body: some View {
-        ZStack {
-            Color.mintAccent
-                .opacity(0.4)
-                .ignoresSafeArea()
-
-            VStack(spacing: 24) {
-                Image("logoPNG")
-                    .resizable()
-                    .frame(width: 300, height: 300)
-                    .aspectRatio(contentMode: .fit)
-
-                MUTextField(text: $username,
-                            placeholder: "Nombre de usuario",
-                            headerText: "Nombre de usuario",
-                            autocapitalization: .words)
-
-                MUTextField(text: $email,
-                            placeholder: "Correo electrónico",
-                            headerText: "Correo electrónico",
-                            autocapitalization: .none)
-
-
-                MUPasswordField(password: $password,
-                                headerText: "Contraseña")
-
-                Button {
-                    registerAction()
-                } label: {
-                    Text("Registrar cuenta")
-                        .foregroundColor(.white)
-                        .bold()
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.mint)
-                        .cornerRadius(10)
-                }
+        VStack(spacing: 24) {
+            MUTextField(text: $username,
+                        placeholder: "Username",
+                        headerText: "Username",
+                        autocapitalization: .words)
+            
+            MUTextField(text: $email,
+                        placeholder: "Email",
+                        headerText: "Email",
+                        autocapitalization: .none)
+            
+            
+            MUPasswordField(password: $password,
+                            headerText: "Password")
+            Button {
+                registerAction()
+            } label: {
+                Text("Sign Up")
+                    .foregroundColor(colorScheme == .dark ? .black : .white)
+                    .bold()
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.mint)
+                    .cornerRadius(10)
             }
-            .padding()
-            .padding(.horizontal)
         }
-
+        .padding()
+        .padding(.horizontal)
     }
-
+    
     func registerAction() {
         Task {
             try await authVM.register(email: email, password: password, name: username)
         }
     }
-
 }
 
 

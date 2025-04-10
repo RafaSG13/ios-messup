@@ -17,47 +17,37 @@ struct iOSMessupApp: App {
 
     var body: some Scene {
         WindowGroup {
-            initApplication()
-                .task {
-                    do {
-                        async let loadExpenses: () = expenseViewModel.loadExpenses()
-                        async let loadSavings: () = savingViewModel.load()
+            if !authenticationViewModel.isAuthenticated {
+                LandingView()
+                    .environment(\.authVM, authenticationViewModel)
+            } else {
+                initApplication()
+                    .task {
+                        guard authenticationViewModel.isAuthenticated else { return }
+                        do {
+                            async let loadExpenses: () = expenseViewModel.loadExpenses()
+                            async let loadSavings: () = savingViewModel.load()
 
-                        try await loadExpenses
-                        try await loadSavings
-                        viewModelLoaded.toggle()
-                    } catch {
-                        print("Error loading expenses on app loading: \(error.localizedDescription)")
+                            try await loadExpenses
+                            try await loadSavings
+                            viewModelLoaded = true
+                        } catch {
+                            print("Error loading expenses on app loading: \(error.localizedDescription)")
+                        }
                     }
-                }
+            }
         }
     }
 
     @ViewBuilder private func initApplication() -> some View {
 
-        if authenticationViewModel.isAuthenticated {
-            if viewModelLoaded == false {
-                LoadingScreen()
-            } else {
-                MainTabBarView()
-                    .environment(\.expenseVM, expenseViewModel)
-                    .environment(\.savingVM, savingViewModel)
-                    .environment(\.authVM, authenticationViewModel)
-            }
+        if viewModelLoaded == false {
+            LoadingScreen()
         } else {
-            LoginView()
+            MainTabBarView()
+                .environment(\.expenseVM, expenseViewModel)
+                .environment(\.savingVM, savingViewModel)
                 .environment(\.authVM, authenticationViewModel)
         }
-//
-//        if viewModelLoaded == false {
-//            LoadingScreen()
-//        } else {
-//            if authenticationViewModel.isAuthenticated {
-//
-//            } else {
-//                LoginView()
-//                    .environment(\.authVM, authenticationViewModel)
-//            }
-//        }
     }
 }
