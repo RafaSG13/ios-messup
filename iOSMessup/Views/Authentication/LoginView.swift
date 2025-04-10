@@ -5,64 +5,67 @@
 //  Created by Rafael Serrano Gamarra on 7/4/25.
 //
 import SwiftUI
+import SwiftUI
 
 struct LoginView: View {
-    @State private var email: String = ""
-    @State private var username: String = ""
-    @State private var password: String = ""
-    @Environment(\.authVM) var authVM: AuthenticationModelProtocol
+    @Environment(\.authVM) private var authVM: AuthenticationModelProtocol
+    @Environment(\.colorScheme) private var colorScheme: ColorScheme
+    @StateObject private var loginVM = LoginViewModel()
+
 
     var body: some View {
-        NavigationView {
-            VStack {
-                Text("Iniciar sesión")
-                    .font(.largeTitle)
-                    .bold()
-                    .padding(.bottom, 40)
+        ZStack {
+            VStack(spacing: 24) {
+                MUTextField(text: $loginVM.email,
+                            placeholder: "Email",
+                            headerText: "Email",
+                            autocapitalization: .none)
 
-
-                TextField("Email", text: $email)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-                    .padding(.horizontal)
-                    .autocapitalization(.none)
-
-                TextField("Nombre de usuario", text: $username)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-                    .padding(.horizontal)
-                    .autocapitalization(.none)
-                
-                SecureField("Contraseña", text: $password)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-                    .padding(.horizontal)
+                MUPasswordField(password: $loginVM.password,
+                                headerText: "Password")
 
                 Button {
-                    Task {
-                        try await authVM.login(email: email, password: password)
-                    }
+                    Task { await loginVM.loginAction(with: authVM) }
                 } label: {
-                    Text("Iniciar sesión")
-                        .foregroundColor(.white)
+                    Text("Iniciar Sesión")
+                        .foregroundColor(colorScheme == .dark ? .black : .white)
+                        .bold()
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(Color.blue)
                         .cornerRadius(10)
                         .padding(.horizontal)
                 }
-                
-                NavigationLink(destination: RegistrationView()) {
-                    Text("¿No tienes una cuenta? Regístrate")
-                        .foregroundColor(.blue)
-                        .padding(.top, 20)
+                .alert("Error", isPresented: $loginVM.shouldPresentAlert, presenting: loginVM.error) { _ in
+                    Button("Close", role: .cancel) { loginVM.shouldPresentAlert = false }
+                } message: { error in
+                    Text((error as? LocalizedError)?.errorDescription ?? "Something went wrong.")
                 }
-                Spacer()
             }
             .padding()
         }
     }
 }
+
+#Preview {
+    LoginView()
+}
+
+// MARK: - ViewModel to wrap properties and logic
+
+class LoginViewModel: ObservableObject {
+    @Published var email: String = "rafasrrg13@gmail.com"
+    @Published var password: String = "Contrasena_123"
+    @Published var shouldPresentAlert: Bool = false
+    @Published var error: Error?
+
+    func loginAction(with authVM: AuthenticationModelProtocol) async {
+        do {
+            try await authVM.login(email: email, password: password)
+        } catch let error {
+            self.error = error
+            shouldPresentAlert = true
+        }
+    }
+}
+>>>>>>> Stashed changes

@@ -8,53 +8,35 @@
 import SwiftUI
 
 struct RegistrationView: View {
-    @State private var email: String = "rafasrrg1@gmail.com"
-    @State private var username: String = "Rafael"
+    @State private var email: String = "rafasrrg13@gmail.com"
+    @State private var username: String = "Rafael Serrano Gamarra"
     @State private var password: String = "Contrasena_123"
-    @State private var confirmPassword: String = "Contrasena_123"
-    @Environment(\.authVM) var authVM: AuthenticationModelProtocol
+    @Environment(\.authVM) private var authVM: AuthenticationModelProtocol
+    @Environment(\.colorScheme) private var colorScheme: ColorScheme
 
     var body: some View {
-        NavigationView {
-            VStack {
-                Text("Crear una cuenta")
-                    .font(.largeTitle)
-                    .bold()
-                    .padding(.bottom, 40)
-                
-                TextField("Nombre de usuario", text: $username)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-                    .padding(.horizontal)
-                    .autocapitalization(.none)
+            VStack(spacing: 24) {
+                MUTextField(text: $username,
+                            placeholder: "Username",
+                            headerText: "Username",
+                            autocapitalization: .words)
 
-                TextField("Correo electrónico", text: $email)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-                    .padding(.horizontal)
-                    .autocapitalization(.none)
+                MUTextField(text: $email,
+                            placeholder: "Email",
+                            headerText: "Email",
+                            autocapitalization: .none)
 
-                SecureField("Contraseña", text: $password)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-                    .padding(.horizontal)
-                
-                SecureField("Confirmar contraseña", text: $confirmPassword)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-                    .padding(.horizontal)
 
+                MUPasswordField(password: $password,
+                                headerText: "Password")
                 Button {
                     Task {
                         try await authVM.register(email: email, password: password, name: username)
                     }
                 } label: {
-                    Text("Registrar cuenta")
-                        .foregroundColor(.white)
+                    Text("Sign Up")
+                        .foregroundColor(colorScheme == .dark ? .black : .white)
+                        .bold()
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(Color.blue)
@@ -72,6 +54,34 @@ struct RegistrationView: View {
                 }
             }
             .padding()
+            .padding(.horizontal)
+    }
+
+    func registerAction() {
+        Task {
+            try await authVM.register(email: email, password: password, name: username)
+        }
+    }
+}
+
+
+struct MUTextField: View {
+    @Binding var text: String
+    var placeholder: String
+    var headerText: String
+    var autocapitalization: UITextAutocapitalizationType = .none
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(headerText)
+                .font(.callout)
+                .foregroundColor(.accent)
+                .bold()
+            TextField(placeholder, text: $text)
+                .padding()
+                .background(.thinMaterial)
+                .cornerRadius(5)
+                .autocapitalization(autocapitalization)
         }
     }
 }

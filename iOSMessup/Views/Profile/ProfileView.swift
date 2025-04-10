@@ -7,77 +7,82 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct ProfileView: View {
-    @State private var selectedRow: ProfileRowModel?
-    @Environment(\.authVM) var authVM: AuthenticationModelProtocol
+    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.authVM) private var authVM: AuthenticationModelProtocol
+    private var userImage: String = ""
+    private var userName: String = ""
+    private var userEmail: String = ""
 
     var body: some View {
-        NavigationStack {
-            VStack {
-                ProfileHeader()
-                .padding()
-                .frame(height: 130)
+        VStack(spacing: MUSpacer.size06) {
+            Image(userImage.isEmpty ? "logoImage" : userImage)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 100, height: 100)
+                .foregroundColor(.mint)
+                .padding(.top, 32)
+            Text(userName)
+                .font(.title2)
+                .fontWeight(.semibold)
+                .foregroundColor(primaryText)
+            Text(userEmail)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
 
-                List(ProfileRowModel.allCases, id: \.self) { row in
-                    Button {
-                        selectedRow = row
-                    } label: {
-                        ProfileRow(model: row)
-                    }
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(.init(top: 15, leading: 0, bottom: 15, trailing: 0))
-                    .onChange(of: selectedRow) { _, newValue in
-                        if selectedRow == .logOut {
-                            Task {
-                                try await authVM.logout()
-                            }
-                        }
-                    }
-                }
-                .listStyle(.plain)
-                .scrollDisabled(true)
+            Divider()
+                .padding(.horizontal)
+
+            VStack(spacing: 16) {
+                ProfileRow(icon: "gearshape.fill", title: "Configuración")
+                ProfileRow(icon: "bell.fill", title: "Notificaciones")
+                ProfileRow(icon: "shield.lefthalf.filled", title: "Privacidad")
             }
-            .navigationTitle("Profile")
-            .navigationBarTitleDisplayMode(.inline)
+
+            Spacer()
+
+            Button {
+                Task{ try await authVM.logout() }
+            } label: {
+                Text("Cerrar sesión")
+                    .foregroundColor(colorScheme == .dark ? .black : .white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.mint)
+                    .cornerRadius(12)
+                    .font(.headline)
+            }
+            .padding(.bottom)
         }
+        .padding()
+        .background(backgroundColor.ignoresSafeArea())
+    }
+
+    var backgroundColor: Color {
+        colorScheme == .dark ? .black : .white
+    }
+
+    var primaryText: Color {
+        colorScheme == .dark ? .white : .black
     }
 }
 
-// MARK: - ProfileHeader
+struct ProfileRow: View {
+    let icon: String
+    let title: String
 
-fileprivate struct ProfileHeader: View {
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 10)
-                .fill(.white.opacity(0.15))
-                .stroke(.accent.opacity(0.15), style: .init())
-            HStack {
-                Image("logoImage")
-                    .resizable()
-                    .frame(width: 70, height: 70)
-                    .foregroundColor(.gray)
-                    .clipShape(.circle)
-                    .padding(.leading, MUSpacer.size04)
-                    .padding(.trailing, MUSpacer.size04)
-
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("John Doe")
-                        .font(.title3)
-                        .fontWeight(.bold)
-                    
-                    Text("Edit Profile")
-                        .font(.subheadline)
-                        .underline()
-                        .foregroundColor(.blue)
-                        .onTapGesture {
-                            // Acción para editar perfil
-                        }
-                }
-                Spacer()
-            }
+        HStack {
+            Image(systemName: icon)
+                .foregroundColor(.mint)
+                .frame(width: 24)
+            Text(title)
+                .foregroundColor(.primary)
+            Spacer()
+            Image(systemName: "chevron.right")
+                .foregroundColor(.gray)
         }
+        .padding(.vertical, 8)
     }
 }
 

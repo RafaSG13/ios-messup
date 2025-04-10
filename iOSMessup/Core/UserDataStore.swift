@@ -8,7 +8,10 @@
 import Foundation
 
 final class UserDataStore {
-    private init() {}
+    private init() {
+        guard let accessToken = UserDefaults.standard.string(forKey: TokenKeys.accessToken) else { return }
+        saveUserData(from: accessToken)
+    }
 
     static let shared = UserDataStore()
 
@@ -25,27 +28,10 @@ final class UserDataStore {
         userId = muToken.userId
     }
 
-    func saveTokens(accessToken: String, refreshToken: String) {
-        self.accessToken = accessToken
-        self.refreshToken = refreshToken
-    }
-
-    var accessToken: String? {
-        get { UserDefaults.standard.string(forKey: Keys.accessToken) }
-        set { UserDefaults.standard.set(newValue, forKey: Keys.accessToken) }
-    }
-
-    var refreshToken: String? {
-        get { UserDefaults.standard.string(forKey: Keys.refreshToken) }
-        set { UserDefaults.standard.set(newValue, forKey: Keys.refreshToken) }
-    }
-}
-
-
-extension UserDataStore {
-
-    private enum Keys {
-        static let accessToken = "MUAccessToken"
-        static let refreshToken = "MURefreshToken"
+    func removeUserData() {
+        userName = nil
+        userEmail = nil
+        userImage = nil
+        userId = nil
     }
 }
