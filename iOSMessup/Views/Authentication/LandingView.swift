@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 struct LandingView: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var showLogin = false

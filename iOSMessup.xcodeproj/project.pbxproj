@@ -525,6 +525,7 @@
 		AAC000F52DA449BF00B5A11D /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				AA4F7B1D2DA5A88300FD598B /* LandingView.swift */,
 				AAC000F82DA449F300B5A11D /* RegistrationView.swift */,
 				AAC000F62DA449C500B5A11D /* LoginView.swift */,
 			);
@@ -727,6 +728,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA6A71B62D443205004720CB /* SavingViewModelProtocol.swift in Sources */,
+				AA4F7B1E2DA5A88600FD598B /* LandingView.swift in Sources */,
 				AA51465F2D4048E800FE93E5 /* Expense.swift in Sources */,
 				AA6A71B82D44329C004720CB /* SavingViewModelMock.swift in Sources */,
 				AAD5E9012D510BA00058DD18 /* MUSpacer.swift in Sources */,

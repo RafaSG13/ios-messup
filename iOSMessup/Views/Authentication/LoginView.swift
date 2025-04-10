@@ -8,6 +8,7 @@ import SwiftUI
 import SwiftUI
 
 struct LoginView: View {
+
     @Environment(\.authVM) private var authVM: AuthenticationModelProtocol
     @Environment(\.colorScheme) private var colorScheme: ColorScheme
     @StateObject private var loginVM = LoginViewModel()
@@ -32,9 +33,8 @@ struct LoginView: View {
                         .bold()
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.blue)
+                        .background(Color.mint)
                         .cornerRadius(10)
-                        .padding(.horizontal)
                 }
                 .alert("Error", isPresented: $loginVM.shouldPresentAlert, presenting: loginVM.error) { _ in
                     Button("Close", role: .cancel) { loginVM.shouldPresentAlert = false }
@@ -43,6 +43,14 @@ struct LoginView: View {
                 }
             }
             .padding()
+            .padding(.horizontal)
+        }
+        
+    }
+    
+    func loginAction() {
+        Task {
+            try await authVM.login(email: email, password: password)
         }
     }
 }
@@ -68,4 +76,3 @@ class LoginViewModel: ObservableObject {
         }
     }
 }
->>>>>>> Stashed changes

@@ -40,6 +40,7 @@ struct iOSMessupApp: App {
     }
 
     @ViewBuilder private func initApplication() -> some View {
+
         if viewModelLoaded == false {
             LoadingScreen()
         } else {
