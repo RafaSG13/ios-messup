@@ -8,16 +8,14 @@
 import Foundation
 
 final class MUClient {
-    static let shared = MUClient(baseURL: URL(string: "http://localhost:3000")!)
-
     private let baseURL: URL
 
-    init(baseURL: URL) {
+    init(baseURL: URL = URL(string: "http://localhost:3000")!) {
         self.baseURL = baseURL
     }
 
     func send<ResponseType: Decodable>(_ request: MURequest, as responseType: ResponseType.Type) async throws -> ResponseType {
-        do {
+        do { 
             return try await performRequest(request, as: responseType)
         } catch let error as NSError where error.code == 401 {
             guard (try? await refreshAccessToken()) != nil else {

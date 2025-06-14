@@ -11,22 +11,33 @@ struct LoginView: View {
 
     @Environment(\.authVM) private var authVM: AuthenticationModelProtocol
     @Environment(\.colorScheme) private var colorScheme: ColorScheme
-    @StateObject private var loginVM = LoginViewModel()
+
+    @State var email: String = "rafasrrg13@gmail.com"
+    @State var password: String = "Contrasena_123"
+    @State var shouldPresentAlert: Bool = false
+    @State var error: Error?
 
 
     var body: some View {
         ZStack {
             VStack(spacing: 24) {
-                MUTextField(text: $loginVM.email,
+                MUTextField(text: $email,
                             placeholder: "Email",
                             headerText: "Email",
                             autocapitalization: .none)
 
-                MUPasswordField(password: $loginVM.password,
+                MUPasswordField(password: $password,
                                 headerText: "Password")
 
                 Button {
-                    Task { await loginVM.loginAction(with: authVM) }
+                    Task {
+                        do {
+                            try await authVM.login(email: email, password: password)
+                        } catch let error {
+                            self.error = error
+                            self.shouldPresentAlert = true
+                        }
+                    }
                 } label: {
                     Text("Iniciar Sesión")
                         .foregroundColor(colorScheme == .dark ? .black : .white)
@@ -36,8 +47,8 @@ struct LoginView: View {
                         .background(Color.mint)
                         .cornerRadius(10)
                 }
-                .alert("Error", isPresented: $loginVM.shouldPresentAlert, presenting: loginVM.error) { _ in
-                    Button("Close", role: .cancel) { loginVM.shouldPresentAlert = false }
+                .alert("Error", isPresented: $shouldPresentAlert, presenting: error) { _ in
+                    Button("Close", role: .cancel) { shouldPresentAlert = false }
                 } message: { error in
                     Text((error as? LocalizedError)?.errorDescription ?? "Something went wrong.")
                 }
@@ -45,34 +56,9 @@ struct LoginView: View {
             .padding()
             .padding(.horizontal)
         }
-        
-    }
-    
-    func loginAction() {
-        Task {
-            try await authVM.login(email: email, password: password)
-        }
     }
 }
 
 #Preview {
     LoginView()
-}
-
-// MARK: - ViewModel to wrap properties and logic
-
-class LoginViewModel: ObservableObject {
-    @Published var email: String = "rafasrrg13@gmail.com"
-    @Published var password: String = "Contrasena_123"
-    @Published var shouldPresentAlert: Bool = false
-    @Published var error: Error?
-
-    func loginAction(with authVM: AuthenticationModelProtocol) async {
-        do {
-            try await authVM.login(email: email, password: password)
-        } catch let error {
-            self.error = error
-            shouldPresentAlert = true
-        }
-    }
 }

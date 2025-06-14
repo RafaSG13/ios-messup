@@ -130,7 +130,6 @@ enum Category: String, CaseIterable, Hashable, Codable {
     }
 }
 
-
 struct ExpenseResponse: Decodable {
     let id: String
     let name: String

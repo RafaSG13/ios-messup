@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 protocol ExpensesDataSourceProtocol {
     func readAll() async throws -> [Expense]
     func create(_ expense: Expense) async throws
@@ -19,8 +18,9 @@ protocol ExpensesDataSourceProtocol {
 struct ExpensesDataSource: ExpensesDataSourceProtocol {
     func readAll() async throws -> [Expense] {
         do {
+
             let request = GetAllExpensesRequest()
-            let expenses = try await MUClient.shared.send(request, as: [Expense].self)
+            let expenses = try await MUClient().send(request, as: [Expense].self)
             return expenses
         } catch {
             return []
@@ -29,9 +29,9 @@ struct ExpensesDataSource: ExpensesDataSourceProtocol {
 
     func create(_ expense: Expense) async throws {
         let request = CreateExpenseRequest(expense: expense)
-        let expense = try await MUClient.shared.send(request, as: Expense.self)
+        let _ = try await MUClient().send(request, as: Expense.self)
     }
-    
+
     func delete(_ expense: Expense) async throws {
         try await simulateNetworkDelay()
         Expense.mockArray.removeAll(where: { $0.id == expense.id })
@@ -49,7 +49,7 @@ struct ExpensesDataSource: ExpensesDataSourceProtocol {
         }
         Expense.mockArray[index] = expense
     }
-    
+
     private func simulateNetworkDelay() async throws {
         try await Task.sleep(nanoseconds: 3_000_000_000)
     }
