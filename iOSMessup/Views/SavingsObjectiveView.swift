@@ -12,8 +12,10 @@ struct SavingsObjectiveView: View {
     @State private var selectedDeposit: Deposit? = nil
     @State private var shouldPresentAddDepositModal: Bool = false
     @State private var shouldPresentEditDepositModal: Bool = false
-    
+
     var body: some View {
+        @Bindable var bindableSavingVM = Bindable(wrappedValue: savingVM)
+
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading) {
@@ -80,7 +82,7 @@ extension SavingsObjectiveView {
                 .foregroundStyle(progressColor)
         }
     }
-    
+
     var ProgressSectionView: some View {
         let actualProgress = savingVM.calculateActualProgress()
         let actualFounded = savingVM.calculateTotalFounded().toAbbreviateMoneyString()
@@ -156,7 +158,7 @@ extension SavingsObjectiveView {
                 .foregroundStyle(.secondary.opacity(0.5))
         }
     }
-    
+
     var CircularProgressSection: some View {
         let actualProgress = savingVM.calculateActualProgress()
         let actualFounded = savingVM.calculateTotalFounded().toAbbreviateMoneyString()

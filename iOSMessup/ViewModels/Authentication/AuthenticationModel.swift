@@ -21,7 +21,8 @@ import Observation
     func login(email: String, password: String) async throws {
         let request = LoginRequest(email: email, password: password)
         do {
-            let response = try await MUClient.shared.send(request, as: LoginResponse.self)
+            guard let baseURL = URL(string: "http://localhost:3000") else { return }
+            let response = try await MUClient(baseURL: baseURL).send(request, as: LoginResponse.self)
             saveTokens(accessToken: response.accessToken, refreshToken: response.refreshToken)
             isAuthenticated = true
         } catch {
@@ -37,7 +38,8 @@ import Observation
     func register(email: String, password: String, name: String) async throws {
         let request = RegisterRequest(email: email, password: password, name: name)
         do {
-            let response = try await MUClient.shared.send(request, as: RegisterResponse.self)
+            guard let baseURL = URL(string: "http://localhost:3000") else { return }
+            let response = try await MUClient(baseURL: baseURL).send(request, as: RegisterResponse.self)
             saveTokens(accessToken: response.accessToken, refreshToken: response.refreshToken)
             isAuthenticated = true
         } catch {

@@ -18,6 +18,11 @@
 		AA20F9DD2DA7139100B2FE3E /* TokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20F9DC2DA7139100B2FE3E /* TokenResponse.swift */; };
 		AA2CA68F2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2CA68E2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift */; };
 		AA31E12F2D48022A004BA303 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA31E12E2D480227004BA303 /* Route.swift */; };
+		AA3E1FE72DAD2D460007C6EA /* TokenStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3E1FE62DAD2D3B0007C6EA /* TokenStoreManager.swift */; };
+		AA3E1FEA2DAD2DD60007C6EA /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = AA3E1FE92DAD2DD60007C6EA /* KeychainAccess */; };
+		AA3E1FEC2DAD2F8B0007C6EA /* TokenRefreshRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3E1FEB2DAD2F800007C6EA /* TokenRefreshRequest.swift */; };
+		AA3E1FEE2DAD327A0007C6EA /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3E1FED2DAD327A0007C6EA /* AppEnvironment.swift */; };
+		AA3E1FF12DAD369C0007C6EA /* MUClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3E1FF02DAD369C0007C6EA /* MUClientTests.swift */; };
 		AA422C292D4141B500F108B8 /* MainTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA422C282D4141B500F108B8 /* MainTabBarView.swift */; };
 		AA4F7B1E2DA5A88600FD598B /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F7B1D2DA5A88300FD598B /* LandingView.swift */; };
 		AA4F7B202DA5C29200FD598B /* VisualEffectBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4F7B1F2DA5C29200FD598B /* VisualEffectBlur.swift */; };
@@ -105,12 +110,17 @@
 		AA0B19262D43D99800B02095 /* CircularSavingProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularSavingProgressView.swift; sourceTree = "<group>"; };
 		AA0B19282D43E62C00B02095 /* DepositCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepositCellView.swift; sourceTree = "<group>"; };
 		AA0B192A2D43E8E100B02095 /* ListSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSectionHeaderView.swift; sourceTree = "<group>"; };
+		AA11DFE02DBB7F6F009627DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AA1214DD2D42F2EC00787FD2 /* SavingGoal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingGoal.swift; sourceTree = "<group>"; };
 		AA1214E12D42F66600787FD2 /* Deposit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deposit.swift; sourceTree = "<group>"; };
 		AA20F9DA2DA7138800B2FE3E /* TokenKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenKeys.swift; sourceTree = "<group>"; };
 		AA20F9DC2DA7139100B2FE3E /* TokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenResponse.swift; sourceTree = "<group>"; };
 		AA2CA68E2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUCustomVerticalForEach.swift; sourceTree = "<group>"; };
 		AA31E12E2D480227004BA303 /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
+		AA3E1FE62DAD2D3B0007C6EA /* TokenStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStoreManager.swift; sourceTree = "<group>"; };
+		AA3E1FEB2DAD2F800007C6EA /* TokenRefreshRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefreshRequest.swift; sourceTree = "<group>"; };
+		AA3E1FED2DAD327A0007C6EA /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		AA3E1FF02DAD369C0007C6EA /* MUClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUClientTests.swift; sourceTree = "<group>"; };
 		AA422C282D4141B500F108B8 /* MainTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarView.swift; sourceTree = "<group>"; };
 		AA4F7B1D2DA5A88300FD598B /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		AA4F7B1F2DA5C29200FD598B /* VisualEffectBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectBlur.swift; sourceTree = "<group>"; };
@@ -184,6 +194,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA3E1FEA2DAD2DD60007C6EA /* KeychainAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,6 +218,8 @@
 		AA20F9D92DA7137800B2FE3E /* Tokens */ = {
 			isa = PBXGroup;
 			children = (
+				AA3E1FEB2DAD2F800007C6EA /* TokenRefreshRequest.swift */,
+				AA3E1FE62DAD2D3B0007C6EA /* TokenStoreManager.swift */,
 				AA20F9DC2DA7139100B2FE3E /* TokenResponse.swift */,
 				AA20F9DA2DA7138800B2FE3E /* TokenKeys.swift */,
 			);
@@ -228,6 +241,14 @@
 				AA31E12E2D480227004BA303 /* Route.swift */,
 			);
 			path = Navigation;
+			sourceTree = "<group>";
+		};
+		AA3E1FEF2DAD36910007C6EA /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				AA3E1FF02DAD369C0007C6EA /* MUClientTests.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 		AA5146222D40450600FE93E5 = {
@@ -252,6 +273,7 @@
 		AA51462D2D40450600FE93E5 /* iOSMessup */ = {
 			isa = PBXGroup;
 			children = (
+				AA11DFE02DBB7F6F009627DF /* Info.plist */,
 				AAC000DA2DA43B7D00B5A11D /* Core */,
 				AA5146342D40450700FE93E5 /* iOSMessup.entitlements */,
 				AA51462E2D40450600FE93E5 /* iOSMessupApp.swift */,
@@ -280,6 +302,7 @@
 		AA51463F2D40450700FE93E5 /* iOSMessupTests */ = {
 			isa = PBXGroup;
 			children = (
+				AA3E1FEF2DAD36910007C6EA /* Network */,
 				AA56E0AF2D445F54009F7058 /* Saving */,
 				AAF9F5982D429DDA0085FD44 /* Expense */,
 			);
@@ -514,6 +537,7 @@
 		AAC000F22DA442AC00B5A11D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				AA3E1FED2DAD327A0007C6EA /* AppEnvironment.swift */,
 				AAC000F32DA4450A00B5A11D /* MUAPIError.swift */,
 				AAC000E32DA43F9700B5A11D /* HTTPMethod.swift */,
 				AAC000EB2DA4420800B5A11D /* MURequest.swift */,
@@ -608,6 +632,7 @@
 			);
 			name = iOSMessup;
 			packageProductDependencies = (
+				AA3E1FE92DAD2DD60007C6EA /* KeychainAccess */,
 			);
 			productName = iOSMessup;
 			productReference = AA51462B2D40450600FE93E5 /* iOSMessup.app */;
@@ -683,6 +708,7 @@
 			mainGroup = AA5146222D40450600FE93E5;
 			packageReferences = (
 				AAF9F5972D429DCB0085FD44 /* XCRemoteSwiftPackageReference "swift-testing" */,
+				AA3E1FE82DAD2DD60007C6EA /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			productRefGroup = AA51462C2D40450600FE93E5 /* Products */;
 			projectDirPath = "";
@@ -737,7 +763,9 @@
 				AAC001022DA4563300B5A11D /* RegisterResponse.swift in Sources */,
 				AA81393D2D4FB6C20097F51E /* EditDepositModalView.swift in Sources */,
 				AA6D45BD2D41B5A90014A95F /* UIApplication+Keyboard.swift in Sources */,
+				AA3E1FEE2DAD327A0007C6EA /* AppEnvironment.swift in Sources */,
 				AA56E0B32D44FFC2009F7058 /* HideTabBarAfterScrollingThreshold.swift in Sources */,
+				AA3E1FEC2DAD2F8B0007C6EA /* TokenRefreshRequest.swift in Sources */,
 				AA0B192B2D43E8E200B02095 /* ListSectionHeaderView.swift in Sources */,
 				AAFB71B42D7324BB00A93202 /* AuthenticationModelProtocol.swift in Sources */,
 				AA6A71B22D44304C004720CB /* ExpenseViewModelMock.swift in Sources */,
@@ -764,6 +792,7 @@
 				AA668EA32D441E12005E714D /* SavingDataSource.swift in Sources */,
 				AAC000DF2DA43CE800B5A11D /* JWTDecoder.swift in Sources */,
 				AA7923D52D413C5800768849 /* SocialGroupsView.swift in Sources */,
+				AA3E1FE72DAD2D460007C6EA /* TokenStoreManager.swift in Sources */,
 				AA1214DE2D42F2EC00787FD2 /* SavingGoal.swift in Sources */,
 				AA51462F2D40450600FE93E5 /* iOSMessupApp.swift in Sources */,
 				AAACDF602D442AEF0037C771 /* SavingDataSourceSpy.swift in Sources */,
@@ -803,6 +832,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA56E0AE2D4454FB009F7058 /* SavingViewModelTest.swift in Sources */,
+				AA3E1FF12DAD369C0007C6EA /* MUClientTests.swift in Sources */,
 				AAF9F59A2D429DF00085FD44 /* ExpenseViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -959,6 +989,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iOSMessup/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Messup;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -980,6 +1011,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEVELOPMENT DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -999,6 +1031,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iOSMessup/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Messup;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -1020,6 +1053,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = PRODUCTION;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1154,6 +1188,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		AA3E1FE82DAD2DD60007C6EA /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		AAF9F5972D429DCB0085FD44 /* XCRemoteSwiftPackageReference "swift-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/swiftlang/swift-testing.git";
@@ -1163,6 +1205,14 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AA3E1FE92DAD2DD60007C6EA /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA3E1FE82DAD2DD60007C6EA /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AA5146232D40450600FE93E5 /* Project object */;
 }
