@@ -14,11 +14,10 @@ enum EnvironmentKey: String {
     case pro
 }
 
-// El gestor de nuestro entorno
 @MainActor
 final class MUEnvironmentConfigurator {
     let expenseRepository: ExpenseRepository
-    let savingViewModel: SavingViewModel
+    let incomeRepository: IncomeRepository
     let authenticationService: AuthenticationService
 
     init() {
@@ -29,12 +28,12 @@ final class MUEnvironmentConfigurator {
             self.authenticationService = AuthenticationService(dataSource: MockAuthenticationDataSource(),
                                                                tokenStorage: InMemoryTokenStorage())
             self.expenseRepository = ExpenseRepository(dataSource: MockExpensesDataSource())
-            self.savingViewModel = SavingViewModel(dataSource: SavingDataSource())
+            self.incomeRepository = IncomeRepository(dataSource: IncomeDataSourceMock())
         case .pro:
             self.authenticationService = AuthenticationService(dataSource: LiveAuthenticationDataSource(),
                                                                tokenStorage: UserDefaultsTokenStorage())
             self.expenseRepository = ExpenseRepository(dataSource: ExpensesDataSource())
-            self.savingViewModel = SavingViewModel(dataSource: SavingDataSource())
+            self.incomeRepository = IncomeRepository(dataSource: IncomeDataSource())
         case .none:
             fatalError("Unknown app environment")
         }

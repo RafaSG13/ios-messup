@@ -11,7 +11,7 @@ import SwiftUI
 struct iOSMessupApp: App {
 
     var expenseRepository: ExpenseRepository
-    var savingViewModel: SavingViewModel
+    var incomeRepository: IncomeRepository
     var authenticationService: AuthenticationService
 
     @State private var viewModelLoaded: Bool = false
@@ -19,7 +19,7 @@ struct iOSMessupApp: App {
     init() {
         let environment = MUEnvironmentConfigurator()
         expenseRepository = environment.expenseRepository
-        savingViewModel = environment.savingViewModel
+        incomeRepository = environment.incomeRepository
         authenticationService = environment.authenticationService
     }
 
@@ -34,10 +34,10 @@ struct iOSMessupApp: App {
                         guard authenticationService.isAuthenticated else { return }
                         do {
                             async let loadExpenses: () = expenseRepository.loadExpenses()
-                            async let loadSavings: () = savingViewModel.load()
+                            async let loadIncome: () = incomeRepository.load()
 
                             try await loadExpenses
-                            try await loadSavings
+                            try await loadIncome
                             viewModelLoaded = true
                         } catch {
                             print("Error loading expenses on app loading: \(error.localizedDescription)")
@@ -54,7 +54,7 @@ struct iOSMessupApp: App {
         } else {
             MainTabBarView()
                 .environment(\.expenseRepository, expenseRepository)
-                .environment(\.savingVM, savingViewModel)
+                .environment(\.incomeRepository, incomeRepository)
                 .environment(\.authenticationService, authenticationService)
         }
     }

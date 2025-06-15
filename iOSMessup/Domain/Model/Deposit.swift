@@ -48,7 +48,7 @@ enum FoundingSource: String, CaseIterable, Hashable, Equatable {
     case businessProfits = "Business Profits"
     case gifts = "Gifts"
     case inheritance = "Inheritance"
-    case savings = "Savings"
+    case Income = "Income"
     case bonuses = "Bonuses"
     case taxRefund = "Tax Refund"
     case passiveIncome = "Passive Income"
@@ -66,7 +66,7 @@ enum FoundingSource: String, CaseIterable, Hashable, Equatable {
         case .businessProfits: return "briefcase"
         case .gifts: return "gift"
         case .inheritance: return "scroll"
-        case .savings: return "banknote.fill"
+        case .Income: return "banknote.fill"
         case .bonuses: return "sparkles"
         case .taxRefund: return "arrowshape.turn.up.left.circle"
         case .passiveIncome: return "waveform.path.ecg"
@@ -86,7 +86,7 @@ enum FoundingSource: String, CaseIterable, Hashable, Equatable {
         case .businessProfits: return .orange
         case .gifts: return .pink
         case .inheritance: return .brown
-        case .savings: return .yellow
+        case .Income: return .yellow
         case .bonuses: return .mint
         case .taxRefund: return .indigo
         case .passiveIncome: return .cyan

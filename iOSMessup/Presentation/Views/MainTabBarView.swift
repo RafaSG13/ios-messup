@@ -10,7 +10,7 @@ import SwiftUI
 
 enum Tab: Int, CaseIterable {
     case expenses
-    case savings
+    case Income
     case socialGroups
     case profile
 }
@@ -22,9 +22,9 @@ struct MainTabBarView: View {
             ExpensesView()
                 .tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill") }
                 .tag(Tab.expenses)
-            SavingsObjectiveView()
-                .tabItem { Label("Savings", systemImage: "chart.pie.fill") }
-                .tag(Tab.savings)
+            IncomeObjectiveView()
+                .tabItem { Label("Income", systemImage: "chart.pie.fill") }
+                .tag(Tab.Income)
             SocialGroupsView()
                 .tabItem { Label("Social groups", systemImage: "bubble.left.and.bubble.right") }
                 .tag(Tab.socialGroups)
