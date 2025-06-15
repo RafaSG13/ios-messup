@@ -11,7 +11,7 @@ import SwiftUI
 
 enum EnvironmentKey: String {
     case dev
-    case prod
+    case pro
 }
 
 // El gestor de nuestro entorno
@@ -30,7 +30,7 @@ final class MUEnvironmentConfigurator {
                                                                tokenStorage: InMemoryTokenStorage())
             self.expenseRepository = ExpenseRepository(dataSource: MockExpensesDataSource())
             self.savingViewModel = SavingViewModel(dataSource: SavingDataSource())
-        case .prod:
+        case .pro:
             self.authenticationService = AuthenticationService(dataSource: LiveAuthenticationDataSource(),
                                                                tokenStorage: UserDefaultsTokenStorage())
             self.expenseRepository = ExpenseRepository(dataSource: ExpensesDataSource())
