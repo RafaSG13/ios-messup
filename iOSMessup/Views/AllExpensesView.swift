@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AllExpensesView: View {
-    @Environment(\.expenseVM) var expensesVM
+    @Environment(\.expenseRepository) private var expenseRepository
     @State private var selectedItem: Expense?
     @State private var shouldPresentEditExpense = false
     @State private var shouldPresentAddExpense = false
@@ -16,7 +16,7 @@ struct AllExpensesView: View {
     
     var body: some View {
         List {
-            ForEach(expensesVM.filteredExpenses(on: searchText)) { expense in
+            ForEach(expenseRepository.filteredExpenses(on: searchText)) { expense in
                 ExpenseCellView(expense: expense)
                     .selectableCell {
                         selectedItem = expense
@@ -28,7 +28,7 @@ struct AllExpensesView: View {
                     .listRowInsets(EdgeInsets(top: 7.5, leading: 20, bottom: 7.5, trailing: 20))
             }.onDelete { indexSet in
                 Task {
-                    try await expensesVM.delete(removeAt: indexSet)
+                    try await expenseRepository.delete(removeAt: indexSet)
                 }
             }
         }
@@ -48,9 +48,9 @@ struct AllExpensesView: View {
         }
         .editExpenseSheet(isPresented: $shouldPresentEditExpense,
                           selectedItem: $selectedItem,
-                          onSubmit: expensesVM.updateExpense(with:))
+                          onSubmit: expenseRepository.updateExpense(with:))
         .addExpenseSheet(isPresented: $shouldPresentAddExpense,
-                         onSubmit: expensesVM.addExpense)
+                         onSubmit: expenseRepository.addExpense)
     }
 }
 
