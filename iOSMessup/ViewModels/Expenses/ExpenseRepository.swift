@@ -6,22 +6,30 @@
 //
 
 import Foundation
+import SwiftUI
 import Observation
 
-@Observable class ExpenseViewModel: ExpenseViewModelProtocol {
-    private(set) var expenses: [Expense] = []
-    let dataSource: ExpensesDataSourceProtocol
-    
+extension EnvironmentValues {
+    @Entry() var expenseRepository: ExpenseRepository = ExpenseRepository(dataSource: MockExpensesDataSource())
+}
+
+@Observable class ExpenseRepository {
+    var expenses: [Expense] {
+        dataSource.expenses
+    }
+
+    private var dataSource: ExpensesDataSourceProtocol
+
     init(dataSource: ExpensesDataSourceProtocol) {
         self.dataSource = dataSource
     }
 
     func loadExpenses() async throws {
-        expenses = try await dataSource.readAll()
+        try await dataSource.readAll()
     }
     
     func lastExpenses(limit: Int) -> [Expense] {
-        return expenses.sorted().suffix(limit)
+        return dataSource.expenses.sorted().suffix(limit)
     }
 
     func calculateTotalSpent() -> Double {
@@ -40,23 +48,19 @@ import Observation
     }
 
     func updateExpense(with newValue: Expense) async throws {
-        expenses = expenses.map { $0.id == newValue.id ? newValue : $0 }
         try await dataSource.update(newValue)
     }
 
     func addExpense(_ expense: Expense) async throws{
-        expenses.append(expense)
         try? await dataSource.create(expense)
     }
 
     func delete(removeAt indices: IndexSet) async throws{
         let expensesToDelete = indices.compactMap { expenses.indices.contains($0) ? expenses[$0] : nil }
-        expenses.remove(atOffsets: indices)
         try? await dataSource.deleteAll(expensesToDelete)
     }
 
     func delete(_ expense: Expense) async throws {
-        expenses.removeAll { $0.id == expense.id }
         try? await dataSource.delete(expense)
     }
 }

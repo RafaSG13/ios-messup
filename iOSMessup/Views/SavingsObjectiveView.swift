@@ -14,7 +14,6 @@ struct SavingsObjectiveView: View {
     @State private var shouldPresentEditDepositModal: Bool = false
 
     var body: some View {
-        @Bindable var bindableSavingVM = Bindable(wrappedValue: savingVM)
 
         NavigationStack {
             ScrollView {

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LoginView: View {
 
-    @Environment(\.authVM) private var authVM: AuthenticationModelProtocol
+    @Environment(\.authenticationService) private var authenticationService
     @Environment(\.colorScheme) private var colorScheme: ColorScheme
 
     @State var email: String = "rafasrrg13@gmail.com"
@@ -32,7 +32,7 @@ struct LoginView: View {
                 Button {
                     Task {
                         do {
-                            try await authVM.login(email: email, password: password)
+                            try await authenticationService.login(email: email, password: password)
                         } catch let error {
                             self.error = error
                             self.shouldPresentAlert = true

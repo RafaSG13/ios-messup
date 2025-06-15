@@ -11,8 +11,8 @@ struct RegistrationView: View {
     @State private var email: String = "rafasrrg13@gmail.com"
     @State private var username: String = "Rafael Serrano Gamarra"
     @State private var password: String = "Contrasena_123"
-    @Environment(\.authVM) private var authVM: AuthenticationModelProtocol
-    
+    @Environment(\.authenticationService) private var authenticationService
+
     @Environment(\.colorScheme) private var colorScheme: ColorScheme
     
     var body: some View {
@@ -48,7 +48,7 @@ struct RegistrationView: View {
     
     func registerAction() {
         Task {
-            try await authVM.register(email: email, password: password, name: username)
+            try await authenticationService.register(email: email, password: password, name: username)
         }
     }
 }

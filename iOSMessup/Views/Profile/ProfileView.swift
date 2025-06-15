@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @Environment(\.colorScheme) var colorScheme
-    @Environment(\.authVM) private var authVM: AuthenticationModelProtocol
+    @Environment(\.authenticationService) private var authenticationService
     private var userImage: String = ""
     private var userName: String = ""
     private var userEmail: String = ""
@@ -42,7 +42,7 @@ struct ProfileView: View {
             Spacer()
 
             Button {
-                Task{ try await authVM.logout() }
+                authenticationService.logout()
             } label: {
                 Text("Cerrar sesión")
                     .foregroundColor(colorScheme == .dark ? .black : .white)

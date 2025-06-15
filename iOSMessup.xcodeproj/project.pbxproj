@@ -14,6 +14,10 @@
 		AA0B192B2D43E8E200B02095 /* ListSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0B192A2D43E8E100B02095 /* ListSectionHeaderView.swift */; };
 		AA1214DE2D42F2EC00787FD2 /* SavingGoal.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1214DD2D42F2EC00787FD2 /* SavingGoal.swift */; };
 		AA1214E22D42F66A00787FD2 /* Deposit.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1214E12D42F66600787FD2 /* Deposit.swift */; };
+		AA1783AB2DFF15E200D73B02 /* UserDefaultsTokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1783AA2DFF15E200D73B02 /* UserDefaultsTokenStorage.swift */; };
+		AA1783AD2DFF161E00D73B02 /* MockAuthenticationDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1783AC2DFF161E00D73B02 /* MockAuthenticationDataSource.swift */; };
+		AA1783B02DFF163A00D73B02 /* InMemoryTokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1783AF2DFF163A00D73B02 /* InMemoryTokenStorage.swift */; };
+		AA1783B22DFF168C00D73B02 /* LiveAuthenticationDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1783B12DFF168C00D73B02 /* LiveAuthenticationDataSource.swift */; };
 		AA20F9DB2DA7138800B2FE3E /* TokenKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20F9DA2DA7138800B2FE3E /* TokenKeys.swift */; };
 		AA20F9DD2DA7139100B2FE3E /* TokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA20F9DC2DA7139100B2FE3E /* TokenResponse.swift */; };
 		AA2CA68F2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2CA68E2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift */; };
@@ -39,14 +43,13 @@
 		AA56E0B32D44FFC2009F7058 /* HideTabBarAfterScrollingThreshold.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA56E0B22D44FFC2009F7058 /* HideTabBarAfterScrollingThreshold.swift */; };
 		AA668EA12D441BB9005E714D /* SavingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA668EA02D441BB9005E714D /* SavingViewModel.swift */; };
 		AA668EA32D441E12005E714D /* SavingDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA668EA22D441E12005E714D /* SavingDataSource.swift */; };
-		AA6A71B22D44304C004720CB /* ExpenseViewModelMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6A71B12D44304C004720CB /* ExpenseViewModelMock.swift */; };
-		AA6A71B42D4430FF004720CB /* ExpenseViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6A71B32D4430FA004720CB /* ExpenseViewModelProtocol.swift */; };
+		AA6A71B22D44304C004720CB /* MockExpensesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6A71B12D44304C004720CB /* MockExpensesDataSource.swift */; };
 		AA6A71B62D443205004720CB /* SavingViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6A71B52D443205004720CB /* SavingViewModelProtocol.swift */; };
 		AA6A71B82D44329C004720CB /* SavingViewModelMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6A71B72D44329C004720CB /* SavingViewModelMock.swift */; };
 		AA6D45B82D41ABBD0014A95F /* AddExpenseViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45B72D41ABBD0014A95F /* AddExpenseViewModal.swift */; };
 		AA6D45BB2D41B0E40014A95F /* ExpenseSheetViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45BA2D41B0E40014A95F /* ExpenseSheetViewModifier.swift */; };
 		AA6D45BD2D41B5A90014A95F /* UIApplication+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45BC2D41B5A90014A95F /* UIApplication+Keyboard.swift */; };
-		AA6D45C72D4249DB0014A95F /* ExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45C62D4249DB0014A95F /* ExpenseViewModel.swift */; };
+		AA6D45C72D4249DB0014A95F /* ExpenseRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D45C62D4249DB0014A95F /* ExpenseRepository.swift */; };
 		AA6EE0C02D4277A300E0F7D3 /* ExpensesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6EE0BF2D4277A300E0F7D3 /* ExpensesDataSource.swift */; };
 		AA6EE0C62D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6EE0C52D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift */; };
 		AA71A7682D4C3201003D5909 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA71A7672D4C31FD003D5909 /* ProfileView.swift */; };
@@ -74,8 +77,7 @@
 		AAC000F42DA4450A00B5A11D /* MUAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000F32DA4450A00B5A11D /* MUAPIError.swift */; };
 		AAC000F72DA449C500B5A11D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000F62DA449C500B5A11D /* LoginView.swift */; };
 		AAC000F92DA449F300B5A11D /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000F82DA449F300B5A11D /* RegistrationView.swift */; };
-		AAC000FB2DA44A8B00B5A11D /* AuthenticationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000FA2DA44A8000B5A11D /* AuthenticationModel.swift */; };
-		AAC000FE2DA4502B00B5A11D /* AuthenticationModelMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000FD2DA4502400B5A11D /* AuthenticationModelMock.swift */; };
+		AAC000FB2DA44A8B00B5A11D /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000FA2DA44A8000B5A11D /* AuthenticationService.swift */; };
 		AAC001002DA455F400B5A11D /* RegisterRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC000FF2DA455ED00B5A11D /* RegisterRequest.swift */; };
 		AAC001022DA4563300B5A11D /* RegisterResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC001012DA4563300B5A11D /* RegisterResponse.swift */; };
 		AAC242042D48F4B3002A829C /* CategoryPieChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC242032D48F4A1002A829C /* CategoryPieChart.swift */; };
@@ -83,8 +85,7 @@
 		AAD5E9012D510BA00058DD18 /* MUSpacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD5E9002D510B9A0058DD18 /* MUSpacer.swift */; };
 		AAF91FDE2D4648DF003FDE4C /* SelectableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF91FDD2D4648DF003FDE4C /* SelectableCell.swift */; };
 		AAF9F59A2D429DF00085FD44 /* ExpenseViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF9F5992D429DE60085FD44 /* ExpenseViewModelTests.swift */; };
-		AAFB71B22D73235500A93202 /* UserErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB71B12D73234E00A93202 /* UserErrors.swift */; };
-		AAFB71B42D7324BB00A93202 /* AuthenticationModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB71B32D7324B300A93202 /* AuthenticationModelProtocol.swift */; };
+		AAFB71B42D7324BB00A93202 /* AuthenticationProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB71B32D7324B300A93202 /* AuthenticationProtocols.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,6 +114,10 @@
 		AA11DFE02DBB7F6F009627DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AA1214DD2D42F2EC00787FD2 /* SavingGoal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingGoal.swift; sourceTree = "<group>"; };
 		AA1214E12D42F66600787FD2 /* Deposit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deposit.swift; sourceTree = "<group>"; };
+		AA1783AA2DFF15E200D73B02 /* UserDefaultsTokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsTokenStorage.swift; sourceTree = "<group>"; };
+		AA1783AC2DFF161E00D73B02 /* MockAuthenticationDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAuthenticationDataSource.swift; sourceTree = "<group>"; };
+		AA1783AF2DFF163A00D73B02 /* InMemoryTokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryTokenStorage.swift; sourceTree = "<group>"; };
+		AA1783B12DFF168C00D73B02 /* LiveAuthenticationDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveAuthenticationDataSource.swift; sourceTree = "<group>"; };
 		AA20F9DA2DA7138800B2FE3E /* TokenKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenKeys.swift; sourceTree = "<group>"; };
 		AA20F9DC2DA7139100B2FE3E /* TokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenResponse.swift; sourceTree = "<group>"; };
 		AA2CA68E2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUCustomVerticalForEach.swift; sourceTree = "<group>"; };
@@ -141,14 +146,13 @@
 		AA56E0B22D44FFC2009F7058 /* HideTabBarAfterScrollingThreshold.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideTabBarAfterScrollingThreshold.swift; sourceTree = "<group>"; };
 		AA668EA02D441BB9005E714D /* SavingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingViewModel.swift; sourceTree = "<group>"; };
 		AA668EA22D441E12005E714D /* SavingDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingDataSource.swift; sourceTree = "<group>"; };
-		AA6A71B12D44304C004720CB /* ExpenseViewModelMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModelMock.swift; sourceTree = "<group>"; };
-		AA6A71B32D4430FA004720CB /* ExpenseViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModelProtocol.swift; sourceTree = "<group>"; };
+		AA6A71B12D44304C004720CB /* MockExpensesDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockExpensesDataSource.swift; sourceTree = "<group>"; };
 		AA6A71B52D443205004720CB /* SavingViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingViewModelProtocol.swift; sourceTree = "<group>"; };
 		AA6A71B72D44329C004720CB /* SavingViewModelMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingViewModelMock.swift; sourceTree = "<group>"; };
 		AA6D45B72D41ABBD0014A95F /* AddExpenseViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseViewModal.swift; sourceTree = "<group>"; };
 		AA6D45BA2D41B0E40014A95F /* ExpenseSheetViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseSheetViewModifier.swift; sourceTree = "<group>"; };
 		AA6D45BC2D41B5A90014A95F /* UIApplication+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Keyboard.swift"; sourceTree = "<group>"; };
-		AA6D45C62D4249DB0014A95F /* ExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModel.swift; sourceTree = "<group>"; };
+		AA6D45C62D4249DB0014A95F /* ExpenseRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseRepository.swift; sourceTree = "<group>"; };
 		AA6EE0BF2D4277A300E0F7D3 /* ExpensesDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesDataSource.swift; sourceTree = "<group>"; };
 		AA6EE0C52D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesDataSourceSpy.swift; sourceTree = "<group>"; };
 		AA71A7672D4C31FD003D5909 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -176,8 +180,7 @@
 		AAC000F32DA4450A00B5A11D /* MUAPIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUAPIError.swift; sourceTree = "<group>"; };
 		AAC000F62DA449C500B5A11D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		AAC000F82DA449F300B5A11D /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
-		AAC000FA2DA44A8000B5A11D /* AuthenticationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationModel.swift; sourceTree = "<group>"; };
-		AAC000FD2DA4502400B5A11D /* AuthenticationModelMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationModelMock.swift; sourceTree = "<group>"; };
+		AAC000FA2DA44A8000B5A11D /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
 		AAC000FF2DA455ED00B5A11D /* RegisterRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterRequest.swift; sourceTree = "<group>"; };
 		AAC001012DA4563300B5A11D /* RegisterResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterResponse.swift; sourceTree = "<group>"; };
 		AAC242032D48F4A1002A829C /* CategoryPieChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPieChart.swift; sourceTree = "<group>"; };
@@ -185,8 +188,7 @@
 		AAD5E9002D510B9A0058DD18 /* MUSpacer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUSpacer.swift; sourceTree = "<group>"; };
 		AAF91FDD2D4648DF003FDE4C /* SelectableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableCell.swift; sourceTree = "<group>"; };
 		AAF9F5992D429DE60085FD44 /* ExpenseViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModelTests.swift; sourceTree = "<group>"; };
-		AAFB71B12D73234E00A93202 /* UserErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserErrors.swift; sourceTree = "<group>"; };
-		AAFB71B32D7324B300A93202 /* AuthenticationModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationModelProtocol.swift; sourceTree = "<group>"; };
+		AAFB71B32D7324B300A93202 /* AuthenticationProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationProtocols.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,6 +217,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AA1783AE2DFF163000D73B02 /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				AA1783AF2DFF163A00D73B02 /* InMemoryTokenStorage.swift */,
+			);
+			path = Mock;
+			sourceTree = "<group>";
+		};
 		AA20F9D92DA7137800B2FE3E /* Tokens */ = {
 			isa = PBXGroup;
 			children = (
@@ -273,13 +283,12 @@
 		AA51462D2D40450600FE93E5 /* iOSMessup */ = {
 			isa = PBXGroup;
 			children = (
-				AA11DFE02DBB7F6F009627DF /* Info.plist */,
-				AAC000DA2DA43B7D00B5A11D /* Core */,
 				AA5146342D40450700FE93E5 /* iOSMessup.entitlements */,
+				AA11DFE02DBB7F6F009627DF /* Info.plist */,
 				AA51462E2D40450600FE93E5 /* iOSMessupApp.swift */,
 				AA5146322D40450700FE93E5 /* Assets.xcassets */,
 				AA51465A2D4047C500FE93E5 /* Components */,
-				AAFB71B02D73234700A93202 /* Error */,
+				AAC000DA2DA43B7D00B5A11D /* Core */,
 				AA5146672D40533500FE93E5 /* Extensions */,
 				AA51465D2D4048B100FE93E5 /* Model */,
 				AA31E12D2D480200004BA303 /* Navigation */,
@@ -421,8 +430,7 @@
 			isa = PBXGroup;
 			children = (
 				AA6EE0BF2D4277A300E0F7D3 /* ExpensesDataSource.swift */,
-				AA6D45C62D4249DB0014A95F /* ExpenseViewModel.swift */,
-				AA6A71B32D4430FA004720CB /* ExpenseViewModelProtocol.swift */,
+				AA6D45C62D4249DB0014A95F /* ExpenseRepository.swift */,
 				AA6EE0C22D4286BF00E0F7D3 /* Mock */,
 			);
 			path = Expenses;
@@ -431,7 +439,7 @@
 		AA6EE0C22D4286BF00E0F7D3 /* Mock */ = {
 			isa = PBXGroup;
 			children = (
-				AA6A71B12D44304C004720CB /* ExpenseViewModelMock.swift */,
+				AA6A71B12D44304C004720CB /* MockExpensesDataSource.swift */,
 				AA6EE0C52D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift */,
 			);
 			path = Mock;
@@ -448,9 +456,10 @@
 		AA777CFC2D57B451005B7734 /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				AAC000FA2DA44A8000B5A11D /* AuthenticationService.swift */,
+				AAFB71B32D7324B300A93202 /* AuthenticationProtocols.swift */,
+				AA1783B12DFF168C00D73B02 /* LiveAuthenticationDataSource.swift */,
 				AAC000FC2DA4501600B5A11D /* Mock */,
-				AAC000FA2DA44A8000B5A11D /* AuthenticationModel.swift */,
-				AAFB71B32D7324B300A93202 /* AuthenticationModelProtocol.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -488,19 +497,21 @@
 			isa = PBXGroup;
 			children = (
 				AAC000DB2DA43B8400B5A11D /* UserDataStore.swift */,
-				AAC000DD2DA43CCF00B5A11D /* Authentication */,
 				AAC000E22DA43F8A00B5A11D /* Network */,
+				AAC000DD2DA43CCF00B5A11D /* Tokens */,
 			);
 			path = Core;
 			sourceTree = "<group>";
 		};
-		AAC000DD2DA43CCF00B5A11D /* Authentication */ = {
+		AAC000DD2DA43CCF00B5A11D /* Tokens */ = {
 			isa = PBXGroup;
 			children = (
+				AA1783AE2DFF163000D73B02 /* Mock */,
+				AA1783AA2DFF15E200D73B02 /* UserDefaultsTokenStorage.swift */,
 				AAC000E02DA43DE400B5A11D /* MUToken.swift */,
 				AAC000DE2DA43CDC00B5A11D /* JWTDecoder.swift */,
 			);
-			path = Authentication;
+			path = Tokens;
 			sourceTree = "<group>";
 		};
 		AAC000E22DA43F8A00B5A11D /* Network */ = {
@@ -559,7 +570,7 @@
 		AAC000FC2DA4501600B5A11D /* Mock */ = {
 			isa = PBXGroup;
 			children = (
-				AAC000FD2DA4502400B5A11D /* AuthenticationModelMock.swift */,
+				AA1783AC2DFF161E00D73B02 /* MockAuthenticationDataSource.swift */,
 			);
 			path = Mock;
 			sourceTree = "<group>";
@@ -605,14 +616,6 @@
 				AAF9F5992D429DE60085FD44 /* ExpenseViewModelTests.swift */,
 			);
 			path = Expense;
-			sourceTree = "<group>";
-		};
-		AAFB71B02D73234700A93202 /* Error */ = {
-			isa = PBXGroup;
-			children = (
-				AAFB71B12D73234E00A93202 /* UserErrors.swift */,
-			);
-			path = Error;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -756,9 +759,10 @@
 				AA6A71B62D443205004720CB /* SavingViewModelProtocol.swift in Sources */,
 				AA4F7B1E2DA5A88600FD598B /* LandingView.swift in Sources */,
 				AA51465F2D4048E800FE93E5 /* Expense.swift in Sources */,
+				AA1783B02DFF163A00D73B02 /* InMemoryTokenStorage.swift in Sources */,
 				AA6A71B82D44329C004720CB /* SavingViewModelMock.swift in Sources */,
 				AAD5E9012D510BA00058DD18 /* MUSpacer.swift in Sources */,
-				AAC000FB2DA44A8B00B5A11D /* AuthenticationModel.swift in Sources */,
+				AAC000FB2DA44A8B00B5A11D /* AuthenticationService.swift in Sources */,
 				AA20F9DD2DA7139100B2FE3E /* TokenResponse.swift in Sources */,
 				AAC001022DA4563300B5A11D /* RegisterResponse.swift in Sources */,
 				AA81393D2D4FB6C20097F51E /* EditDepositModalView.swift in Sources */,
@@ -767,8 +771,8 @@
 				AA56E0B32D44FFC2009F7058 /* HideTabBarAfterScrollingThreshold.swift in Sources */,
 				AA3E1FEC2DAD2F8B0007C6EA /* TokenRefreshRequest.swift in Sources */,
 				AA0B192B2D43E8E200B02095 /* ListSectionHeaderView.swift in Sources */,
-				AAFB71B42D7324BB00A93202 /* AuthenticationModelProtocol.swift in Sources */,
-				AA6A71B22D44304C004720CB /* ExpenseViewModelMock.swift in Sources */,
+				AAFB71B42D7324BB00A93202 /* AuthenticationProtocols.swift in Sources */,
+				AA6A71B22D44304C004720CB /* MockExpensesDataSource.swift in Sources */,
 				AAC001002DA455F400B5A11D /* RegisterRequest.swift in Sources */,
 				AA1214E22D42F66A00787FD2 /* Deposit.swift in Sources */,
 				AA2CA68F2D4A8A1E003DDE38 /* MUCustomVerticalForEach.swift in Sources */,
@@ -777,15 +781,14 @@
 				AA51465C2D4047DE00FE93E5 /* ExpenseCellView.swift in Sources */,
 				AA8139432D4FC7AB0097F51E /* AllDepositsView.swift in Sources */,
 				AA7923D32D413C3600768849 /* SavingsObjectiveView.swift in Sources */,
+				AA1783AD2DFF161E00D73B02 /* MockAuthenticationDataSource.swift in Sources */,
 				AA71A7682D4C3201003D5909 /* ProfileView.swift in Sources */,
 				AA8235A72D44054E005CCA48 /* LoadingScreen.swift in Sources */,
-				AAC000FE2DA4502B00B5A11D /* AuthenticationModelMock.swift in Sources */,
 				AAC000DC2DA43B8D00B5A11D /* UserDataStore.swift in Sources */,
 				AA51466D2D40EC0F00FE93E5 /* WeeklyExpensesView.swift in Sources */,
 				AA6EE0C62D4288A200E0F7D3 /* ExpensesDataSourceSpy.swift in Sources */,
-				AA6A71B42D4430FF004720CB /* ExpenseViewModelProtocol.swift in Sources */,
-				AAFB71B22D73235500A93202 /* UserErrors.swift in Sources */,
 				AA777CFB2D57B35B005B7734 /* User.swift in Sources */,
+				AA1783B22DFF168C00D73B02 /* LiveAuthenticationDataSource.swift in Sources */,
 				AAC000F92DA449F300B5A11D /* RegistrationView.swift in Sources */,
 				AA5146312D40450600FE93E5 /* ExpensesView.swift in Sources */,
 				AAC000F42DA4450A00B5A11D /* MUAPIError.swift in Sources */,
@@ -802,7 +805,8 @@
 				AA51466F2D40ECB400FE93E5 /* Calendar+Utils.swift in Sources */,
 				AA832E6C2D4173EC00940F78 /* EditExpenseModalView.swift in Sources */,
 				AAC000E72DA43FB500B5A11D /* MUClient.swift in Sources */,
-				AA6D45C72D4249DB0014A95F /* ExpenseViewModel.swift in Sources */,
+				AA6D45C72D4249DB0014A95F /* ExpenseRepository.swift in Sources */,
+				AA1783AB2DFF15E200D73B02 /* UserDefaultsTokenStorage.swift in Sources */,
 				AAC000F72DA449C500B5A11D /* LoginView.swift in Sources */,
 				AAF91FDE2D4648DF003FDE4C /* SelectableCell.swift in Sources */,
 				AA6D45B82D41ABBD0014A95F /* AddExpenseViewModal.swift in Sources */,

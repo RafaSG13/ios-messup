@@ -9,23 +9,30 @@ import SwiftUI
 
 @main
 struct iOSMessupApp: App {
-    var expenseViewModel = ExpenseViewModel(dataSource: ExpensesDataSource())
+//    var expenseRepository = ExpenseRepository(dataSource: ExpensesDataSource())
+//    var savingViewModel = SavingViewModel(dataSource: SavingDataSource())
+//    var authenticationService = AuthenticationService(dataSource: LiveAuthenticationDataSource(),
+//                                                        tokenStorage: UserDefaultsTokenStorage())
+//
+
+    var expenseRepository = ExpenseRepository(dataSource: MockExpensesDataSource())
     var savingViewModel = SavingViewModel(dataSource: SavingDataSource())
-    var authenticationViewModel = AuthenticationModel()
+    var authenticationService = AuthenticationService(dataSource: MockAuthenticationDataSource(),
+                                                        tokenStorage: InMemoryTokenStorage())
 
     @State private var viewModelLoaded: Bool = false
 
     var body: some Scene {
         WindowGroup {
-            if !authenticationViewModel.isAuthenticated {
+            if !authenticationService.isAuthenticated {
                 LandingView()
-                    .environment(\.authVM, authenticationViewModel)
+                    .environment(\.authenticationService, authenticationService)
             } else {
                 initApplication()
                     .task {
-                        guard authenticationViewModel.isAuthenticated else { return }
+                        guard authenticationService.isAuthenticated else { return }
                         do {
-                            async let loadExpenses: () = expenseViewModel.loadExpenses()
+                            async let loadExpenses: () = expenseRepository.loadExpenses()
                             async let loadSavings: () = savingViewModel.load()
 
                             try await loadExpenses
@@ -45,9 +52,9 @@ struct iOSMessupApp: App {
             LoadingScreen()
         } else {
             MainTabBarView()
-                .environment(\.expenseVM, expenseViewModel)
+                .environment(\.expenseRepository, expenseRepository)
                 .environment(\.savingVM, savingViewModel)
-                .environment(\.authVM, authenticationViewModel)
+                .environment(\.authenticationService, authenticationService)
         }
     }
 }
