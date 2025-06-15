@@ -7,11 +7,12 @@
 
 import Foundation
 
+protocol IncomeDataSourceProtocol {
+    var deposits: [Deposit] { get set }
+    var savingGoal: SavingGoal? { get set }
 
-
-protocol SavingsDataSourceProtocol {
-    func readAllDeposits() async throws -> [Deposit]
-    func readGoal() async throws -> SavingGoal?
+    func readAllDeposits() async throws
+    func readGoal() async throws
     func create(_ goal: SavingGoal) async throws
     func create(_ deposit: Deposit) async throws
     func update(_ goal: SavingGoal) async throws
@@ -21,54 +22,60 @@ protocol SavingsDataSourceProtocol {
     func deleteAll(_ deposits: [Deposit]) async throws
 }
 
-struct SavingDataSource: SavingsDataSourceProtocol {
+class IncomeDataSource: IncomeDataSourceProtocol {
 
-    func readAllDeposits() async throws -> [Deposit] {
+    var deposits: [Deposit] = []
+    var savingGoal: SavingGoal? = nil
+
+    func readAllDeposits() async throws {
         try await simulateNetworkDelay()
-        return Deposit.mockArray
+        self.deposits = Deposit.mockArray
     }
 
-    func readGoal() async throws -> SavingGoal? {
+    func readGoal() async throws {
         try await simulateNetworkDelay()
-        return SavingGoal.mock
+        savingGoal = SavingGoal.mock
     }
 
+    //TODO: Manage errors in guard statement, if goal already exists
     func create(_ goal: SavingGoal) async throws {
+        guard savingGoal == nil else { return }
+
         try await simulateNetworkDelay()
-        SavingGoal.mock = goal
+        savingGoal = goal
     }
 
     func create(_ deposit: Deposit) async throws {
         try await simulateNetworkDelay()
-        Deposit.mockArray.append(deposit)
+        deposits.append(deposit)
     }
 
     func update(_ goal: SavingGoal) async throws {
         try await simulateNetworkDelay()
-        SavingGoal.mock = goal
+        savingGoal = goal
     }
 
     func update(_ deposit: Deposit) async throws {
         try await simulateNetworkDelay()
-        guard let index = Deposit.mockArray.firstIndex(where: { $0.id == deposit.id }) else {
+        guard let index = deposits.firstIndex(where: { $0.id == deposit.id }) else {
             return
         }
-        Deposit.mockArray[index] = deposit
+        deposits[index] = deposit
     }
     
     func delete(_ goal: SavingGoal) async throws {
         try await simulateNetworkDelay()
-        // Intentionally unimplemented
+        savingGoal = nil
     }
 
     func delete(_ deposit: Deposit) async throws {
         try await simulateNetworkDelay()
-        Deposit.mockArray.removeAll(where: { $0.id == deposit.id })
+        deposits.removeAll(where: { $0.id == deposit.id })
     }
 
     func deleteAll(_ deposits: [Deposit]) async throws {
         try await simulateNetworkDelay()
-        Deposit.mockArray.removeAll(where: { deposits.contains($0) })
+        self.deposits.removeAll(where: { deposits.contains($0) })
     }
     
     private func simulateNetworkDelay() async throws {
