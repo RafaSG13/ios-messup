@@ -9,18 +9,19 @@ import SwiftUI
 
 @main
 struct iOSMessupApp: App {
-//    var expenseRepository = ExpenseRepository(dataSource: ExpensesDataSource())
-//    var savingViewModel = SavingViewModel(dataSource: SavingDataSource())
-//    var authenticationService = AuthenticationService(dataSource: LiveAuthenticationDataSource(),
-//                                                        tokenStorage: UserDefaultsTokenStorage())
-//
 
-    var expenseRepository = ExpenseRepository(dataSource: MockExpensesDataSource())
-    var savingViewModel = SavingViewModel(dataSource: SavingDataSource())
-    var authenticationService = AuthenticationService(dataSource: MockAuthenticationDataSource(),
-                                                        tokenStorage: InMemoryTokenStorage())
+    var expenseRepository: ExpenseRepository
+    var savingViewModel: SavingViewModel
+    var authenticationService: AuthenticationService
 
     @State private var viewModelLoaded: Bool = false
+
+    init() {
+        let environment = MUEnvironmentConfigurator()
+        expenseRepository = environment.expenseRepository
+        savingViewModel = environment.savingViewModel
+        authenticationService = environment.authenticationService
+    }
 
     var body: some Scene {
         WindowGroup {

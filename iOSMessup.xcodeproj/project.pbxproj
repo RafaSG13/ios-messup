@@ -83,6 +83,8 @@
 		AAC242042D48F4B3002A829C /* CategoryPieChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC242032D48F4A1002A829C /* CategoryPieChart.swift */; };
 		AAD271442D4410B300D906B8 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AAD271432D4410B300D906B8 /* SplashScreen.storyboard */; };
 		AAD5E9012D510BA00058DD18 /* MUSpacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD5E9002D510B9A0058DD18 /* MUSpacer.swift */; };
+		AAE9B1802DFF1BA700BE5628 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = AAE9B17F2DFF1BA700BE5628 /* Settings.bundle */; };
+		AAE9B1832DFF1F2500BE5628 /* MUEnvironmentConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE9B1822DFF1F2500BE5628 /* MUEnvironmentConfigurator.swift */; };
 		AAF91FDE2D4648DF003FDE4C /* SelectableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF91FDD2D4648DF003FDE4C /* SelectableCell.swift */; };
 		AAF9F59A2D429DF00085FD44 /* ExpenseViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF9F5992D429DE60085FD44 /* ExpenseViewModelTests.swift */; };
 		AAFB71B42D7324BB00A93202 /* AuthenticationProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFB71B32D7324B300A93202 /* AuthenticationProtocols.swift */; };
@@ -186,6 +188,8 @@
 		AAC242032D48F4A1002A829C /* CategoryPieChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPieChart.swift; sourceTree = "<group>"; };
 		AAD271432D4410B300D906B8 /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
 		AAD5E9002D510B9A0058DD18 /* MUSpacer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUSpacer.swift; sourceTree = "<group>"; };
+		AAE9B17F2DFF1BA700BE5628 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		AAE9B1822DFF1F2500BE5628 /* MUEnvironmentConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUEnvironmentConfigurator.swift; sourceTree = "<group>"; };
 		AAF91FDD2D4648DF003FDE4C /* SelectableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableCell.swift; sourceTree = "<group>"; };
 		AAF9F5992D429DE60085FD44 /* ExpenseViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModelTests.swift; sourceTree = "<group>"; };
 		AAFB71B32D7324B300A93202 /* AuthenticationProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationProtocols.swift; sourceTree = "<group>"; };
@@ -296,6 +300,7 @@
 				AA6D45C52D4249CC0014A95F /* ViewModels */,
 				AA6D45B92D41B0D20014A95F /* ViewModifiers */,
 				AA5146592D4047C100FE93E5 /* Views */,
+				AAE9B17F2DFF1BA700BE5628 /* Settings.bundle */,
 			);
 			path = iOSMessup;
 			sourceTree = "<group>";
@@ -496,6 +501,7 @@
 		AAC000DA2DA43B7D00B5A11D /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				AAE9B1812DFF1F1E00BE5628 /* Environment */,
 				AAC000DB2DA43B8400B5A11D /* UserDataStore.swift */,
 				AAC000E22DA43F8A00B5A11D /* Network */,
 				AAC000DD2DA43CCF00B5A11D /* Tokens */,
@@ -608,6 +614,14 @@
 				AA0B19262D43D99800B02095 /* CircularSavingProgressView.swift */,
 			);
 			path = Progress;
+			sourceTree = "<group>";
+		};
+		AAE9B1812DFF1F1E00BE5628 /* Environment */ = {
+			isa = PBXGroup;
+			children = (
+				AAE9B1822DFF1F2500BE5628 /* MUEnvironmentConfigurator.swift */,
+			);
+			path = Environment;
 			sourceTree = "<group>";
 		};
 		AAF9F5982D429DDA0085FD44 /* Expense */ = {
@@ -729,6 +743,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAE9B1802DFF1BA700BE5628 /* Settings.bundle in Resources */,
 				AA5146372D40450700FE93E5 /* Preview Assets.xcassets in Resources */,
 				AAD271442D4410B300D906B8 /* SplashScreen.storyboard in Resources */,
 				AA5146332D40450700FE93E5 /* Assets.xcassets in Resources */,
@@ -764,6 +779,7 @@
 				AAD5E9012D510BA00058DD18 /* MUSpacer.swift in Sources */,
 				AAC000FB2DA44A8B00B5A11D /* AuthenticationService.swift in Sources */,
 				AA20F9DD2DA7139100B2FE3E /* TokenResponse.swift in Sources */,
+				AAE9B1832DFF1F2500BE5628 /* MUEnvironmentConfigurator.swift in Sources */,
 				AAC001022DA4563300B5A11D /* RegisterResponse.swift in Sources */,
 				AA81393D2D4FB6C20097F51E /* EditDepositModalView.swift in Sources */,
 				AA6D45BD2D41B5A90014A95F /* UIApplication+Keyboard.swift in Sources */,
