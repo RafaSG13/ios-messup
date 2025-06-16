@@ -10,7 +10,7 @@ import SwiftUI
 import Observation
 
 extension EnvironmentValues {
-    @Entry() var expenseRepository: ExpenseRepository = ExpenseRepository(dataSource: MockExpensesDataSource())
+    @Entry() var expenseRepository: ExpenseRepository = ExpenseRepository(dataSource: ExpensesDataSourceMock())
 }
 
 @Observable class ExpenseRepository {

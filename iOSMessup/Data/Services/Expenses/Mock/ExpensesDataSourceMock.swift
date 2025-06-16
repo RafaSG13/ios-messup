@@ -11,7 +11,7 @@ import Observation
 /// This mock is mainly used to compile `Previews`. This is not intended to use in production code or even in testing.
 // MARK: - Mock Data Source
 
-@Observable class MockExpensesDataSource: ExpensesDataSourceProtocol {
+@Observable class ExpensesDataSourceMock: ExpensesDataSourceProtocol {
 
     var expenses: [Expense]
     var shouldThrowError: Bool

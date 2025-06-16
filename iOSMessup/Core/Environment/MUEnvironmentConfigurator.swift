@@ -27,11 +27,11 @@ final class MUEnvironmentConfigurator {
         case .dev:
             self.authenticationService = AuthenticationService(dataSource: MockAuthenticationDataSource(),
                                                                tokenStorage: InMemoryTokenStorage())
-            self.expenseRepository = ExpenseRepository(dataSource: MockExpensesDataSource())
+            self.expenseRepository = ExpenseRepository(dataSource: ExpensesDataSourceMock())
             self.incomeRepository = IncomeRepository(dataSource: IncomeDataSourceMock())
         case .pro:
             self.authenticationService = AuthenticationService(dataSource: LiveAuthenticationDataSource(),
-                                                               tokenStorage: UserDefaultsTokenStorage())
+                                                               tokenStorage: KeyChainTokenStorage())
             self.expenseRepository = ExpenseRepository(dataSource: ExpensesDataSource())
             self.incomeRepository = IncomeRepository(dataSource: IncomeDataSource())
         case .none:

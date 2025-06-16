@@ -8,83 +8,62 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @Environment(\.colorScheme) var colorScheme
-    @Environment(\.authenticationService) private var authenticationService
-    private var userImage: String = ""
-    private var userName: String = ""
-    private var userEmail: String = ""
-
+    @Environment(\.authenticationService) var authenticationService
+    @State private var notificationsEnabled = true
     var body: some View {
-        VStack(spacing: MUSpacer.size06) {
-            Image(userImage.isEmpty ? "logoImage" : userImage)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 100, height: 100)
-                .foregroundColor(.mint)
-                .padding(.top, 32)
-            Text(userName)
-                .font(.title2)
-                .fontWeight(.semibold)
-                .foregroundColor(primaryText)
-            Text(userEmail)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
+        NavigationStack {
+            List {
+                Section("User account") {
+                    NavigationLink(destination: Text("Change password")) {
+                        Label("Change Password", systemImage:"lock.rotation")
+                    }
+                    NavigationLink(destination: Text("Change password")) {
+                        Label("Manage subscriptions", systemImage:"star.fill")
+                    }
+                }
 
-            Divider()
-                .padding(.horizontal)
+                Section("App actions") {
+                    Toggle(isOn: $notificationsEnabled) {
+                        Label("Enable Biometry", systemImage:"faceid")
+                    }
+                    NavigationLink(destination: Text("Change password")) {
+                        Label("Manage Categories", systemImage:"folder.badge.gearshape")
+                    }
+                    NavigationLink(destination: Text("Change password")) {
+                        Label("Change Currency", systemImage:"dollarsign")
+                    }
+                }
 
-            VStack(spacing: 16) {
-                ProfileRow(icon: "gearshape.fill", title: "Configuración")
-                ProfileRow(icon: "bell.fill", title: "Notificaciones")
-                ProfileRow(icon: "shield.lefthalf.filled", title: "Privacidad")
+                Section("Additional tools") {
+                    NavigationLink(destination: Text("Change password")) {
+                        Label("Export to SVG", systemImage:"square.and.arrow.up")
+                    }
+                }
+
+                Section("Support") {
+                    Link(destination: URL(string: "apple.com")!) {
+                        Label("Contact us", systemImage:"envelope")
+                    }
+                    Link(destination: URL(string: "apple.com")!) {
+                        Label("Donations and Support", systemImage:"heart.fill")
+                    }
+                }
+
+                Section { // Colocar el botón en su propia sección mejora el diseño
+                    Button(role: .destructive) {
+                        authenticationService.logout()
+                    } label: {
+                        Label("Log out", systemImage:"power")
+                            .foregroundColor(.red)
+                    }
+                }
+
             }
-
-            Spacer()
-
-            Button {
-                authenticationService.logout()
-            } label: {
-                Text("Cerrar sesión")
-                    .foregroundColor(colorScheme == .dark ? .black : .white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.mint)
-                    .cornerRadius(12)
-                    .font(.headline)
-            }
-            .padding(.bottom)
+            .navigationTitle("Settings")
         }
-        .padding()
-        .background(backgroundColor.ignoresSafeArea())
-    }
-
-    var backgroundColor: Color {
-        colorScheme == .dark ? .black : .white
-    }
-
-    var primaryText: Color {
-        colorScheme == .dark ? .white : .black
     }
 }
 
-struct ProfileRow: View {
-    let icon: String
-    let title: String
-
-    var body: some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundColor(.mint)
-                .frame(width: 24)
-            Text(title)
-                .foregroundColor(.primary)
-            Spacer()
-            Image(systemName: "chevron.right")
-                .foregroundColor(.gray)
-        }
-        .padding(.vertical, 8)
-    }
-}
 
 #Preview {
     ProfileView()
