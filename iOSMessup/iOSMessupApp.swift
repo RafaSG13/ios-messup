@@ -31,7 +31,6 @@ struct iOSMessupApp: App {
             } else {
                 initApplication()
                     .task {
-                        guard authenticationService.isAuthenticated else { return }
                         do {
                             async let loadExpenses: () = expenseRepository.loadExpenses()
                             async let loadIncome: () = incomeRepository.load()
