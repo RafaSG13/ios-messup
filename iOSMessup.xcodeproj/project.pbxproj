@@ -38,6 +38,9 @@
 		AA51466F2D40ECB400FE93E5 /* Calendar+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA51466E2D40ECB400FE93E5 /* Calendar+Utils.swift */; };
 		AA56E0AE2D4454FB009F7058 /* SavingViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA56E0AD2D4454F2009F7058 /* SavingViewModelTest.swift */; };
 		AA56E0B32D44FFC2009F7058 /* HideTabBarAfterScrollingThreshold.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA56E0B22D44FFC2009F7058 /* HideTabBarAfterScrollingThreshold.swift */; };
+		AA63EE122E0359A40060D95F /* MULoadingHudModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA63EE112E0359A40060D95F /* MULoadingHudModifier.swift */; };
+		AA63EE142E0424C00060D95F /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA63EE132E0424C00060D95F /* Status.swift */; };
+		AA63EE162E0425F80060D95F /* ResetTabViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA63EE152E0425F00060D95F /* ResetTabViewModifiers.swift */; };
 		AA668EA12D441BB9005E714D /* IncomeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA668EA02D441BB9005E714D /* IncomeRepository.swift */; };
 		AA668EA32D441E12005E714D /* IncomeDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA668EA22D441E12005E714D /* IncomeDataSource.swift */; };
 		AA6A71B22D44304C004720CB /* ExpensesDataSourceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6A71B12D44304C004720CB /* ExpensesDataSourceMock.swift */; };
@@ -143,6 +146,9 @@
 		AA51466E2D40ECB400FE93E5 /* Calendar+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Calendar+Utils.swift"; sourceTree = "<group>"; };
 		AA56E0AD2D4454F2009F7058 /* SavingViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingViewModelTest.swift; sourceTree = "<group>"; };
 		AA56E0B22D44FFC2009F7058 /* HideTabBarAfterScrollingThreshold.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideTabBarAfterScrollingThreshold.swift; sourceTree = "<group>"; };
+		AA63EE112E0359A40060D95F /* MULoadingHudModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MULoadingHudModifier.swift; sourceTree = "<group>"; };
+		AA63EE132E0424C00060D95F /* Status.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
+		AA63EE152E0425F00060D95F /* ResetTabViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetTabViewModifiers.swift; sourceTree = "<group>"; };
 		AA668EA02D441BB9005E714D /* IncomeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeRepository.swift; sourceTree = "<group>"; };
 		AA668EA22D441E12005E714D /* IncomeDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeDataSource.swift; sourceTree = "<group>"; };
 		AA6A71B12D44304C004720CB /* ExpensesDataSourceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesDataSourceMock.swift; sourceTree = "<group>"; };
@@ -294,6 +300,7 @@
 		AA46C3652DFF2FD000925944 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				AA63EE132E0424C00060D95F /* Status.swift */,
 				AA51465D2D4048B100FE93E5 /* Model */,
 			);
 			path = Domain;
@@ -424,10 +431,12 @@
 		AA6D45B92D41B0D20014A95F /* ViewModifiers */ = {
 			isa = PBXGroup;
 			children = (
+				AA63EE152E0425F00060D95F /* ResetTabViewModifiers.swift */,
 				AA8139402D4FC3550097F51E /* DepositSheetViewModifier.swift */,
 				AAF91FDD2D4648DF003FDE4C /* SelectableCell.swift */,
 				AA56E0B22D44FFC2009F7058 /* HideTabBarAfterScrollingThreshold.swift */,
 				AA6D45BA2D41B0E40014A95F /* ExpenseSheetViewModifier.swift */,
+				AA63EE112E0359A40060D95F /* MULoadingHudModifier.swift */,
 			);
 			path = ViewModifiers;
 			sourceTree = "<group>";
@@ -815,6 +824,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA63EE122E0359A40060D95F /* MULoadingHudModifier.swift in Sources */,
 				AA4F7B1E2DA5A88600FD598B /* LandingView.swift in Sources */,
 				AA51465F2D4048E800FE93E5 /* Expense.swift in Sources */,
 				AA1783B02DFF163A00D73B02 /* InMemoryTokenStorage.swift in Sources */,
@@ -831,6 +841,7 @@
 				AA3E1FEC2DAD2F8B0007C6EA /* TokenRefreshRequest.swift in Sources */,
 				AA0B192B2D43E8E200B02095 /* ListSectionHeaderView.swift in Sources */,
 				AAFB71B42D7324BB00A93202 /* AuthenticationProtocols.swift in Sources */,
+				AA63EE162E0425F80060D95F /* ResetTabViewModifiers.swift in Sources */,
 				AA6A71B22D44304C004720CB /* ExpensesDataSourceMock.swift in Sources */,
 				AAC001002DA455F400B5A11D /* RegisterRequest.swift in Sources */,
 				AA9930BC2E005C45001CC3B2 /* KeychainStorage.swift in Sources */,
@@ -851,6 +862,7 @@
 				AA1783B22DFF168C00D73B02 /* LiveAuthenticationDataSource.swift in Sources */,
 				AAC000F92DA449F300B5A11D /* RegistrationView.swift in Sources */,
 				AA5146312D40450600FE93E5 /* ExpensesView.swift in Sources */,
+				AA63EE142E0424C00060D95F /* Status.swift in Sources */,
 				AAC000F42DA4450A00B5A11D /* MUAPIError.swift in Sources */,
 				AA668EA32D441E12005E714D /* IncomeDataSource.swift in Sources */,
 				AAC000DF2DA43CE800B5A11D /* JWTDecoder.swift in Sources */,
