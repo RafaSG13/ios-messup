@@ -21,7 +21,7 @@ struct LoadingScreen: View {
                 Image("logoImage")
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 300, height: 300)
+                    .frame(width: 270, height: 270)
 
                 HStack(spacing: 0) {
                     ForEach(loadingText.indices, id: \.self) { index in
@@ -41,9 +41,6 @@ struct LoadingScreen: View {
     }
 }
 
-
-    
-    
-    #Preview {
-        LoadingScreen()
-    }
+#Preview {
+    LoadingScreen()
+}

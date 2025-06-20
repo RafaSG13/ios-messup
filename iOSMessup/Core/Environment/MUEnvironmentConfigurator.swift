@@ -9,33 +9,40 @@
 import Foundation
 import SwiftUI
 
-enum EnvironmentKey: String {
-    case dev
-    case pro
-}
-
-@MainActor
 final class MUEnvironmentConfigurator {
-    let expenseRepository: ExpenseRepository
-    let incomeRepository: IncomeRepository
-    let authenticationService: AuthenticationService
 
-    init() {
-        let environmentKey = EnvironmentKey(rawValue: UserDefaults.standard.string(forKey: "messup_environment") ?? "dev")
+    private enum EnvironmentKey: String {
+        case dev
+        case pro
+    }
 
-        switch environmentKey {
-        case .dev:
-            self.authenticationService = AuthenticationService(dataSource: MockAuthenticationDataSource(),
-                                                               tokenStorage: InMemoryTokenStorage())
-            self.expenseRepository = ExpenseRepository(dataSource: ExpensesDataSourceMock())
-            self.incomeRepository = IncomeRepository(dataSource: IncomeDataSourceMock())
-        case .pro:
-            self.authenticationService = AuthenticationService(dataSource: LiveAuthenticationDataSource(),
-                                                               tokenStorage: KeyChainTokenStorage())
-            self.expenseRepository = ExpenseRepository(dataSource: ExpensesDataSource())
-            self.incomeRepository = IncomeRepository(dataSource: IncomeDataSource())
-        case .none:
-            fatalError("Unknown app environment")
+    private static var environment: EnvironmentKey {
+        EnvironmentKey(rawValue: UserDefaults.standard.string(forKey: "messup_environment") ?? "dev") ?? .dev
+    }
+
+    static var authenticationService: AuthenticationService {
+        if environment == .dev {
+            return AuthenticationService(dataSource: MockAuthenticationDataSource(),
+                                        tokenStorage: InMemoryTokenStorage())
+        } else {
+            return AuthenticationService(dataSource: LiveAuthenticationDataSource(),
+                                         tokenStorage: KeyChainTokenStorage())
+        }
+    }
+
+    static var expenseRepository: ExpenseRepository {
+        if environment == .dev {
+            return ExpenseRepository(dataSource: ExpensesDataSourceMock())
+        } else {
+            return ExpenseRepository(dataSource: ExpensesDataSource())
+        }
+    }
+
+    static var incomeRepository: IncomeRepository {
+        if environment == .dev {
+            return IncomeRepository(dataSource: IncomeDataSourceMock())
+        } else {
+            return IncomeRepository(dataSource: IncomeDataSource())
         }
     }
 }

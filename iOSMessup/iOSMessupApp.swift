@@ -9,52 +9,48 @@ import SwiftUI
 
 @main
 struct iOSMessupApp: App {
-
-    var expenseRepository: ExpenseRepository
-    var incomeRepository: IncomeRepository
-    var authenticationService: AuthenticationService
-
-    @State private var viewModelLoaded: Bool = false
-
-    init() {
-        let environment = MUEnvironmentConfigurator()
-        expenseRepository = environment.expenseRepository
-        incomeRepository = environment.incomeRepository
-        authenticationService = environment.authenticationService
-    }
+    @State private var status: Status = .idle
+    @State private var authenticationService: AuthenticationService = MUEnvironmentConfigurator.authenticationService
+    @State private var expenseRepository: ExpenseRepository = MUEnvironmentConfigurator.expenseRepository
+    @State private var incomeRepository: IncomeRepository = MUEnvironmentConfigurator.incomeRepository
 
     var body: some Scene {
         WindowGroup {
-            if !authenticationService.isAuthenticated {
-                LandingView()
-                    .environment(\.authenticationService, authenticationService)
-            } else {
-                initApplication()
-                    .task {
-                        do {
-                            async let loadExpenses: () = expenseRepository.loadExpenses()
-                            async let loadIncome: () = incomeRepository.load()
-
-                            try await loadExpenses
-                            try await loadIncome
-                            viewModelLoaded = true
-                        } catch {
-                            print("Error loading expenses on app loading: \(error.localizedDescription)")
-                        }
-                    }
-            }
-        }
-    }
-
-    @ViewBuilder private func initApplication() -> some View {
-
-        if viewModelLoaded == false {
-            LoadingScreen()
-        } else {
             MainTabBarView()
+                .allowsTabReset(triggeredBy: .constant(!authenticationService.isAuthenticated))
+                .task { await loadInitialData() }
+                .fullScreenCover(isPresented: .constant(!authenticationService.isAuthenticated)) {
+                    LandingView()
+                }
+                .onChange(of: authenticationService.isAuthenticated) { _, newValue in
+                    if !newValue {
+                        resetAppServices()
+                    }
+                }
                 .environment(\.expenseRepository, expenseRepository)
                 .environment(\.incomeRepository, incomeRepository)
                 .environment(\.authenticationService, authenticationService)
         }
+    }
+}
+
+extension iOSMessupApp {
+    func loadInitialData() async {
+        do {
+            status = .loading
+            async let loadExpenses: () = expenseRepository.loadExpenses()
+            async let loadIncomes: () = incomeRepository.load()
+
+            let _ = try await (loadExpenses, loadIncomes)
+            status = .idle
+        } catch {
+            status = .error(error)
+        }
+    }
+
+    func resetAppServices() {
+        expenseRepository = MUEnvironmentConfigurator.expenseRepository
+        incomeRepository = MUEnvironmentConfigurator.incomeRepository
+        authenticationService = MUEnvironmentConfigurator.authenticationService
     }
 }
