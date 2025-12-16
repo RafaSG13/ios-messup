@@ -16,18 +16,19 @@ struct RegistrationView: View {
     @Environment(\.colorScheme) private var colorScheme: ColorScheme
     
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: MUSpacer.size06) {
             MUTextField(text: $username,
                         placeholder: "Username",
                         headerText: "Username",
-                        autocapitalization: .words)
-            
+                        autocapitalization: .words,
+                        textContentType: .username)
+
             MUTextField(text: $email,
                         placeholder: "Email",
                         headerText: "Email",
-                        autocapitalization: .none)
-            
-            
+                        autocapitalization: .none,
+                        textContentType: .emailAddress)
+
             MUPasswordField(password: $password,
                             headerText: "Password")
             Button {
@@ -49,47 +50,6 @@ struct RegistrationView: View {
     func registerAction() {
         Task {
             try await authenticationService.register(email: email, password: password, name: username)
-        }
-    }
-}
-
-
-struct MUTextField: View {
-    @Binding var text: String
-    var placeholder: String
-    var headerText: String
-    var autocapitalization: UITextAutocapitalizationType = .none
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(headerText)
-                .font(.callout)
-                .foregroundColor(.accent)
-                .bold()
-            TextField(placeholder, text: $text)
-                .padding()
-                .background(.thinMaterial)
-                .cornerRadius(5)
-                .autocapitalization(autocapitalization)
-        }
-    }
-}
-
-
-struct MUPasswordField: View {
-    @Binding var password: String
-    var headerText: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(headerText)
-                .font(.callout)
-                .foregroundColor(.accent)
-                .bold()
-            SecureField("Contraseña", text: $password)
-                .padding()
-                .background(.thinMaterial)
-                .cornerRadius(5)
         }
     }
 }
