@@ -12,12 +12,12 @@ struct MUPasswordField: View {
     var headerText: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: MUSpacer.size02) {
             Text(headerText)
                 .font(.callout)
                 .foregroundColor(.accent)
                 .bold()
-            SecureField("Contraseña", text: $password)
+            SecureField("Password", text: $password)
                 .padding()
                 .background(.thinMaterial)
                 .cornerRadius(5)

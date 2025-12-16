@@ -18,16 +18,11 @@ enum AuthError: Error {
 
     var errorDescription: String? {
         switch self {
-        case .networkError:
-            return "No se encontró un usuario con ese correo electrónico."
-        case .userAlreadyExists:
-            return "Ya existe una cuenta con este correo electrónico."
-        case .invalidCredentials:
-            return "Correo electrónico o contraseña incorrectos."
-        case .tokenRefreshFailed:
-            return ""
-        case .unknown:
-            return "Error desconocido."
+        case .networkError: "No user found with that email address."
+        case .userAlreadyExists: "An account with this email address already exists."
+        case .invalidCredentials: "Incorrect email or password."
+        case .tokenRefreshFailed: ""
+        case .unknown: "Unknown error."
         }
     }
 }

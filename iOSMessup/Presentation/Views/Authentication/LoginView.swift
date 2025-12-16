@@ -20,11 +20,12 @@ struct LoginView: View {
 
     var body: some View {
         ZStack {
-            VStack(spacing: 24) {
+            VStack(spacing: MUSpacer.size06) {
                 MUTextField(text: $email,
                             placeholder: "Email",
                             headerText: "Email",
-                            autocapitalization: .none)
+                            autocapitalization: .none,
+                            textContentType: .emailAddress)
 
                 MUPasswordField(password: $password,
                                 headerText: "Password")

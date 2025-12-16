@@ -65,7 +65,7 @@ struct SupportSection: View {
 struct AdditionalToolsSection: View {
     var body: some View {
         Section("Additional tools") {
-            NavigationLink(destination: Text("Change password")) {
+            NavigationLink(destination: Text("Export to SVG")) {
                 Label("Export to SVG", systemImage:"square.and.arrow.up")
             }
         }
@@ -80,10 +80,10 @@ struct AppActionsSection: View {
             Toggle(isOn: $enableBiometry) {
                 Label("Enable Biometry", systemImage:"faceid")
             }
-            NavigationLink(destination: Text("Change password")) {
+            NavigationLink(destination: Text("Manage Categories")) {
                 Label("Manage Categories", systemImage:"folder.badge.gearshape")
             }
-            NavigationLink(destination: Text("Change password")) {
+            NavigationLink(destination: Text("Change Currency")) {
                 Label("Change Currency", systemImage:"dollarsign")
             }
         }

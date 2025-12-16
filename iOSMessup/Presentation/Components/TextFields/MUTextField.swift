@@ -12,10 +12,10 @@ struct MUTextField: View {
     var placeholder: String
     var headerText: String
     var autocapitalization: UITextAutocapitalizationType = .none
-    var textContentType: UITextContentType = .username
+    var textContentType: UITextContentType?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: MUSpacer.size02) {
             Text(headerText)
                 .font(.callout)
                 .foregroundColor(.accent)
