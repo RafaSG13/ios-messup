@@ -53,47 +53,6 @@ struct RegistrationView: View {
     }
 }
 
-
-struct MUTextField: View {
-    @Binding var text: String
-    var placeholder: String
-    var headerText: String
-    var autocapitalization: UITextAutocapitalizationType = .none
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(headerText)
-                .font(.callout)
-                .foregroundColor(.accent)
-                .bold()
-            TextField(placeholder, text: $text)
-                .padding()
-                .background(.thinMaterial)
-                .cornerRadius(5)
-                .autocapitalization(autocapitalization)
-        }
-    }
-}
-
-
-struct MUPasswordField: View {
-    @Binding var password: String
-    var headerText: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(headerText)
-                .font(.callout)
-                .foregroundColor(.accent)
-                .bold()
-            SecureField("Contraseña", text: $password)
-                .padding()
-                .background(.thinMaterial)
-                .cornerRadius(5)
-        }
-    }
-}
-
 #Preview {
     RegistrationView()
 }

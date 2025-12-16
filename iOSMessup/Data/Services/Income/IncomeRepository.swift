@@ -7,7 +7,7 @@
 
 import Foundation
 import Observation
-import SwiftUICore
+import SwiftUI
 
 extension EnvironmentValues {
     @Entry() var incomeRepository: IncomeRepository = IncomeRepository(dataSource: IncomeDataSourceMock())
