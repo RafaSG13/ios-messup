@@ -20,6 +20,7 @@ struct MUCustomVerticalForEach<T: Identifiable & Equatable, Content: View>: View
 
     private enum ViewTraits {
         static var viewPadding: CGFloat { 20 }
+        static var minimunSwipeDistance: CGFloat { 25 }
     }
 
     var body: some View {
@@ -31,7 +32,8 @@ struct MUCustomVerticalForEach<T: Identifiable & Equatable, Content: View>: View
                         onTapGesture(for: index, item: item)
                     }
                     .simultaneousGesture(
-                        DragGesture(minimumDistance: 10, coordinateSpace: .local)
+                        DragGesture(minimumDistance: ViewTraits.minimunSwipeDistance,
+                                    coordinateSpace: .local)
                         .onChanged { onChange(translation: $0.translation, for: index) }
                         .onEnded { _ in onEnd(for: index) }
                     )

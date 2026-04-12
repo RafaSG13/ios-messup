@@ -28,10 +28,12 @@ struct EditExpenseModalView: View {
             .navigationTitle("Edit Expense")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }
+                        .padding()
+                        .fixedSize()
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button("Save") {
                         Task {
                             let newExpense = Expense(name: name,
@@ -43,6 +45,8 @@ struct EditExpenseModalView: View {
                         }
                         dismiss()
                     }
+                    .padding()
+                    .fixedSize()
                 }
             }.buttonStyle(.plain)
         }
