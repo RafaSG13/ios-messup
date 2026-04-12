@@ -20,29 +20,16 @@ final class MUEnvironmentConfigurator {
         EnvironmentKey(rawValue: UserDefaults.standard.string(forKey: "messup_environment") ?? "dev") ?? .dev
     }
 
-    static var authenticationService: AuthenticationService {
-        if environment == .dev {
-            return AuthenticationService(dataSource: MockAuthenticationDataSource(),
-                                        tokenStorage: InMemoryTokenStorage())
-        } else {
-            return AuthenticationService(dataSource: LiveAuthenticationDataSource(),
-                                         tokenStorage: KeyChainTokenStorage())
-        }
+    static var authenticationService: AuthServiceProtocol {
+        environment == .dev ? MockAuthService() : AuthService(client: MUClient(),
+                                                              tokenStorage: KeyChainTokenStorage())
     }
 
-    static var expenseRepository: ExpenseRepository {
-        if environment == .dev {
-            return ExpenseRepository(dataSource: ExpensesDataSourceMock())
-        } else {
-            return ExpenseRepository(dataSource: ExpensesDataSource())
-        }
+    static var expenseService: ExpensesServiceProtocol {
+        environment == .dev ? MockExpensesService() : ExpensesService(client: MUClient())
     }
 
-    static var incomeRepository: IncomeRepository {
-        if environment == .dev {
-            return IncomeRepository(dataSource: IncomeDataSourceMock())
-        } else {
-            return IncomeRepository(dataSource: IncomeDataSource())
-        }
+    static var incomeService: IncomeServiceProtocol {
+        environment == .dev ? MockIncomeService() : IncomeService(client: MUClient())
     }
 }

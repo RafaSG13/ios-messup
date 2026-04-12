@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @Environment(\.authenticationService) var authenticationService
+    @Environment(\.authService) var authenticationService
     @AppStorage("MUBiometryEnabled") private var enableBiometry = true
 
     var body: some View {
@@ -35,7 +35,7 @@ struct ProfileView: View {
 
 struct LogOutSection: View {
 
-    let authenticationService: AuthenticationService
+    let authenticationService: AuthServiceProtocol
 
     var body: some View {
         Section {

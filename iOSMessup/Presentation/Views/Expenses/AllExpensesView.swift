@@ -8,15 +8,18 @@
 import SwiftUI
 
 struct AllExpensesView: View {
-    @Environment(\.expenseRepository) private var expenseRepository
+    @Environment(\.expenseService) private var expenseService
     @State private var selectedItem: Expense?
     @State private var shouldPresentEditExpense = false
     @State private var shouldPresentAddExpense = false
     @State private var searchText = ""
-    
+    private let tasks = TaskStore()
+
+    private enum TaskId { case deleteExpenses }
+
     var body: some View {
         List {
-            ForEach(expenseRepository.filteredExpenses(on: searchText)) { expense in
+            ForEach(expenseService.filteredExpenses(on: searchText)) { expense in
                 ExpenseCellView(expense: expense)
                     .selectableCell {
                         selectedItem = expense
@@ -27,8 +30,8 @@ struct AllExpensesView: View {
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 7.5, leading: 20, bottom: 7.5, trailing: 20))
             }.onDelete { indexSet in
-                Task {
-                    try await expenseRepository.delete(removeAt: indexSet)
+                tasks.run(TaskId.deleteExpenses) {
+                    try await expenseService.delete(at: indexSet)
                 }
             }
         }
@@ -46,11 +49,12 @@ struct AllExpensesView: View {
                 }.buttonStyle(.plain)
             }
         }
+        .onDisappear { tasks.cancelAll() }
         .editExpenseSheet(isPresented: $shouldPresentEditExpense,
                           selectedItem: $selectedItem,
-                          onSubmit: expenseRepository.updateExpense(with:))
+                          onSubmit: expenseService.updateExpense(with:))
         .addExpenseSheet(isPresented: $shouldPresentAddExpense,
-                         onSubmit: expenseRepository.addExpense)
+                         onSubmit: expenseService.addExpense)
     }
 }
 

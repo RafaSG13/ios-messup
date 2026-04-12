@@ -9,10 +9,10 @@ import SwiftUI
 import Charts
 
 struct WeeklyExpensesView: View {
-    @Environment(\.expenseRepository) var expenseRepository
+    @Environment(\.expenseService) var expenseService
 
     var body: some View {
-        let data = buildData(for: expenseRepository.getActualWeekExpenses())
+        let data = buildData(for: expenseService.getActualWeekExpenses())
 
         VStack(spacing: 20) {
             // Header

@@ -11,7 +11,7 @@ struct RegistrationView: View {
     @State private var email: String = "rafasrrg13@gmail.com"
     @State private var username: String = "Rafael Serrano Gamarra"
     @State private var password: String = "Contrasena_123"
-    @Environment(\.authenticationService) private var authenticationService
+    @Environment(\.authService) private var authenticationService
 
     @Environment(\.colorScheme) private var colorScheme: ColorScheme
     
