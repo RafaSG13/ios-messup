@@ -43,6 +43,11 @@ final class MockExpensesService: ExpensesServiceProtocol {
         expenses.removeAll(where: { $0.id == expense.id })
     }
 
+    func delete(at offsets: IndexSet) async throws {
+        try await simulateNetwork()
+        expenses.remove(atOffsets: offsets)
+    }
+
     func updateExpense(with newValue: Expense) async throws {
         try await simulateNetwork()
         if let index = expenses.firstIndex(where: { $0.id == newValue.id }) {
@@ -57,5 +62,9 @@ final class MockExpensesService: ExpensesServiceProtocol {
 
     func getActualWeekExpenses() -> [Expense] {
         expenses.filter { Calendar.current.isDateInThisWeek($0.date) }
+    }
+
+    func lastExpenses(limit: Int) -> [Expense]{
+        expenses.sorted().suffix(limit)
     }
 }

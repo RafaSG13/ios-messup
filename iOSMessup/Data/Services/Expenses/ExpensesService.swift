@@ -16,7 +16,8 @@ protocol ExpensesServiceProtocol: AnyObject {
     func delete(at offsets: IndexSet) async throws
     func updateExpense(with newValue: Expense) async throws
     func filteredExpenses(on searchTerm: String) -> [Expense]
-    func getActualWeekExpenses() -> [Expense] 
+    func getActualWeekExpenses() -> [Expense]
+    func lastExpenses(limit: Int) -> [Expense]
 }
 
 extension EnvironmentValues {
@@ -26,21 +27,26 @@ extension EnvironmentValues {
 @Observable
 final class ExpensesService: ExpensesServiceProtocol {
     private(set) var expenses: [Expense] = []
+    private let client: MUClientProtocol
+
+    init(client: MUClientProtocol) {
+        self.client = client
+    }
 
     func loadExpenses() async throws {
         let request = GetAllExpensesRequest()
-        self.expenses = try await MUClient().send(request, as: [Expense].self)
+        self.expenses = try await client.send(request, as: [Expense].self)
     }
 
     func addExpense(_ expense: Expense) async throws {
         let request = CreateExpenseRequest(expense: expense)
-        let new = try await MUClient().send(request, as: Expense.self)
+        let new = try await client.send(request, as: Expense.self)
         self.expenses.append(new)
     }
 
     func delete(_ expense: Expense) async throws {
         let request = DeleteExpenseRequest(id: expense.id)
-        _ = try await MUClient().send(request, as: Expense.self)
+        _ = try await client.send(request, as: Expense.self)
         self.expenses.removeAll(where: { $0.id == expense.id })
     }
 
@@ -50,9 +56,9 @@ final class ExpensesService: ExpensesServiceProtocol {
 
         try await withThrowingTaskGroup(of: Void.self) { group in
             for expense in expensesToDelete {
-                group.addTask {
+                group.addTask { [weak self] in
                     let request = DeleteExpenseRequest(id: expense.id)
-                    _ = try await MUClient().send(request, as: Expense.self)
+                    _ = try await self?.client.send(request, as: Expense.self)
                 }
             }
             try await group.waitForAll()
@@ -62,7 +68,7 @@ final class ExpensesService: ExpensesServiceProtocol {
 
     func updateExpense(with newValue: Expense) async throws {
         let request = UpdateExpenseRequest(expense: newValue)
-        _ = try await MUClient().send(request, as: Expense.self)
+        _ = try await client.send(request, as: Expense.self)
 
         if let index = expenses.firstIndex(where: { $0.id == newValue.id }) {
             expenses[index] = newValue
@@ -78,5 +84,9 @@ final class ExpensesService: ExpensesServiceProtocol {
         expenses.filter { expense in
             Calendar.current.isDateInThisWeek(expense.date)
         }
+    }
+
+    func lastExpenses(limit: Int) -> [Expense] {
+        expenses.sorted().suffix(limit)
     }
 }

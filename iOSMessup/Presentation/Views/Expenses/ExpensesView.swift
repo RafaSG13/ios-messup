@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ExpensesView: View {
-    @Environment(\.expenseRepository) var expenseRepository
+    @Environment(\.expenseService) var expenseService
     @State private var lastExpenses: [Expense] = []
     @State private var shouldPresentAddExpense = false
     @State private var shouldPresentEditExpense = false
@@ -39,7 +39,7 @@ struct ExpensesView: View {
                             ExpenseCellView(expense: expense)
                         }
                         onDelete: { expense, _ in
-                            Task { try await expenseRepository.delete(expense) }
+                            Task { try await expenseService.delete(expense) }
                         }
                         .onChange(of: selectedItem) { _, new in
                             shouldPresentEditExpense = new != nil
@@ -59,12 +59,12 @@ struct ExpensesView: View {
                 }
             }
             .addExpenseSheet(isPresented: $shouldPresentAddExpense,
-                             onSubmit: expenseRepository.addExpense)
+                             onSubmit: expenseService.addExpense)
             .editExpenseSheet(isPresented: $shouldPresentEditExpense,
                               selectedItem: $selectedItem,
-                              onSubmit: expenseRepository.updateExpense(with:))
+                              onSubmit: expenseService.updateExpense(with:))
         }.onAppear {
-            lastExpenses = expenseRepository.lastExpenses(limit: Constants.maximumNumberOfExpenses)
+            lastExpenses = expenseService.lastExpenses(limit: Constants.maximumNumberOfExpenses)
         }
     }
 }

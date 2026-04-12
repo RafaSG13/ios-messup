@@ -16,8 +16,7 @@ final class AuthService: AuthServiceProtocol {
     private let client: MUClientProtocol
     private let tokenStorage: TokenStorageProtocol
 
-    init(client: MUClientProtocol = MUClient(),
-        tokenStorage: TokenStorageProtocol = KeyChainTokenStorage()) {
+    init(client: MUClientProtocol, tokenStorage: TokenStorageProtocol) {
         self.client = client
         self.tokenStorage = tokenStorage
         self.isAuthenticated = tokenStorage.getRefreshToken() != nil

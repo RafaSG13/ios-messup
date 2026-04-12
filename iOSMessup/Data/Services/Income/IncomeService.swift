@@ -16,7 +16,7 @@ final class IncomeService: IncomeServiceProtocol {
 
     private let client: MUClientProtocol
 
-    init(client: MUClientProtocol = MUClient()) {
+    init(client: MUClientProtocol) {
         self.client = client
     }
 

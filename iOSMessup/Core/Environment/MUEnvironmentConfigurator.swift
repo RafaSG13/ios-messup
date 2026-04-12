@@ -26,7 +26,7 @@ final class MUEnvironmentConfigurator {
     }
 
     static var expenseService: ExpensesServiceProtocol {
-        environment == .dev ? ExpensesService() : MockExpensesService()
+        environment == .dev ? MockExpensesService() : ExpensesService(client: MUClient())
     }
 
     static var incomeService: IncomeServiceProtocol {
