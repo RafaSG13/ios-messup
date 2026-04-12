@@ -9,7 +9,9 @@ import SwiftUI
 
 struct LoginView: View {
 
-    @Environment(\.authenticationService) private var authenticationService
+    private enum TaskId { case login }
+
+    @Environment(\.authService) private var authenticationService
     @Environment(\.colorScheme) private var colorScheme: ColorScheme
 
     @State var email: String = "rafasrrg13@gmail.com"
@@ -17,6 +19,7 @@ struct LoginView: View {
     @State var shouldPresentAlert: Bool = false
     @State var error: Error?
 
+    private let tasks = TaskStore()
 
     var body: some View {
         ZStack {
@@ -31,14 +34,7 @@ struct LoginView: View {
                                 headerText: "Password")
 
                 Button {
-                    Task {
-                        do {
-                            try await authenticationService.login(email: email, password: password)
-                        } catch let error {
-                            self.error = error
-                            self.shouldPresentAlert = true
-                        }
-                    }
+                    loginAction()
                 } label: {
                     Text("Iniciar Sesión")
                         .foregroundColor(colorScheme == .dark ? .black : .white)
@@ -48,6 +44,7 @@ struct LoginView: View {
                         .background(Color.mint)
                         .cornerRadius(10)
                 }
+                .onDisappear { tasks.cancelAll() }
                 .alert("Error", isPresented: $shouldPresentAlert, presenting: error) { _ in
                     Button("Close", role: .cancel) { shouldPresentAlert = false }
                 } message: { error in
@@ -56,6 +53,17 @@ struct LoginView: View {
             }
             .padding()
             .padding(.horizontal)
+        }
+    }
+
+    private func loginAction() {
+        tasks.main(TaskId.login) {
+            do {
+                try await authenticationService.login(email: email, password: password)
+            } catch let error {
+                self.error = error
+                self.shouldPresentAlert = true
+            }
         }
     }
 }

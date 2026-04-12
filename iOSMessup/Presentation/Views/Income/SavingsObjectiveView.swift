@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct IncomeObjectiveView: View {
-    @Environment(\.incomeRepository) private var incomeRepository
+    @Environment(\.incomeService) private var incomeService
     @State private var selectedDeposit: Deposit? = nil
     @State private var lastDeposits: [Deposit] = []
     @State private var shouldPresentAddDepositModal: Bool = false
@@ -31,7 +31,7 @@ struct IncomeObjectiveView: View {
                                                 selection: $selectedDeposit) { deposit in
                             DepositCellView(deposit: deposit)
                         } onDelete: { deposit, _ in
-                            Task { try await incomeRepository.deleteDeposit(deposit) }
+                            Task { try await incomeService.deleteDeposit(deposit) }
                         }
                         .onChange(of: selectedDeposit) { _, newValue in
                             shouldPresentEditDepositModal = newValue != nil
@@ -55,14 +55,14 @@ struct IncomeObjectiveView: View {
             .navigationTitle("Saving Goal")
             .navigationBarTitleDisplayMode(.inline)
             .editDepositSheet(isPresented: $shouldPresentEditDepositModal, selectedDeposit: $selectedDeposit) { deposit in
-                try await incomeRepository.updateDeposit(with: deposit)
+                try await incomeService.updateDeposit(with: deposit)
             }
             .addDepositSheet(isPresented: $shouldPresentAddDepositModal) { deposit in
-                try await incomeRepository.createDeposit(deposit)
+                try await incomeService.createDeposit(deposit)
             }
         }
         .onAppear {
-            lastDeposits = incomeRepository.lastDeposits(limit: 7)
+            lastDeposits = incomeService.lastDeposits(limit: 7)
         }
     }
 }
@@ -87,8 +87,8 @@ extension IncomeObjectiveView {
     }
 
     var ProgressSectionView: some View {
-        let actualProgress = incomeRepository.calculateActualProgress()
-        let actualFounded = incomeRepository.calculateTotalFounded().toAbbreviateMoneyString()
+        let actualProgress = incomeService.calculateActualProgress()
+        let actualFounded = incomeService.calculateTotalFounded().toAbbreviateMoneyString()
         return VStack(spacing: 5) {
             HStack {
                 HStack {
@@ -102,7 +102,7 @@ extension IncomeObjectiveView {
                                 .foregroundStyle(.yellow.opacity(0.1))
                         )
 
-                    Text("of \(incomeRepository.savingGoal?.amount.toAbbreviateMoneyString() ?? "0$") 🏁")
+                    Text("of \(incomeService.savingGoal?.amount.toAbbreviateMoneyString() ?? "0$") 🏁")
                 }.font(.subheadline)
 
                 Spacer()
@@ -110,35 +110,35 @@ extension IncomeObjectiveView {
                     .font(.largeTitle)
                     .foregroundStyle(.green)
             }
-            ProgressBar(progress: incomeRepository.calculateActualProgress(),
+            ProgressBar(progress: incomeService.calculateActualProgress(),
                         progressColor: LinearGradient(colors: [.cyan, .mint, .green],
                                                       startPoint: .leading, endPoint: .trailing))
         }
     }
 
     var GoalSummarySectionView: some View {
-        let color = incomeRepository.savingGoal?.savingCategory.color ?? .clear
+        let color = incomeService.savingGoal?.savingCategory.color ?? .clear
         return VStack(spacing: 0) {
             Rectangle()
                 .frame(height: 1)
                 .foregroundStyle(.secondary.opacity(0.5))
             HStack {
-                Image(systemName: incomeRepository.savingGoal?.savingCategory.icon ?? "home")
+                Image(systemName: incomeService.savingGoal?.savingCategory.icon ?? "home")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 120, height: 120)
-                    .foregroundStyle(incomeRepository.savingGoal?.savingCategory.color ?? .clear)
+                    .foregroundStyle(incomeService.savingGoal?.savingCategory.color ?? .clear)
                     .padding(.leading)
                 Spacer()
                 VStack(alignment: .trailing, spacing: 0) {
-                    Text(incomeRepository.savingGoal?.name ?? "")
+                    Text(incomeService.savingGoal?.name ?? "")
                         .font(.title3)
                         .bold()
                         .padding(.bottom, MUSpacer.size05)
-                    Text((incomeRepository.savingGoal?.savingCategory.rawValue ?? "") + " Date")
+                    Text((incomeService.savingGoal?.savingCategory.rawValue ?? "") + " Date")
                         .foregroundStyle(.secondary)
                         .padding(.bottom, MUSpacer.size02)
-                    Text(incomeRepository.savingGoal?.completionDate.textValue ?? "")
+                    Text(incomeService.savingGoal?.completionDate.textValue ?? "")
                         .font(.title)
                         .bold()
                         .padding(.bottom, MUSpacer.size03)
@@ -163,9 +163,9 @@ extension IncomeObjectiveView {
     }
 
     var CircularProgressSection: some View {
-        let actualProgress = incomeRepository.calculateActualProgress()
-        let actualFounded = incomeRepository.calculateTotalFounded().toAbbreviateMoneyString()
-        let remainingAmount = (incomeRepository.savingGoal?.amount ?? 0) - incomeRepository.calculateTotalFounded()
+        let actualProgress = incomeService.calculateActualProgress()
+        let actualFounded = incomeService.calculateTotalFounded().toAbbreviateMoneyString()
+        let remainingAmount = (incomeService.savingGoal?.amount ?? 0) - incomeService.calculateTotalFounded()
         return HStack(spacing: 30) {
             CircularSavingProgressView(progress: actualProgress,
                                        lineWidth: 15,
@@ -189,7 +189,7 @@ extension IncomeObjectiveView {
                                        lineWidth: 15,
                                        progressColor: .blue,
                                        backgroundColor: .secondary.opacity(0.3)) {
-                circularProgressLabel(progress: incomeRepository.savingGoal?.amount.toAbbreviateMoneyString() ?? "",
+                circularProgressLabel(progress: incomeService.savingGoal?.amount.toAbbreviateMoneyString() ?? "",
                                       subtitle: "Required",
                                       backgroundColor: .secondary,
                                       progressColor: .blue)

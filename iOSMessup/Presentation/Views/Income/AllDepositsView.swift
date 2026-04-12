@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AllDepositsView: View {
-    @Environment(\.incomeRepository) var incomeRepository
+    @Environment(\.incomeService) var incomeService
     @State private var selectedItem: Deposit?
     @State private var shouldPresentEditDeposit = false
     @State private var shouldPresentAddDeposit = false
@@ -16,7 +16,7 @@ struct AllDepositsView: View {
     
     var body: some View {
         List {
-            ForEach(incomeRepository.filteredDeposits(on: searchText)) { deposit in
+            ForEach(incomeService.filteredDeposits(on: searchText)) { deposit in
                 DepositCellView(deposit: deposit)
                     .selectableCell {
                         selectedItem = deposit
@@ -28,7 +28,7 @@ struct AllDepositsView: View {
                     .listRowInsets(EdgeInsets(top: 7.5, leading: 20, bottom: 7.5, trailing: 20))
             }.onDelete { indexSet in
                 Task {
-                    try await incomeRepository.deleteDeposits(removeAt: indexSet)
+                    try await incomeService.deleteDeposits(removeAt: indexSet)
                 }
             }
         }
@@ -47,10 +47,10 @@ struct AllDepositsView: View {
             }
         }
         .editDepositSheet(isPresented: $shouldPresentEditDeposit, selectedDeposit: $selectedItem) { deposit in
-            try await incomeRepository.updateDeposit(with: deposit)
+            try await incomeService.updateDeposit(with: deposit)
         }
         .addDepositSheet(isPresented: $shouldPresentAddDeposit) { deposit in
-            try await incomeRepository.createDeposit(deposit)
+            try await incomeService.createDeposit(deposit)
         }
     }
 }

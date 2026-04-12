@@ -10,26 +10,24 @@ import SwiftUI
 @main
 struct iOSMessupApp: App {
     @State private var status: Status = .idle
-    @State private var authenticationService: AuthenticationService = MUEnvironmentConfigurator.authenticationService
-    @State private var expenseRepository: ExpenseRepository = MUEnvironmentConfigurator.expenseRepository
-    @State private var incomeRepository: IncomeRepository = MUEnvironmentConfigurator.incomeRepository
+    @State private var authService: AuthServiceProtocol = MUEnvironmentConfigurator.authenticationService
+    @State private var expenseService: ExpensesServiceProtocol = MUEnvironmentConfigurator.expenseService
+    @State private var incomeService: IncomeServiceProtocol = MUEnvironmentConfigurator.incomeService
 
     var body: some Scene {
         WindowGroup {
             MainTabBarView()
-                .allowsTabReset(triggeredBy: .constant(!authenticationService.isAuthenticated))
+                .allowsTabReset(triggeredBy: .constant(!authService.isAuthenticated))
                 .task { await loadInitialData() }
-                .fullScreenCover(isPresented: .constant(!authenticationService.isAuthenticated)) {
+                .fullScreenCover(isPresented: .constant(!authService.isAuthenticated)) {
                     LandingView()
                 }
-                .onChange(of: authenticationService.isAuthenticated) { _, newValue in
-                    if !newValue {
-                        resetAppServices()
-                    }
+                .onChange(of: authService.isAuthenticated) { _, newValue in
+                    if !newValue { resetAppServices() }
                 }
-                .environment(\.expenseRepository, expenseRepository)
-                .environment(\.incomeRepository, incomeRepository)
-                .environment(\.authenticationService, authenticationService)
+                .environment(\.expenseService, expenseService)
+                .environment(\.incomeService, incomeService)
+                .environment(\.authService, authService)
         }
     }
 }
@@ -38,8 +36,8 @@ extension iOSMessupApp {
     func loadInitialData() async {
         do {
             status = .loading
-            async let loadExpenses: () = expenseRepository.loadExpenses()
-            async let loadIncomes: () = incomeRepository.load()
+            async let loadExpenses: () = expenseService.loadExpenses()
+            async let loadIncomes: () = incomeService.load()
 
             let _ = try await (loadExpenses, loadIncomes)
             status = .idle
@@ -49,8 +47,8 @@ extension iOSMessupApp {
     }
 
     func resetAppServices() {
-        expenseRepository = MUEnvironmentConfigurator.expenseRepository
-        incomeRepository = MUEnvironmentConfigurator.incomeRepository
-        authenticationService = MUEnvironmentConfigurator.authenticationService
+        expenseService = MUEnvironmentConfigurator.expenseService
+        incomeService = MUEnvironmentConfigurator.incomeService
+        authService = MUEnvironmentConfigurator.authenticationService
     }
 }
