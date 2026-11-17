@@ -11,6 +11,7 @@ import SwiftUI
 struct DebugSection: View {
     @Environment(\.expenseService) private var expenseService
     @Environment(\.incomeService) private var incomeService
+    @Environment(\.savingsService) private var savingsService
     @AppStorage(DebugSeeder.autoSeedKey) private var isAutoSeedOn = true
     @State private var isConfirmingDelete = false
     @State private var error: (any Error)?
@@ -46,6 +47,7 @@ struct DebugSection: View {
                 try change()
                 try await expenseService.loadExpenses()
                 try await incomeService.load()
+                try await savingsService.load()
             } catch {
                 self.error = error
             }

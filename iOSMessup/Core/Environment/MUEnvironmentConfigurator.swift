@@ -34,4 +34,11 @@ final class MUEnvironmentConfigurator {
         case .local: IncomeService(store: .shared)
         }
     }
+
+    static var savingsService: SavingsServiceProtocol {
+        switch current {
+        case .mock: MockSavingsService()
+        case .local: SavingsService(store: .shared)
+        }
+    }
 }

@@ -2,28 +2,21 @@
 //  IncomeServiceProtocol.swift
 //  iOSMessup
 //
-//  Created by Rafael Serrano Gamarra on 16/12/25.
+//  Created by Rafael Serrano Gamarra on 17/11/26.
 //
 
 import Foundation
 import SwiftUI
 
 protocol IncomeServiceProtocol: AnyObject {
-    var deposits: [Deposit] { get }
-    var savingGoal: SavingGoal? { get }
+    var incomes: [Income] { get }
 
     func load() async throws
-    func createSavingGoal(_ goal: SavingGoal) async throws
-    func createDeposit(_ deposit: Deposit) async throws
-    func updateSavingGoal(with newValue: SavingGoal) async throws
-    func updateDeposit(with newValue: Deposit) async throws
-    func deleteSavingGoal() async throws
-    func deleteDeposits(removeAt indices: IndexSet) async throws
-    func deleteDeposit(_ deposit: Deposit) async throws
-    func lastDeposits(limit: Int) -> [Deposit]
-    func calculateTotalFounded() -> Double
-    func calculateActualProgress() -> Double
-    func filteredDeposits(on searchTerm: String) -> [Deposit]
+    func createIncome(_ income: Income) async throws
+    func updateIncome(with newValue: Income) async throws
+    func deleteIncome(_ income: Income) async throws
+    func lastIncomes(limit: Int) -> [Income]
+    func filteredIncomes(on searchTerm: String) -> [Income]
 }
 
 extension EnvironmentValues {

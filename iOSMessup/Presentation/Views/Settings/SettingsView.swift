@@ -18,16 +18,19 @@ private enum SettingsRoute: Hashable {
 struct SettingsView: View {
     @Environment(\.expenseService) private var expenseService
     @Environment(\.incomeService) private var incomeService
+    @Environment(\.savingsService) private var savingsService
     @AppStorage(AppCurrency.storageKey) private var currencyCode = AppCurrency.defaultCode
     @State private var exportURL: URL?
     @State private var error: (any Error)?
 
     private var csv: String {
-        CSVExporter.csv(expenses: expenseService.expenses, deposits: incomeService.deposits)
+        CSVExporter.csv(expenses: expenseService.expenses,
+                        incomes: incomeService.incomes,
+                        contributions: savingsService.contributions)
     }
 
     private var hasData: Bool {
-        !expenseService.expenses.isEmpty || !incomeService.deposits.isEmpty
+        !expenseService.expenses.isEmpty || !incomeService.incomes.isEmpty || !savingsService.contributions.isEmpty
     }
 
     private var version: String {

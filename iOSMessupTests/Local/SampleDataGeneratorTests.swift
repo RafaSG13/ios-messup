@@ -29,7 +29,8 @@ struct SampleDataGeneratorTests {
         #expect(first.expenses.map(\.name) == second.expenses.map(\.name))
         #expect(first.expenses.map(\.amount) == second.expenses.map(\.amount))
         #expect(first.expenses.map(\.date) == second.expenses.map(\.date))
-        #expect(first.deposits.map(\.amount) == second.deposits.map(\.amount))
+        #expect(first.incomes.map(\.amount) == second.incomes.map(\.amount))
+        #expect(first.contributions.map(\.amount) == second.contributions.map(\.amount))
     }
 
     @Test func differentSeedsGiveDifferentSpending() {
@@ -43,17 +44,27 @@ struct SampleDataGeneratorTests {
         let sample = SampleDataGenerator.make(now: now, calendar: calendar)
 
         #expect(sample.expenses.allSatisfy { $0.date <= now })
-        #expect(sample.deposits.allSatisfy { $0.date <= now })
+        #expect(sample.incomes.allSatisfy { $0.date <= now })
+        #expect(sample.contributions.allSatisfy { $0.date <= now })
     }
 
     @Test func coversTheRequestedMonthsWithASalaryEach() {
         let sample = SampleDataGenerator.make(now: now, calendar: calendar, months: 4)
 
-        let salaryMonths = sample.deposits
-            .filter { $0.foundingSource == .salary }
+        let salaryMonths = sample.incomes
+            .filter { $0.source == .salary }
             .map { calendar.component(.month, from: $0.date) }
         #expect(salaryMonths.sorted() == [8, 9, 10, 11])
         #expect(sample.expenses.allSatisfy { $0.amount > 0 })
+    }
+
+    @Test func contributionsGiveAPartialGoalProgress() {
+        let sample = SampleDataGenerator.make(now: now, calendar: calendar)
+
+        let total = sample.contributions.reduce(0) { $0 + $1.amount }
+        #expect(sample.contributions.count >= 4)
+        #expect(sample.contributions.allSatisfy { $0.amount > 0 })
+        #expect(total > 0 && total < sample.goal.amount)
     }
 
     @Test func spreadsSpendingAcrossManyCategories() {

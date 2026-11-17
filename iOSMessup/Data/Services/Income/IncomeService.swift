@@ -12,8 +12,7 @@ import SwiftUI
 
 @Observable
 final class IncomeService: IncomeServiceProtocol {
-    private(set) var deposits: [Deposit] = []
-    private(set) var savingGoal: SavingGoal?
+    private(set) var incomes: [Income] = []
 
     private let store: LocalStore
 
@@ -22,100 +21,51 @@ final class IncomeService: IncomeServiceProtocol {
     }
 
     func load() async throws {
-        try reloadDeposits()
-        try reloadSavingGoal()
+        try reloadIncomes()
     }
 
-    func createSavingGoal(_ goal: SavingGoal) async throws {
-        try replaceSavingGoal(with: goal)
-    }
-
-    func createDeposit(_ deposit: Deposit) async throws {
+    func createIncome(_ income: Income) async throws {
         let context = store.context
-        context.insert(DepositRecord(deposit))
+        context.insert(IncomeRecord(income))
         try context.save()
-        try reloadDeposits()
+        try reloadIncomes()
     }
 
-    func updateSavingGoal(with newValue: SavingGoal) async throws {
-        try replaceSavingGoal(with: newValue)
-    }
-
-    func updateDeposit(with newValue: Deposit) async throws {
+    func updateIncome(with newValue: Income) async throws {
         let context = store.context
         let id = newValue.id
-        var descriptor = FetchDescriptor<DepositRecord>(predicate: #Predicate { $0.id == id })
+        var descriptor = FetchDescriptor<IncomeRecord>(predicate: #Predicate { $0.id == id })
         descriptor.fetchLimit = 1
         guard let record = try context.fetch(descriptor).first else { return }
         record.apply(newValue)
         try context.save()
-        try reloadDeposits()
+        try reloadIncomes()
     }
 
-    func deleteSavingGoal() async throws {
+    func deleteIncome(_ income: Income) async throws {
         let context = store.context
-        try context.delete(model: SavingGoalRecord.self)
+        let id = income.id
+        let records = try context.fetch(FetchDescriptor<IncomeRecord>(predicate: #Predicate { $0.id == id }))
+        records.forEach { context.delete($0) }
         try context.save()
-        try reloadSavingGoal()
-    }
-
-    func deleteDeposits(removeAt indices: IndexSet) async throws {
-        let ids = indices.compactMap { deposits.indices.contains($0) ? deposits[$0].id : nil }
-        try deleteDepositRecords(withIDs: ids)
-    }
-
-    func deleteDeposit(_ deposit: Deposit) async throws {
-        try deleteDepositRecords(withIDs: [deposit.id])
+        try reloadIncomes()
     }
 
     // MARK: - Persistence
 
-    private func deleteDepositRecords(withIDs ids: [String]) throws {
-        let context = store.context
-        let records = try context.fetch(FetchDescriptor<DepositRecord>(predicate: #Predicate { ids.contains($0.id) }))
-        records.forEach { context.delete($0) }
-        try context.save()
-        try reloadDeposits()
-    }
-
-    /// Only one saving goal exists at a time.
-    private func replaceSavingGoal(with goal: SavingGoal) throws {
-        let context = store.context
-        try context.delete(model: SavingGoalRecord.self)
-        context.insert(SavingGoalRecord(goal))
-        try context.save()
-        try reloadSavingGoal()
-    }
-
-    private func reloadDeposits() throws {
-        let descriptor = FetchDescriptor<DepositRecord>(sortBy: [SortDescriptor(\.date)])
-        deposits = try store.context.fetch(descriptor).map(\.domain)
-    }
-
-    private func reloadSavingGoal() throws {
-        var descriptor = FetchDescriptor<SavingGoalRecord>()
-        descriptor.fetchLimit = 1
-        savingGoal = try store.context.fetch(descriptor).first?.domain
+    private func reloadIncomes() throws {
+        let descriptor = FetchDescriptor<IncomeRecord>(sortBy: [SortDescriptor(\.date)])
+        incomes = try store.context.fetch(descriptor).map(\.domain)
     }
 
     // MARK: - Derived
 
-    func lastDeposits(limit: Int) -> [Deposit] {
-        Array(deposits.sorted().suffix(limit))
+    func lastIncomes(limit: Int) -> [Income] {
+        Array(incomes.sorted().suffix(limit))
     }
 
-    func calculateTotalFounded() -> Double {
-        deposits.reduce(0) { $0 + $1.amount }
-    }
-
-    func calculateActualProgress() -> Double {
-        guard let savingGoal, savingGoal.amount > 0 else { return 0 }
-        let progress = calculateTotalFounded() / savingGoal.amount
-        return min(progress, 1.0)
-    }
-
-    func filteredDeposits(on searchTerm: String) -> [Deposit] {
-        guard !searchTerm.isEmpty, searchTerm.count > 3 else { return deposits }
-        return deposits.filter { $0.concept.localizedCaseInsensitiveContains(searchTerm) }
+    func filteredIncomes(on searchTerm: String) -> [Income] {
+        guard !searchTerm.isEmpty, searchTerm.count > 3 else { return incomes }
+        return incomes.filter { $0.concept.localizedCaseInsensitiveContains(searchTerm) }
     }
 }

@@ -11,82 +11,70 @@ import Testing
 
 struct IncomeServiceLocalTests {
 
-    private func makeDeposit(_ concept: String, daysAgo: Int = 0, amount: Double = 100) -> Deposit {
-        Deposit(concept: concept,
-                amount: amount,
-                date: Date().addingTimeInterval(TimeInterval(-daysAgo * 86_400)),
-                foundingSource: .salary)
+    private func makeIncome(_ concept: String, daysAgo: Int = 0, amount: Double = 100) -> Income {
+        Income(concept: concept,
+               amount: amount,
+               date: Date().addingTimeInterval(TimeInterval(-daysAgo * 86_400)),
+               source: .salary)
     }
 
-    private func makeGoal(_ name: String, amount: Double = 1000, completion: CompletionDate = .undefined) -> SavingGoal {
-        SavingGoal(name: name, completionDate: completion, amount: amount, savingCategory: .vacation)
-    }
-
-    @Test func depositCrudPersistsAcrossServiceInstances() async throws {
+    @Test func incomeCrudPersistsAcrossServiceInstances() async throws {
         let store = LocalStore(storage: .inMemory)
         let service = IncomeService(store: store)
-        var salary = makeDeposit("Salary", daysAgo: 2)
-        let gift = makeDeposit("Gift", daysAgo: 1)
-        let bonus = makeDeposit("Bonus", daysAgo: 0)
-        try await service.createDeposit(salary)
-        try await service.createDeposit(gift)
-        try await service.createDeposit(bonus)
+        var salary = makeIncome("Salary", daysAgo: 2)
+        let gift = makeIncome("Gift", daysAgo: 1)
+        try await service.createIncome(salary)
+        try await service.createIncome(gift)
 
         salary.amount = 250
-        try await service.updateDeposit(with: salary)
-        try await service.deleteDeposit(gift)
-        try await service.deleteDeposits(removeAt: [1])
+        salary.source = .freelance
+        try await service.updateIncome(with: salary)
+        try await service.deleteIncome(gift)
 
         let other = IncomeService(store: store)
         try await other.load()
-        #expect(other.deposits == [salary])
+        #expect(other.incomes == [salary])
     }
 
-    @Test func updateDepositWithUnknownIdIsNoOp() async throws {
+    @Test func updateIncomeWithUnknownIdIsNoOp() async throws {
         let service = IncomeService(store: LocalStore(storage: .inMemory))
-        let deposit = makeDeposit("Salary")
-        try await service.createDeposit(deposit)
+        let income = makeIncome("Salary")
+        try await service.createIncome(income)
 
-        try await service.updateDeposit(with: makeDeposit("Ghost"))
+        try await service.updateIncome(with: makeIncome("Ghost"))
 
-        #expect(service.deposits == [deposit])
+        #expect(service.incomes == [income])
     }
 
-    @Test func savingGoalIsSingleAndRoundTripsCompletionDate() async throws {
-        let store = LocalStore(storage: .inMemory)
-        let service = IncomeService(store: store)
-
-        try await service.createSavingGoal(makeGoal("First"))
-        let fixed = makeGoal("Second", completion: .fixed(Date().addingTimeInterval(86_400)))
-        try await service.createSavingGoal(fixed)
-
-        let other = IncomeService(store: store)
-        try await other.load()
-        #expect(other.savingGoal == fixed)
-
-        let undefined = makeGoal("Third", completion: .undefined)
-        try await other.updateSavingGoal(with: undefined)
-        try await service.load()
-        #expect(service.savingGoal == undefined)
-    }
-
-    @Test func deleteSavingGoalClearsGoal() async throws {
+    @Test func incomesAreSortedByDateAscending() async throws {
         let service = IncomeService(store: LocalStore(storage: .inMemory))
-        try await service.createSavingGoal(makeGoal("Goal"))
+        let newer = makeIncome("Newer", daysAgo: 1)
+        let older = makeIncome("Older", daysAgo: 5)
+        try await service.createIncome(newer)
+        try await service.createIncome(older)
 
-        try await service.deleteSavingGoal()
-
-        #expect(service.savingGoal == nil)
+        #expect(service.incomes == [older, newer])
     }
 
-    @Test func progressIsCappedAtOne() async throws {
+    @Test func filteredIncomesIgnoresTermsOfThreeCharactersOrLess() async throws {
         let service = IncomeService(store: LocalStore(storage: .inMemory))
-        try await service.createSavingGoal(makeGoal("Goal", amount: 100))
-        try await service.createDeposit(makeDeposit("A", amount: 40))
-        #expect(service.calculateActualProgress() == 0.4)
+        try await service.createIncome(makeIncome("Salary"))
+        try await service.createIncome(makeIncome("Gift"))
 
-        try await service.createDeposit(makeDeposit("B", amount: 500))
+        #expect(service.filteredIncomes(on: "gif").count == 2)
+        #expect(service.filteredIncomes(on: "").count == 2)
+        #expect(service.filteredIncomes(on: "sala").map(\.concept) == ["Salary"])
+    }
 
-        #expect(service.calculateActualProgress() == 1.0)
+    @Test func lastIncomesReturnsNewestOldestFirst() async throws {
+        let service = IncomeService(store: LocalStore(storage: .inMemory))
+        let oldest = makeIncome("A", daysAgo: 3)
+        let middle = makeIncome("B", daysAgo: 2)
+        let newest = makeIncome("C", daysAgo: 1)
+        try await service.createIncome(newest)
+        try await service.createIncome(oldest)
+        try await service.createIncome(middle)
+
+        #expect(service.lastIncomes(limit: 2) == [middle, newest])
     }
 }

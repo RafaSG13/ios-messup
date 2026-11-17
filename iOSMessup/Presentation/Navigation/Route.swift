@@ -8,13 +8,11 @@
 import SwiftUI
 
 enum Route: Hashable {
-    case depositList
     case transactionList
 
     @ViewBuilder
     var destination: some View {
         switch self {
-        case .depositList: AllDepositsView()
         case .transactionList: AllExpensesView()
         }
     }

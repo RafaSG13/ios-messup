@@ -34,7 +34,8 @@ enum DebugSeeder {
         let sample = SampleDataGenerator.make(now: now)
         let context = store.context
         sample.expenses.forEach { context.insert(ExpenseRecord($0)) }
-        sample.deposits.forEach { context.insert(DepositRecord($0)) }
+        sample.incomes.forEach { context.insert(IncomeRecord($0)) }
+        sample.contributions.forEach { context.insert(ContributionRecord($0)) }
         context.insert(SavingGoalRecord(sample.goal))
         try context.save()
     }
@@ -42,7 +43,8 @@ enum DebugSeeder {
     static func deleteAllData(in store: LocalStore) throws {
         let context = store.context
         try context.delete(model: ExpenseRecord.self)
-        try context.delete(model: DepositRecord.self)
+        try context.delete(model: IncomeRecord.self)
+        try context.delete(model: ContributionRecord.self)
         try context.delete(model: SavingGoalRecord.self)
         try context.save()
     }
@@ -50,7 +52,8 @@ enum DebugSeeder {
     static func isEmpty(_ store: LocalStore) throws -> Bool {
         let context = store.context
         return try context.fetchCount(FetchDescriptor<ExpenseRecord>()) == 0
-            && context.fetchCount(FetchDescriptor<DepositRecord>()) == 0
+            && context.fetchCount(FetchDescriptor<IncomeRecord>()) == 0
+            && context.fetchCount(FetchDescriptor<ContributionRecord>()) == 0
             && context.fetchCount(FetchDescriptor<SavingGoalRecord>()) == 0
     }
 }
