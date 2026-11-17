@@ -10,207 +10,276 @@ import MUDesignSystem
 
 struct IncomeObjectiveView: View {
     @Environment(\.incomeService) private var incomeService
-    @State private var selectedDeposit: Deposit? = nil
+    @State private var selectedDeposit: Deposit?
+    @State private var isAddingDeposit = false
+    @State private var goalFormMode: SavingGoalFormView.Mode?
+    @State private var isConfirmingGoalDeletion = false
     @State private var error: (any Error)?
-    @State private var lastDeposits: [Deposit] = []
-    @State private var shouldPresentAddDepositModal: Bool = false
-    @State private var shouldPresentEditDepositModal: Bool = false
 
     var body: some View {
+        let recentDeposits = Array(incomeService.lastDeposits(limit: 7).reversed())
 
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading) {
-                    ProgressSectionView
-                        .padding(.horizontal)
-                    GoalSummarySectionView
-                    CircularProgressSection
-                    
-                    VStack(alignment: .leading) {
-                        ListSectionHeaderView(sectionTitle: "Recent Deposits",
-                                              actionTitle: "View all",
-                                              value: Route.depositList)
-                            .padding(.horizontal)
-                        MUCustomVerticalForEach(items: $lastDeposits,
-                                                selection: $selectedDeposit,
-                                                deleteTitle: "Delete") { deposit in
-                            DepositCellView(deposit: deposit)
-                        } onDelete: { deposit, _ in
-                            Task {
-                                do {
-                                    try await incomeService.deleteDeposit(deposit)
-                                } catch {
-                                    self.error = error
-                                }
+            List {
+                goalSection
+                depositsSection(recentDeposits)
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle("Saving Goal")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(for: Route.self) { $0.destination }
+            .toolbar {
+                if let goal = incomeService.savingGoal {
+                    ToolbarItem(placement: .primaryAction) {
+                        Menu("Goal options", systemImage: "ellipsis") {
+                            Button("Edit goal", systemImage: "pencil") {
+                                goalFormMode = .edit(goal)
+                            }
+                            Button("Delete goal", systemImage: "trash", role: .destructive) {
+                                isConfirmingGoalDeletion = true
                             }
                         }
-                        .onChange(of: selectedDeposit) { _, newValue in
-                            shouldPresentEditDepositModal = newValue != nil
-                        }
                     }
-                    Spacer()
                 }
-            }
-            .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Add deposit", systemImage: "plus") {
-                        shouldPresentAddDepositModal = true
+                        isAddingDeposit = true
                     }
                     .buttonStyle(.glassProminent)
                 }
             }
-            .scrollIndicators(.hidden)
-            .scrollBounceBehavior(.always)
-            .navigationTitle("Saving Goal")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(for: Route.self) { $0.destination }
+            .confirmationDialog("Delete saving goal?", isPresented: $isConfirmingGoalDeletion, titleVisibility: .visible) {
+                Button("Delete goal", role: .destructive, action: deleteGoal)
+            } message: {
+                Text("Your deposits are kept.")
+            }
             .errorAlert($error)
-            .editDepositSheet(isPresented: $shouldPresentEditDepositModal, selectedDeposit: $selectedDeposit) { deposit in
+            .editDepositSheet(deposit: $selectedDeposit) { deposit in
                 try await incomeService.updateDeposit(with: deposit)
             }
-            .addDepositSheet(isPresented: $shouldPresentAddDepositModal) { deposit in
+            .addDepositSheet(isPresented: $isAddingDeposit) { deposit in
                 try await incomeService.createDeposit(deposit)
             }
-        }
-        .onChange(of: incomeService.deposits, initial: true) {
-            lastDeposits = incomeService.lastDeposits(limit: 7)
+            .savingGoalSheet(mode: $goalFormMode, onSubmit: submit)
         }
     }
 }
 
-// MARK: - IncomeObjectiveView + Components
+// MARK: - Sections
 
-extension IncomeObjectiveView {
-
-    @ViewBuilder func circularProgressLabel(progress: String,
-                                            subtitle: String,
-                                            backgroundColor: Color,
-                                            progressColor: Color) -> some View {
-        VStack {
-            Text(progress)
-                .font(.system(size: 18, weight: .black))
-                .foregroundStyle(progressColor)
-            Text(subtitle)
-                .font(.system(size: 14))
-                .bold()
-                .foregroundStyle(progressColor)
-        }
-    }
-
-    var ProgressSectionView: some View {
-        let actualProgress = incomeService.calculateActualProgress()
-        let actualFounded = incomeService.calculateTotalFounded().toAbbreviateMoneyString()
-        return VStack(spacing: 5) {
-            HStack {
-                HStack {
-                    Text(actualFounded)
-                        .font(.subheadline)
-                        .foregroundStyle(.yellow)
-                        .bold()
-                        .padding(MUSpacer.size02)
-                        .background(
-                            RoundedRectangle(cornerRadius: 5)
-                                .foregroundStyle(.yellow.opacity(0.1))
-                        )
-
-                    Text("of \(incomeService.savingGoal?.amount.toAbbreviateMoneyString() ?? "0$") 🏁")
-                }.font(.subheadline)
-
-                Spacer()
-                Text(actualProgress.formatToPercentageString())
-                    .font(.largeTitle)
-                    .foregroundStyle(.green)
-            }
-            ProgressBar(progress: incomeService.calculateActualProgress(),
-                        progressColor: LinearGradient(colors: [.cyan, .mint, .green],
-                                                      startPoint: .leading, endPoint: .trailing))
-        }
-    }
-
-    var GoalSummarySectionView: some View {
-        let color = incomeService.savingGoal?.savingCategory.color ?? .clear
-        return VStack(spacing: 0) {
-            Rectangle()
-                .frame(height: 1)
-                .foregroundStyle(.secondary.opacity(0.5))
-            HStack {
-                Image(systemName: incomeService.savingGoal?.savingCategory.icon ?? "home")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 120, height: 120)
-                    .foregroundStyle(incomeService.savingGoal?.savingCategory.color ?? .clear)
-                    .padding(.leading)
-                Spacer()
-                VStack(alignment: .trailing, spacing: 0) {
-                    Text(incomeService.savingGoal?.name ?? "")
-                        .font(.title3)
-                        .bold()
-                        .padding(.bottom, MUSpacer.size05)
-                    Text((incomeService.savingGoal?.savingCategory.rawValue ?? "") + " Date")
-                        .foregroundStyle(.secondary)
-                        .padding(.bottom, MUSpacer.size02)
-                    Text(incomeService.savingGoal?.completionDate.textValue ?? "")
-                        .font(.title)
-                        .bold()
-                        .padding(.bottom, MUSpacer.size03)
-                    Text("In 122 days")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .padding(MUSpacer.size02)
-                        .background(.quaternary, in: .rect(cornerRadius: 5))
+private extension IncomeObjectiveView {
+    var goalSection: some View {
+        Section {
+            if let goal = incomeService.savingGoal {
+                SavingGoalCardView(goal: goal,
+                                   progress: SavingGoalProgress(earned: incomeService.calculateTotalFounded(),
+                                                                target: goal.amount))
+            } else {
+                ContentUnavailableView {
+                    Label("No saving goal", systemImage: "flag.checkered")
+                } description: {
+                    Text("Set a target amount to track your progress.")
+                } actions: {
+                    Button("Create goal") { goalFormMode = .create }
+                        .buttonStyle(.borderedProminent)
                 }
-                .frame(maxHeight: .infinity)
             }
-            .padding()
-            .padding(.vertical)
-            .frame(maxWidth: .infinity)
-            .background(LinearGradient(colors: [color.opacity(0.5), color.opacity(0.1), Color(.systemBackground)], startPoint: .topLeading, endPoint: .bottomTrailing))
-            Rectangle()
-                .frame(height: 1)
-                .foregroundStyle(.secondary.opacity(0.5))
+        }
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets(top: MUSpacer.size03, leading: MUSpacer.size04, bottom: MUSpacer.size03, trailing: MUSpacer.size04))
+        .listRowSeparator(.hidden)
+    }
+
+    @ViewBuilder
+    func depositsSection(_ deposits: [Deposit]) -> some View {
+        if deposits.isEmpty {
+            Section {
+                ContentUnavailableView {
+                    Label("No deposits", systemImage: "banknote")
+                } description: {
+                    Text("Deposits you add count toward your saving goal.")
+                } actions: {
+                    Button("Add deposit") { isAddingDeposit = true }
+                        .buttonStyle(.borderedProminent)
+                }
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+            } header: {
+                Text("Recent Deposits")
+                    .textCase(nil)
+            }
+        } else {
+            Section {
+                ForEach(deposits) { deposit in
+                    DepositCellView(deposit: deposit)
+                        .selectableCell { selectedDeposit = deposit }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button("Delete", role: .destructive) { delete(deposit) }
+                        }
+                }
+            } header: {
+                ListSectionHeaderView(sectionTitle: "Recent Deposits",
+                                      actionTitle: "View all",
+                                      value: Route.depositList)
+                    .textCase(nil)
+            }
+        }
+    }
+}
+
+// MARK: - Actions
+
+private extension IncomeObjectiveView {
+    func delete(_ deposit: Deposit) {
+        Task {
+            do {
+                try await incomeService.deleteDeposit(deposit)
+            } catch {
+                self.error = error
+            }
         }
     }
 
-    var CircularProgressSection: some View {
-        let actualProgress = incomeService.calculateActualProgress()
-        let actualFounded = incomeService.calculateTotalFounded().toAbbreviateMoneyString()
-        let remainingAmount = (incomeService.savingGoal?.amount ?? 0) - incomeService.calculateTotalFounded()
-        return HStack(spacing: 30) {
-            CircularSavingProgressView(progress: actualProgress,
-                                       lineWidth: 15,
-                                       progressColor: .green,
-                                       backgroundColor: .secondary.opacity(0.3)) {
-                circularProgressLabel(progress: actualFounded,
-                                      subtitle: "Earned",
-                                      backgroundColor: .secondary,
-                                      progressColor: .green)
-            }
-            CircularSavingProgressView(progress: 1 - actualProgress,
-                                       lineWidth: 15,
-                                       progressColor: .yellow,
-                                       backgroundColor: .secondary.opacity(0.3)) {
-                circularProgressLabel(progress: remainingAmount.toAbbreviateMoneyString(),
-                                      subtitle: "Left",
-                                      backgroundColor: .secondary,
-                                      progressColor: .yellow)
-            }
-            CircularSavingProgressView(progress: 1,
-                                       lineWidth: 15,
-                                       progressColor: .blue,
-                                       backgroundColor: .secondary.opacity(0.3)) {
-                circularProgressLabel(progress: incomeService.savingGoal?.amount.toAbbreviateMoneyString() ?? "",
-                                      subtitle: "Required",
-                                      backgroundColor: .secondary,
-                                      progressColor: .blue)
+    func deleteGoal() {
+        Task {
+            do {
+                try await incomeService.deleteSavingGoal()
+            } catch {
+                self.error = error
             }
         }
-        .padding(.vertical)
-        .padding(.horizontal, MUSpacer.size06)
+    }
+
+    /// The form keeps the goal `id` when editing, so a matching id means update, anything else is a new goal.
+    func submit(_ goal: SavingGoal) async throws {
+        if incomeService.savingGoal?.id == goal.id {
+            try await incomeService.updateSavingGoal(with: goal)
+        } else {
+            try await incomeService.createSavingGoal(goal)
+        }
+    }
+}
+
+// MARK: - SavingGoalCardView
+
+private struct SavingGoalCardView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric private var iconSize: CGFloat = 48
+    let goal: SavingGoal
+    let progress: SavingGoalProgress
+
+    var body: some View {
+        MUCard {
+            header
+            if let date = goal.completionDate.date {
+                targetDate(date)
+            }
+            progressArea
+            stats
+        }
+    }
+
+    private var header: some View {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: MUSpacer.size03))
+            : AnyLayout(HStackLayout(spacing: MUSpacer.size04))
+
+        return layout {
+            Image(systemName: goal.savingCategory.icon)
+                .font(.title2)
+                .foregroundStyle(goal.savingCategory.color)
+                .frame(width: iconSize, height: iconSize)
+                .background(goal.savingCategory.color.opacity(0.15), in: .rect(cornerRadius: MURadius.medium))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading) {
+                Text(goal.name)
+                    .font(.title3.bold())
+                Text(goal.savingCategory.rawValue)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    private func targetDate(_ date: Date) -> some View {
+        VStack(alignment: .leading) {
+            Text("Target date")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text(date, format: .dateTime.day().month(.wide).year())
+                .font(.headline)
+            Text(date, format: .relative(presentation: .named))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    private var progressArea: some View {
+        VStack(alignment: .leading, spacing: MUSpacer.size03) {
+            Text(progress.fraction, format: .percent.precision(.fractionLength(0)))
+                .font(.largeTitle.bold())
+                .foregroundStyle(.green)
+                .accessibilityHidden(true)
+            ProgressBar(progress: progress.fraction)
+        }
+    }
+
+    private var stats: some View {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: MUSpacer.size03))
+            : AnyLayout(HStackLayout(spacing: MUSpacer.size03))
+
+        return layout {
+            StatTileView(title: "Earned", amount: progress.earned)
+            StatTileView(title: "Left", amount: progress.remaining)
+            StatTileView(title: "Required", amount: progress.target)
+        }
+    }
+}
+
+// MARK: - StatTileView
+
+private struct StatTileView: View {
+    @Environment(\.currencyCode) private var currencyCode
+    let title: LocalizedStringKey
+    let amount: Double
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(amount.formattedCompactMoney(code: currencyCode))
+                .font(.headline)
+                .minimumScaleFactor(0.7)
+                .lineLimit(1)
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding(MUSpacer.size03)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.tertiarySystemGroupedBackground), in: .rect(cornerRadius: MURadius.small))
+        .accessibilityElement(children: .combine)
     }
 }
 
 // MARK: - Preview
 
-#Preview {
+#Preview("Mock data") {
     IncomeObjectiveView()
+}
+
+#Preview("Empty") {
+    IncomeObjectiveView()
+        .environment(\.incomeService, MockIncomeService(initialDeposits: [], initialGoal: nil, delay: 0))
+}
+
+#Preview("No goal") {
+    IncomeObjectiveView()
+        .environment(\.incomeService, MockIncomeService(initialGoal: nil, delay: 0))
+}
+
+#Preview("Failing service") {
+    IncomeObjectiveView()
+        .environment(\.incomeService, MockIncomeService(delay: 0, shouldFail: true))
 }

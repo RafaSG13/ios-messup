@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct iOSMessupApp: App {
     @State private var status: Status = .idle
+    @AppStorage(AppCurrency.storageKey) private var currencyCode = AppCurrency.defaultCode
     @State private var expenseService: ExpensesServiceProtocol = MUEnvironmentConfigurator.expenseService
     @State private var incomeService: IncomeServiceProtocol = MUEnvironmentConfigurator.incomeService
 
@@ -29,6 +30,7 @@ struct iOSMessupApp: App {
                 .errorAlert(loadError)
                 .environment(\.expenseService, expenseService)
                 .environment(\.incomeService, incomeService)
+                .environment(\.currencyCode, currencyCode)
         }
     }
 }

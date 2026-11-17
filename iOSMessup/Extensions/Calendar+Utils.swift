@@ -13,11 +13,4 @@ extension Calendar {
         let endOfWeek = self.date(byAdding: .day, value: 7, to: startOfWeek)!
         return date >= startOfWeek && date < endOfWeek
     }
-
-    func actualMonthToString() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "LLLL"
-
-        return dateFormatter.string(from: Date())
-    }
 }

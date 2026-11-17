@@ -6,67 +6,114 @@
 //
 
 import SwiftUI
-import MUDesignSystem
+
+// MARK: - AllExpensesView
 
 struct AllExpensesView: View {
     @Environment(\.expenseService) private var expenseService
     @State private var selectedItem: Expense?
-    @State private var shouldPresentEditExpense = false
     @State private var shouldPresentAddExpense = false
     @State private var searchText = ""
     @State private var error: (any Error)?
 
     var body: some View {
+        let sections = expenseService.filteredExpenses(on: searchText).groupedByDay(date: \.date)
+
         List {
-            ForEach(expenseService.filteredExpenses(on: searchText)) { expense in
-                ExpenseCellView(expense: expense)
-                    .selectableCell {
-                        selectedItem = expense
-                    }
-                    .onChange(of: selectedItem) { _, newValue in
-                        shouldPresentEditExpense = newValue != nil
-                    }
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 7.5, leading: 20, bottom: 7.5, trailing: 20))
-            }.onDelete { indexSet in
-                let displayed = expenseService.filteredExpenses(on: searchText)
-                let expensesToDelete = indexSet.map { displayed[$0] }
-                Task {
-                    do {
-                        for expense in expensesToDelete {
-                            try await expenseService.delete(expense)
+            if sections.isEmpty {
+                emptyState
+            }
+            ForEach(sections) { section in
+                Section {
+                    ForEach(section.items) { expense in
+                        Button {
+                            selectedItem = expense
+                        } label: {
+                            ExpenseCellView(expense: expense)
                         }
-                    } catch {
-                        self.error = error
+                        .buttonStyle(.plain)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button("Delete", role: .destructive) { delete(expense) }
+                        }
                     }
+                } header: {
+                    Text(section.day, format: .dateTime.weekday(.wide).day().month(.wide))
                 }
             }
         }
-        .listStyle(.plain)
+        .listStyle(.insetGrouped)
         .searchable(text: $searchText, placement: .toolbar)
         .searchToolbarBehavior(.minimize)
-        .scrollIndicators(.hidden)
         .navigationTitle("All transactions")
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("Add expense", systemImage: "plus") {
-                    shouldPresentAddExpense.toggle()
+                    shouldPresentAddExpense = true
                 }
                 .buttonStyle(.glassProminent)
             }
         }
         .errorAlert($error)
-        .editExpenseSheet(isPresented: $shouldPresentEditExpense,
-                          selectedItem: $selectedItem,
+        .editExpenseSheet(item: $selectedItem,
                           onSubmit: expenseService.updateExpense(with:))
         .addExpenseSheet(isPresented: $shouldPresentAddExpense,
                          onSubmit: expenseService.addExpense)
     }
 }
 
-#Preview {
+// MARK: - View Components
+
+private extension AllExpensesView {
+    @ViewBuilder
+    var emptyState: some View {
+        Group {
+            if searchText.isEmpty {
+                ContentUnavailableView {
+                    Label("No transactions", systemImage: "creditcard")
+                } description: {
+                    Text("Add your first expense to see it here.")
+                } actions: {
+                    Button("Add expense") { shouldPresentAddExpense = true }
+                        .buttonStyle(.borderedProminent)
+                }
+            } else {
+                ContentUnavailableView.search(text: searchText)
+            }
+        }
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
+    }
+
+    func delete(_ expense: Expense) {
+        Task {
+            do {
+                try await expenseService.delete(expense)
+            } catch {
+                self.error = error
+            }
+        }
+    }
+}
+
+// MARK: - Previews
+
+#Preview("Mock data") {
     NavigationStack {
         AllExpensesView()
+    }
+}
+
+#Preview("Empty") {
+    NavigationStack {
+        AllExpensesView()
+            .environment(\.expenseService, MockExpensesService(initialExpenses: [], delay: 0))
+    }
+}
+
+#Preview("Failing service") {
+    NavigationStack {
+        AllExpensesView()
+            .environment(\.expenseService, MockExpensesService(delay: 0, shouldFail: true))
     }
 }

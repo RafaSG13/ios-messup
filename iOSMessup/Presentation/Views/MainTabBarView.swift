@@ -10,8 +10,7 @@ import SwiftUI
 enum AppTab: Hashable {
     case expenses
     case income
-    case socialGroups
-    case profile
+    case settings
 }
 
 struct MainTabBarView: View {
@@ -19,17 +18,14 @@ struct MainTabBarView: View {
 
     var body: some View {
         TabView(selection: $activeTab) {
-            Tab("Expenses", systemImage: "dollarsign.circle.fill", value: .expenses) {
+            Tab("Expenses", systemImage: "creditcard.fill", value: .expenses) {
                 ExpensesView()
             }
             Tab("Income", systemImage: "chart.pie.fill", value: .income) {
                 IncomeObjectiveView()
             }
-            Tab("Social groups", systemImage: "bubble.left.and.bubble.right", value: .socialGroups) {
-                SocialGroupsView()
-            }
-            Tab("Profile", systemImage: "person.fill", value: .profile) {
-                ProfileView()
+            Tab("Settings", systemImage: "gearshape.fill", value: .settings) {
+                SettingsView()
             }
         }
         .tabViewStyle(.sidebarAdaptable)

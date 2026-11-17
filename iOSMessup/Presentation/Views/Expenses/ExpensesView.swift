@@ -8,93 +8,154 @@
 import SwiftUI
 import MUDesignSystem
 
+// MARK: - ExpensesView
+
 struct ExpensesView: View {
-    @Environment(\.expenseService) var expenseService
-    @State private var lastExpenses: [Expense] = []
+    @Environment(\.expenseService) private var expenseService
     @State private var shouldPresentAddExpense = false
-    @State private var shouldPresentEditExpense = false
     @State private var selectedItem: Expense?
     @State private var error: (any Error)?
 
-    private enum ViewTraits {
-        static let headerSpacing: CGFloat = 10
-    }
-
     private enum Constants {
         static let maximumNumberOfExpenses = 6
+        static let categoryWindowInDays = 30
     }
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack {
-                    AnalyticsSection()
-                        .padding()
-
-                    LazyVStack(spacing: ViewTraits.headerSpacing) {
-                        ListSectionHeaderView(sectionTitle: "Transactions",
-                                              actionTitle: "View all",
-                                              value: Route.transactionList)
-                        .padding(.horizontal)
-
-                        MUCustomVerticalForEach(items: $lastExpenses,
-                                                selection: $selectedItem,
-                                                deleteTitle: "Delete") { expense in
-                            ExpenseCellView(expense: expense)
-                        }
-                        onDelete: { expense, _ in
-                            Task {
-                                do {
-                                    try await expenseService.delete(expense)
-                                } catch {
-                                    self.error = error
-                                }
-                            }
-                        }
-                        .onChange(of: selectedItem) { _, new in
-                            shouldPresentEditExpense = new != nil
-                        }
-                    }
+            List {
+                if expenseService.expenses.isEmpty {
+                    emptyState
+                } else {
+                    weeklySection
+                    recentSection
+                    categorySection
                 }
             }
+            .listStyle(.insetGrouped)
             .navigationTitle("Expenses")
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: Route.self) { $0.destination }
-            .errorAlert($error)
-            .scrollIndicators(.hidden)
-            .scrollBounceBehavior(.always)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Add expense", systemImage: "plus") {
-                        shouldPresentAddExpense.toggle()
+                        shouldPresentAddExpense = true
                     }
                     .buttonStyle(.glassProminent)
                 }
             }
+            .errorAlert($error)
             .addExpenseSheet(isPresented: $shouldPresentAddExpense,
                              onSubmit: expenseService.addExpense)
-            .editExpenseSheet(isPresented: $shouldPresentEditExpense,
-                              selectedItem: $selectedItem,
+            .editExpenseSheet(item: $selectedItem,
                               onSubmit: expenseService.updateExpense(with:))
-        }.onChange(of: expenseService.expenses, initial: true) {
-            lastExpenses = expenseService.lastExpenses(limit: Constants.maximumNumberOfExpenses)
         }
     }
 }
 
-//MARK: - View Components
+// MARK: - View Components
 
-fileprivate struct AnalyticsSection: View {
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text("Analytics")
-                .font(.title2.bold())
-            WeeklyExpensesView()
-                .frame(height: 200)
+private extension ExpensesView {
+    var emptyState: some View {
+        ContentUnavailableView {
+            Label("No transactions", systemImage: "creditcard")
+        } description: {
+            Text("Add your first expense to see your spending here.")
+        } actions: {
+            Button("Add expense") { shouldPresentAddExpense = true }
+                .buttonStyle(.borderedProminent)
+        }
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
+    }
+
+    var weeklySection: some View {
+        Section {
+            MUCard("Last 7 days") {
+                WeeklyExpensesView()
+                    .frame(height: 200)
+            }
+        }
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets())
+        .listRowSeparator(.hidden)
+    }
+
+    var categorySection: some View {
+        Section {
+            MUCard("Spending by category") {
+                if categoryTotals.isEmpty {
+                    Text("No expenses in the last 30 days.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                } else {
+                    CategorySpendingChart(totals: categoryTotals)
+                }
+            }
+        }
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets())
+        .listRowSeparator(.hidden)
+    }
+
+    var recentSection: some View {
+        Section {
+            ForEach(recentExpenses) { expense in
+                Button {
+                    selectedItem = expense
+                } label: {
+                    ExpenseCellView(expense: expense)
+                }
+                .buttonStyle(.plain)
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    Button("Delete", role: .destructive) { delete(expense) }
+                }
+            }
+        } header: {
+            ListSectionHeaderView(sectionTitle: "Transactions",
+                                  actionTitle: "View all",
+                                  value: Route.transactionList)
+            .textCase(nil)
         }
     }
 }
 
-#Preview {
+// MARK: - Data
+
+private extension ExpensesView {
+    /// Most recent first.
+    var recentExpenses: [Expense] {
+        Array(expenseService.lastExpenses(limit: Constants.maximumNumberOfExpenses).reversed())
+    }
+
+    var categoryTotals: [CategoryTotal] {
+        let since = Calendar.current.date(byAdding: .day, value: -Constants.categoryWindowInDays, to: .now)
+        return expenseService.expenses.totalsByCategory(since: since)
+    }
+
+    func delete(_ expense: Expense) {
+        Task {
+            do {
+                try await expenseService.delete(expense)
+            } catch {
+                self.error = error
+            }
+        }
+    }
+}
+
+// MARK: - Previews
+
+#Preview("Mock data") {
     ExpensesView()
+}
+
+#Preview("Empty") {
+    ExpensesView()
+        .environment(\.expenseService, MockExpensesService(initialExpenses: [], delay: 0))
+}
+
+#Preview("Failing service") {
+    ExpensesView()
+        .environment(\.expenseService, MockExpensesService(delay: 0, shouldFail: true))
 }

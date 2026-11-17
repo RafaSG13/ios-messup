@@ -39,11 +39,31 @@ enum CompletionDate: Equatable, Hashable {
     case undefined
     case fixed(Date)
 
-    var textValue: String {
+    /// The target date, or `nil` when the goal has no deadline.
+    var date: Date? {
         switch self {
-        case .undefined: return "Undefined"
-        case .fixed(let date): return date.categoryFormattedDate()
+        case .undefined: return nil
+        case .fixed(let date): return date
         }
+    }
+}
+
+// MARK: - Progress
+
+/// Earned vs. target amounts of a saving goal, with the derived values the dashboard shows.
+struct SavingGoalProgress: Equatable {
+    let earned: Double
+    let target: Double
+
+    /// Completed share clamped to `0...1`; `0` when the target is not positive.
+    var fraction: Double {
+        guard target > 0 else { return 0 }
+        return min(max(earned / target, 0), 1)
+    }
+
+    /// Amount still missing; never negative once the goal is reached.
+    var remaining: Double {
+        max(target - earned, 0)
     }
 }
 

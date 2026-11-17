@@ -8,49 +8,14 @@
 import Foundation
 
 extension Double {
-    func toMoneyString() -> String {
-        let roundedValue = ceil(self * 10) / 10.0
-        
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 2
-        
-        if let formattedString = formatter.string(from: NSNumber(value: roundedValue)) {
-            return "\(formattedString) $"
-        } else {
-            return "0.00 $"
-        }
+    /// `1234.5` → "$1,234.50" (locale-aware; `code` is an ISO 4217 code, see `AppCurrency`).
+    func formattedMoney(code: String) -> String {
+        formatted(.currency(code: code))
     }
 
-    func toAbbreviateMoneyString() -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencySymbol = "$"
-        formatter.maximumFractionDigits = 1
-        
-        let number: Double
-        let suffix: String
-        
-        if self >= 1_000_000_000_000 {
-            number = self / 1_000_000_000_000
-            suffix = "B"
-        } else if self >= 1_000_000_000 {
-            number = self / 1_000_000_000
-            suffix = "B"
-        } else if self >= 1_000_000 {
-            number = self / 1_000_000
-            suffix = "M"
-        } else if self >= 1_000 {
-            number = self / 1_000
-            suffix = "k"
-        } else {
-            number = self
-            suffix = ""
-        }
-        
-        let formattedNumber = formatter.string(from: NSNumber(value: number)) ?? "$0.0"
-        return formattedNumber + suffix
+    /// `2900` → "$2.9K" (compact, for tight spaces such as chart annotations and progress labels).
+    func formattedCompactMoney(code: String) -> String {
+        formatted(.currency(code: code).notation(.compactName))
     }
 
     func formatToPercentageString() -> String {
@@ -58,4 +23,3 @@ extension Double {
         return "\(percentage)%"
     }
 }
-

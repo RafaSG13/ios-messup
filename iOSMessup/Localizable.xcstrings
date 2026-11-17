@@ -1,22 +1,22 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "$%@" : {
-
-    },
-    "Add deposit" : {
-
-    },
-    "Add Deposit" : {
-
-    },
-    "Add expense" : {
+    "About" : {
 
     },
     "Add Expense" : {
 
     },
-    "Additional tools" : {
+    "Add deposit" : {
+
+    },
+    "Add expense" : {
+
+    },
+    "Add your first expense to see it here." : {
+
+    },
+    "Add your first expense to see your spending here." : {
 
     },
     "All Deposits" : {
@@ -28,25 +28,22 @@
     "Amount" : {
 
     },
-    "Analytics" : {
-
-    },
-    "App actions" : {
-
-    },
     "Cancel" : {
 
     },
     "Category" : {
 
     },
-    "Change Currency" : {
+    "Content" : {
 
     },
-    "Concept" : {
+    "Create goal" : {
 
     },
-    "Contact us" : {
+    "Currency" : {
+
+    },
+    "Data" : {
 
     },
     "Date" : {
@@ -58,34 +55,46 @@
     "Delete" : {
 
     },
-    "Details" : {
+    "Delete goal" : {
 
     },
-    "Donations and Support" : {
+    "Delete saving goal?" : {
+
+    },
+    "Deposits you add count toward your saving goal." : {
+
+    },
+    "Details" : {
 
     },
     "Done" : {
 
     },
-    "Edit deposit" : {
+    "Earned" : {
 
     },
     "Edit Expense" : {
 
     },
-    "Enable Biometry" : {
+    "Edit deposit" : {
+
+    },
+    "Edit goal" : {
+
+    },
+    "Edit saving goal" : {
 
     },
     "Expenses" : {
 
     },
-    "Export to SVG" : {
+    "Export data" : {
 
     },
     "Founding Source" : {
 
     },
-    "In 122 days" : {
+    "Goal options" : {
 
     },
     "Income" : {
@@ -94,22 +103,25 @@
     "Last 7 days" : {
 
     },
-    "Manage Categories" : {
-
-    },
-    "Manage subscriptions" : {
+    "Left" : {
 
     },
     "Name" : {
 
     },
-    "No deposit selected" : {
+    "New saving goal" : {
 
     },
-    "No expense selected." : {
+    "No deposits" : {
 
     },
-    "of %@ 🏁" : {
+    "No expenses in the last 30 days." : {
+
+    },
+    "No saving goal" : {
+
+    },
+    "No transactions" : {
 
     },
     "OK" : {
@@ -118,10 +130,13 @@
     "Payment Method" : {
 
     },
-    "Profile" : {
+    "Preferences" : {
 
     },
     "Recent Deposits" : {
+
+    },
+    "Required" : {
 
     },
     "Save" : {
@@ -130,31 +145,46 @@
     "Saving Goal" : {
 
     },
-    "Settings" : {
+    "Selected" : {
 
     },
-    "Social groups" : {
+    "Set a target amount to track your progress." : {
+
+    },
+    "Set a target date" : {
+
+    },
+    "Settings" : {
 
     },
     "Something went wrong" : {
 
     },
+    "Spending by category" : {
+
+    },
+    "Spending in the last 7 days" : {
+
+    },
     "Spent" : {
 
     },
-    "Support" : {
+    "Target amount" : {
 
     },
-    "These are my groups" : {
+    "Target date" : {
 
     },
     "Transactions" : {
 
     },
-    "User account" : {
+    "Version" : {
 
     },
     "View all" : {
+
+    },
+    "Your deposits are kept." : {
 
     }
   },

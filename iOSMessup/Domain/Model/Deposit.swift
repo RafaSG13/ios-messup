@@ -29,12 +29,16 @@ extension Deposit {
     static var mock: Deposit = Deposit(concept: "Monthly Salary", amount: 3000.0, date: Date(), foundingSource: .salary)
 
     static var mockArray: [Deposit] = [
-        Deposit(concept: "Freelance Payment", amount: 1200.0, date: Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 20))!, foundingSource: .freelance),
-        Deposit(concept: "Bonus",amount: 500.0, date: Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 10))!, foundingSource: .bonuses),
-        Deposit(concept: "Stock Dividends", amount: 250.0, date: Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 5))!, foundingSource: .investments),
-        Deposit( concept: "Gift",amount: 150.0,date: Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 2))!, foundingSource: .gifts),
-        Deposit(concept: "Passive Income", amount: 800.0, date: Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 18))!, foundingSource: .passiveIncome)
+        Deposit(concept: "Freelance Payment", amount: 1200.0, date: daysAgo(2), foundingSource: .freelance),
+        Deposit(concept: "Bonus", amount: 500.0, date: daysAgo(6), foundingSource: .bonuses),
+        Deposit(concept: "Stock Dividends", amount: 250.0, date: daysAgo(11), foundingSource: .investments),
+        Deposit(concept: "Gift", amount: 150.0, date: daysAgo(16), foundingSource: .gifts),
+        Deposit(concept: "Passive Income", amount: 800.0, date: daysAgo(4), foundingSource: .passiveIncome)
     ]
+
+    private static func daysAgo(_ days: Int) -> Date {
+        Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
+    }
 }
 
 

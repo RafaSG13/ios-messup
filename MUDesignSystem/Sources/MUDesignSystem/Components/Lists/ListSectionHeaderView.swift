@@ -27,6 +27,7 @@ public struct ListSectionHeaderView<Value: Hashable>: View {
             Text(sectionTitle)
                 .font(.title2)
                 .bold()
+                .foregroundStyle(Color.primary)
             Spacer()
             NavigationLink(value: value) {
                 Text(actionTitle)
