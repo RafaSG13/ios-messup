@@ -10,7 +10,6 @@ import Foundation
 import SwiftData
 
 enum DebugSeeder {
-    @MainActor
     static func replaceWithSampleData(in store: LocalStore) throws {
         try deleteAllData(in: store)
         let context = store.context
@@ -20,7 +19,6 @@ enum DebugSeeder {
         try context.save()
     }
 
-    @MainActor
     static func deleteAllData(in store: LocalStore) throws {
         let context = store.context
         try context.delete(model: ExpenseRecord.self)

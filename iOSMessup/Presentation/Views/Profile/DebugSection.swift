@@ -12,7 +12,7 @@ struct DebugSection: View {
     @Environment(\.expenseService) private var expenseService
     @Environment(\.incomeService) private var incomeService
     @State private var isConfirmingDelete = false
-    @State private var error: Error?
+    @State private var error: (any Error)?
 
     private var isLocal: Bool { MUEnvironmentConfigurator.current == .local }
 
@@ -33,12 +33,7 @@ struct DebugSection: View {
                 run { try DebugSeeder.deleteAllData(in: .shared) }
             }
         }
-        .alert("Debug action failed",
-               isPresented: Binding(get: { error != nil }, set: { if !$0 { error = nil } })) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(error?.localizedDescription ?? "")
-        }
+        .errorAlert($error)
     }
 
     // MARK: - Actions

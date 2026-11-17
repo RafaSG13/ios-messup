@@ -1,5 +1,5 @@
 //
-//  TransactionCellView.swift
+//  ExpenseCellView.swift
 //  iOSMessup
 //
 //  Created by Rafael Serrano Gamarra on 21/1/25.
@@ -28,7 +28,7 @@ struct ExpenseCellView: View {
                 .scaledToFill()
                 .padding(ViewTraits.imageInternalPadding)
                 .background(expense.category.color)
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
                 .clipShape(.rect(cornerRadius: ViewTraits.cornerRadius))
 
             VStack(alignment: .leading) {
@@ -67,12 +67,4 @@ struct ExpenseCellView: View {
     }
     .scrollIndicators(.hidden)
     .padding()
-}
-
-//MARK: - ExpenseCellView + SelectableCell
-
-extension ExpenseCellView {
-    func selectableCell(_ onTap: @escaping () -> Void) -> some View {
-        self.modifier(SelectableCell(onTap: onTap))
-    }
 }

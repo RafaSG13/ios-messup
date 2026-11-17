@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Charts
+import MUDesignSystem
 
 struct WeeklyExpensesView: View {
     @Environment(\.expenseService) var expenseService
@@ -21,7 +22,7 @@ struct WeeklyExpensesView: View {
                 Text("Last 7 days")
                     .font(.caption)
                     .bold()
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
             }
             .padding(.horizontal)
 
@@ -40,9 +41,8 @@ struct WeeklyExpensesView: View {
                         : Text("$\(String(format: "%.2f", amount))")
                             .font(.caption)
                             .bold()
-                            .foregroundColor(.white)
+                            .foregroundStyle(.white)
                             .padding(MUSpacer.size02)
-                            .cornerRadius(4)
                     }
                 }
             }
@@ -67,7 +67,7 @@ struct WeeklyExpensesView: View {
                   endPoint: .bottomTrailing
             ).shadow(color: .black, radius: 10, x: 0, y: 10)
         )
-        .cornerRadius(20)
+        .clipShape(.rect(cornerRadius: 20))
     }
 }
 

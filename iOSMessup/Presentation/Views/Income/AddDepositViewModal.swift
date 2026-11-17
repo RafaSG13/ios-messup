@@ -13,10 +13,12 @@ struct AddDepositViewModal: View {
                                                      amount: 0.0,
                                                      date: Date(),
                                                      foundingSource: .other)
+    @State private var isSaving = false
+    @State private var error: (any Error)?
     var onSubmit: ((_ Deposit: Deposit) async throws -> Void)?
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
                 DetailsSection(newDeposit: $newDeposit)
                 PaymentMethodSection(newDeposit: $newDeposit)
@@ -24,15 +26,12 @@ struct AddDepositViewModal: View {
             .navigationTitle("Add Deposit")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
-                        Task { try? await onSubmit?(newDeposit) }
-                        dismiss()
-                    }
-                    .disabled(newDeposit.concept.isEmpty || newDeposit.amount <= 0)
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Save", action: save)
+                        .disabled(isSaving || newDeposit.concept.isEmpty || newDeposit.amount <= 0)
                 }
                 ToolbarItem(placement: .keyboard) {
                     HStack {
@@ -42,6 +41,24 @@ struct AddDepositViewModal: View {
                         }.tint(.blue)
                     }
                 }
+            }
+            .errorAlert($error)
+        }
+    }
+}
+
+// MARK: - Actions
+
+private extension AddDepositViewModal {
+    func save() {
+        isSaving = true
+        Task {
+            do {
+                try await onSubmit?(newDeposit)
+                dismiss()
+            } catch {
+                self.error = error
+                isSaving = false
             }
         }
     }

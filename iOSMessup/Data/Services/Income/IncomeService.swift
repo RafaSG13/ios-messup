@@ -21,18 +21,15 @@ final class IncomeService: IncomeServiceProtocol {
         self.store = store
     }
 
-    @MainActor
     func load() async throws {
         try reloadDeposits()
         try reloadSavingGoal()
     }
 
-    @MainActor
     func createSavingGoal(_ goal: SavingGoal) async throws {
         try replaceSavingGoal(with: goal)
     }
 
-    @MainActor
     func createDeposit(_ deposit: Deposit) async throws {
         let context = store.context
         context.insert(DepositRecord(deposit))
@@ -40,12 +37,10 @@ final class IncomeService: IncomeServiceProtocol {
         try reloadDeposits()
     }
 
-    @MainActor
     func updateSavingGoal(with newValue: SavingGoal) async throws {
         try replaceSavingGoal(with: newValue)
     }
 
-    @MainActor
     func updateDeposit(with newValue: Deposit) async throws {
         let context = store.context
         let id = newValue.id
@@ -57,7 +52,6 @@ final class IncomeService: IncomeServiceProtocol {
         try reloadDeposits()
     }
 
-    @MainActor
     func deleteSavingGoal() async throws {
         let context = store.context
         try context.delete(model: SavingGoalRecord.self)
@@ -65,20 +59,17 @@ final class IncomeService: IncomeServiceProtocol {
         try reloadSavingGoal()
     }
 
-    @MainActor
     func deleteDeposits(removeAt indices: IndexSet) async throws {
         let ids = indices.compactMap { deposits.indices.contains($0) ? deposits[$0].id : nil }
         try deleteDepositRecords(withIDs: ids)
     }
 
-    @MainActor
     func deleteDeposit(_ deposit: Deposit) async throws {
         try deleteDepositRecords(withIDs: [deposit.id])
     }
 
     // MARK: - Persistence
 
-    @MainActor
     private func deleteDepositRecords(withIDs ids: [String]) throws {
         let context = store.context
         let records = try context.fetch(FetchDescriptor<DepositRecord>(predicate: #Predicate { ids.contains($0.id) }))
@@ -88,7 +79,6 @@ final class IncomeService: IncomeServiceProtocol {
     }
 
     /// Only one saving goal exists at a time.
-    @MainActor
     private func replaceSavingGoal(with goal: SavingGoal) throws {
         let context = store.context
         try context.delete(model: SavingGoalRecord.self)
@@ -97,13 +87,11 @@ final class IncomeService: IncomeServiceProtocol {
         try reloadSavingGoal()
     }
 
-    @MainActor
     private func reloadDeposits() throws {
         let descriptor = FetchDescriptor<DepositRecord>(sortBy: [SortDescriptor(\.date)])
         deposits = try store.context.fetch(descriptor).map(\.domain)
     }
 
-    @MainActor
     private func reloadSavingGoal() throws {
         var descriptor = FetchDescriptor<SavingGoalRecord>()
         descriptor.fetchLimit = 1

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MUDesignSystem
 
 struct AllDepositsView: View {
     @Environment(\.incomeService) var incomeService
@@ -13,7 +14,8 @@ struct AllDepositsView: View {
     @State private var shouldPresentEditDeposit = false
     @State private var shouldPresentAddDeposit = false
     @State private var searchText = ""
-    
+    @State private var error: (any Error)?
+
     var body: some View {
         List {
             ForEach(incomeService.filteredDeposits(on: searchText)) { deposit in
@@ -27,8 +29,16 @@ struct AllDepositsView: View {
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 7.5, leading: 20, bottom: 7.5, trailing: 20))
             }.onDelete { indexSet in
+                let displayed = incomeService.filteredDeposits(on: searchText)
+                let depositsToDelete = indexSet.map { displayed[$0] }
                 Task {
-                    try await incomeService.deleteDeposits(removeAt: indexSet)
+                    do {
+                        for deposit in depositsToDelete {
+                            try await incomeService.deleteDeposit(deposit)
+                        }
+                    } catch {
+                        self.error = error
+                    }
                 }
             }
         }
@@ -42,10 +52,11 @@ struct AllDepositsView: View {
                 Button {
                     shouldPresentAddDeposit = true
                 } label: {
-                    Image(systemName: "plus")
+                    Label("Add deposit", systemImage: "plus")
                 }.buttonStyle(.plain)
             }
         }
+        .errorAlert($error)
         .editDepositSheet(isPresented: $shouldPresentEditDeposit, selectedDeposit: $selectedItem) { deposit in
             try await incomeService.updateDeposit(with: deposit)
         }

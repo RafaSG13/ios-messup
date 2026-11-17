@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum Route {
+enum Route: Hashable {
     case depositList
     case transactionList
 

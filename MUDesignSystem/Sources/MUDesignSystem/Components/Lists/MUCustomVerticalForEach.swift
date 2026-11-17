@@ -1,58 +1,73 @@
 //
 //  MUCustomVerticalForEach.swift
-//  iOSMessup
+//  MUDesignSystem
 //
 //  Created by Rafael Serrano Gamarra on 28/1/25.
 //
 
 import SwiftUI
 
-struct MUCustomVerticalForEach<T: Identifiable & Equatable, Content: View>: View {
+public struct MUCustomVerticalForEach<T: Identifiable & Equatable, Content: View>: View {
     @Binding var items: [T]
     @Binding var selection: T?
     var content: (T) -> Content
     var onTap: ((T) -> Void)?
     var onDelete: ((T, IndexSet) -> Void)?
+    var deleteTitle: LocalizedStringKey
 
-    @State private var swipedIndex: Int? = nil
+    @State private var swipedIndex: Int?
     @State private var swipedOffset: CGFloat = 0
     @State private var addOpacity: Bool = false
+    @State private var rowWidth: CGFloat = 0
 
     private enum ViewTraits {
         static var viewPadding: CGFloat { 20 }
         static var minimunSwipeDistance: CGFloat { 25 }
     }
 
-    var body: some View {
-        GeometryReader { geometry in
-            ForEach(items, id: \.id) { item in
-                if let index = items.firstIndex(where: { $0.id == item.id }) {
-                    content(item)
-                        .onTapGesture {
-                            performOnTapEffect()
-                            onTapGesture(for: index, item: item)
-                        }
-                        .simultaneousGesture(
-                            DragGesture(minimumDistance: ViewTraits.minimunSwipeDistance,
-                                        coordinateSpace: .local)
-                            .onChanged { onChange(translation: $0.translation, for: index) }
-                            .onEnded { _ in onEnd(for: index, width: geometry.size.width) }
-                        )
-                        .padding(.horizontal)
-                        .background(Color(.systemBackground))
-                        .offset(x: swipedIndex == index ? swipedOffset : 0)
-                        .background(DeleteActionView(for: index))
-                        .opacity((addOpacity && selection == item) ? 0.3 : 1)
-                        .animation(.bouncy, value: swipedOffset)
-                        .animation(.bouncy, value: swipedIndex)
-                        .animation(.easeInOut, value: addOpacity)
-                }
+    public init(items: Binding<[T]>,
+                selection: Binding<T?>,
+                deleteTitle: LocalizedStringKey,
+                @ViewBuilder content: @escaping (T) -> Content,
+                onTap: ((T) -> Void)? = nil,
+                onDelete: ((T, IndexSet) -> Void)? = nil) {
+        self._items = items
+        self._selection = selection
+        self.deleteTitle = deleteTitle
+        self.content = content
+        self.onTap = onTap
+        self.onDelete = onDelete
+    }
+
+    public var body: some View {
+        ForEach(items, id: \.id) { item in
+            if let index = items.firstIndex(where: { $0.id == item.id }) {
+                content(item)
+                    .onTapGesture {
+                        performOnTapEffect()
+                        onTapGesture(for: index, item: item)
+                    }
+                    .simultaneousGesture(
+                        DragGesture(minimumDistance: ViewTraits.minimunSwipeDistance,
+                                    coordinateSpace: .local)
+                        .onChanged { onChange(translation: $0.translation, for: index) }
+                        .onEnded { _ in onEnd(for: index, width: rowWidth) }
+                    )
+                    .padding(.horizontal)
+                    .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { rowWidth = $0 }
+                    .background(Color(.systemBackground))
+                    .offset(x: swipedIndex == index ? swipedOffset : 0)
+                    .background(DeleteActionView(for: index))
+                    .opacity((addOpacity && selection == item) ? 0.3 : 1)
+                    .animation(.bouncy, value: swipedOffset)
+                    .animation(.bouncy, value: swipedIndex)
+                    .animation(.easeInOut, value: addOpacity)
             }
         }
     }
 }
 
-//MARK: - Custom View Components
+// MARK: - Custom View Components
 
 private extension MUCustomVerticalForEach {
 
@@ -63,7 +78,7 @@ private extension MUCustomVerticalForEach {
                     .padding(.leading, ViewTraits.viewPadding + swipedOffset)
                 HStack {
                     Spacer()
-                    Button("Delete") {
+                    Button(deleteTitle) {
                         deleteItem(at: index)
                     }
                     .fontWeight(.medium)
@@ -123,7 +138,8 @@ private extension MUCustomVerticalForEach {
 
     func performOnTapEffect() {
         addOpacity = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        Task {
+            try? await Task.sleep(for: .milliseconds(100))
             addOpacity = false
         }
     }
@@ -147,26 +163,31 @@ private extension MUCustomVerticalForEach {
 // MARK: - Preview
 
 #Preview {
+    struct PreviewItem: Identifiable, Equatable {
+        let id = UUID()
+        let name: String
+    }
+
     struct PreviewWrapper: View {
-        @State var mockItems: [ShowcaseItem] = [
-            ShowcaseItem(id: UUID(), name: "Sample Item 1"),
-            ShowcaseItem(id: UUID(), name: "Sample Item 2"),
-            ShowcaseItem(id: UUID(), name: "Sample Item 3")
+        @State var mockItems: [PreviewItem] = [
+            PreviewItem(name: "Sample Item 1"),
+            PreviewItem(name: "Sample Item 2"),
+            PreviewItem(name: "Sample Item 3")
         ]
-        @State var selection: ShowcaseItem?
+        @State var selection: PreviewItem?
 
         var body: some View {
             NavigationStack {
                 ScrollView {
                     LazyVStack {
-                        MUCustomVerticalForEach(items: $mockItems, selection: $selection) { item in
+                        MUCustomVerticalForEach(items: $mockItems,
+                                                selection: $selection,
+                                                deleteTitle: "Delete") { item in
                             Text(item.name)
                                 .padding()
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(Color.blue.opacity(0.1))
-                                .cornerRadius(8)
-                        } onDelete: { item, indexSet in
-                            mockItems.remove(atOffsets: indexSet)
+                                .clipShape(.rect(cornerRadius: 8))
                         }
                     }
                 }
@@ -175,5 +196,3 @@ private extension MUCustomVerticalForEach {
     }
     return PreviewWrapper()
 }
-
-

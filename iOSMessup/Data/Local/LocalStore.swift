@@ -40,6 +40,5 @@ final class LocalStore: Sendable {
         }
     }
 
-    @MainActor
     var context: ModelContext { container.mainContext }
 }

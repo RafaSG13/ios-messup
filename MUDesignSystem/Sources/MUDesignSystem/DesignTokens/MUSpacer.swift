@@ -1,6 +1,6 @@
 //
 //  MUSpacer.swift
-//  iOSMessup
+//  MUDesignSystem
 //
 //  Created by Rafael Serrano Gamarra on 3/2/25.
 //

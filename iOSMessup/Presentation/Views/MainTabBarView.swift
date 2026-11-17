@@ -7,8 +7,7 @@
 
 import SwiftUI
 
-
-enum Tab: Int, CaseIterable {
+enum AppTab: Hashable {
     case expenses
     case income
     case socialGroups
@@ -16,21 +15,22 @@ enum Tab: Int, CaseIterable {
 }
 
 struct MainTabBarView: View {
-    @State private var activeTab: Tab = .expenses
+    @State private var activeTab: AppTab = .expenses
+
     var body: some View {
         TabView(selection: $activeTab) {
-            ExpensesView()
-                .tabItem { Label("Expenses", systemImage: "dollarsign.circle.fill") }
-                .tag(Tab.expenses)
-            IncomeObjectiveView()
-                .tabItem { Label("Income", systemImage: "chart.pie.fill") }
-                .tag(Tab.income)
-            SocialGroupsView()
-                .tabItem { Label("Social groups", systemImage: "bubble.left.and.bubble.right") }
-                .tag(Tab.socialGroups)
-            ProfileView()
-                .tabItem { Label("Profile", systemImage: "person.fill") }
-                .tag(Tab.profile)
+            Tab("Expenses", systemImage: "dollarsign.circle.fill", value: .expenses) {
+                ExpensesView()
+            }
+            Tab("Income", systemImage: "chart.pie.fill", value: .income) {
+                IncomeObjectiveView()
+            }
+            Tab("Social groups", systemImage: "bubble.left.and.bubble.right", value: .socialGroups) {
+                SocialGroupsView()
+            }
+            Tab("Profile", systemImage: "person.fill", value: .profile) {
+                ProfileView()
+            }
         }
     }
 }

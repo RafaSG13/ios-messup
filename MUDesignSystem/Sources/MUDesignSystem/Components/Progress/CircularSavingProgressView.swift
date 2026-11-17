@@ -1,21 +1,32 @@
 //
 //  CircularSavingProgressView.swift
-//  iOSMessup
+//  MUDesignSystem
 //
 //  Created by Rafael Serrano Gamarra on 24/1/25.
 //
 
 import SwiftUI
 
-struct CircularSavingProgressView<Label: View>: View {
-    //TODO: Check if progress should be a @State
-    @State var progress: CGFloat = 0.25
-    var lineWidth: CGFloat = 30
-    var progressColor: Color = .pink
-    var backgroundColor: Color = .pink.opacity(0.5)
+public struct CircularSavingProgressView<Label: View>: View {
+    var progress: CGFloat
+    var lineWidth: CGFloat
+    var progressColor: Color
+    var backgroundColor: Color
     var label: () -> Label
 
-    var body: some View {
+    public init(progress: CGFloat = 0.25,
+                lineWidth: CGFloat = 30,
+                progressColor: Color = .pink,
+                backgroundColor: Color = .pink.opacity(0.5),
+                @ViewBuilder label: @escaping () -> Label) {
+        self.progress = progress
+        self.lineWidth = lineWidth
+        self.progressColor = progressColor
+        self.backgroundColor = backgroundColor
+        self.label = label
+    }
+
+    public var body: some View {
         ZStack {
             Circle()
                 .stroke(
@@ -27,7 +38,7 @@ struct CircularSavingProgressView<Label: View>: View {
                     progressColor,
                     style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                 .rotationEffect(.degrees(-90))
-            
+
             label()
         }.animation(.easeIn, value: progress)
     }

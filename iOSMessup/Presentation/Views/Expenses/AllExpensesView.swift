@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MUDesignSystem
 
 struct AllExpensesView: View {
     @Environment(\.expenseService) private var expenseService
@@ -13,9 +14,7 @@ struct AllExpensesView: View {
     @State private var shouldPresentEditExpense = false
     @State private var shouldPresentAddExpense = false
     @State private var searchText = ""
-    private let tasks = TaskStore()
-
-    private enum TaskId { case deleteExpenses }
+    @State private var error: (any Error)?
 
     var body: some View {
         List {
@@ -30,8 +29,16 @@ struct AllExpensesView: View {
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 7.5, leading: 20, bottom: 7.5, trailing: 20))
             }.onDelete { indexSet in
-                tasks.run(TaskId.deleteExpenses) {
-                    try await expenseService.delete(at: indexSet)
+                let displayed = expenseService.filteredExpenses(on: searchText)
+                let expensesToDelete = indexSet.map { displayed[$0] }
+                Task {
+                    do {
+                        for expense in expensesToDelete {
+                            try await expenseService.delete(expense)
+                        }
+                    } catch {
+                        self.error = error
+                    }
                 }
             }
         }
@@ -45,11 +52,11 @@ struct AllExpensesView: View {
                 Button {
                     shouldPresentAddExpense.toggle()
                 } label: {
-                    Image(systemName: "plus")
+                    Label("Add expense", systemImage: "plus")
                 }.buttonStyle(.plain)
             }
         }
-        .onDisappear { tasks.cancelAll() }
+        .errorAlert($error)
         .editExpenseSheet(isPresented: $shouldPresentEditExpense,
                           selectedItem: $selectedItem,
                           onSubmit: expenseService.updateExpense(with:))

@@ -1,5 +1,5 @@
 //
-//  IncomeGoal.swift
+//  SavingGoal.swift
 //  iOSMessup
 //
 //  Created by Rafael Serrano Gamarra on 23/1/25.
