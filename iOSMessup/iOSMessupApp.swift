@@ -13,6 +13,7 @@ struct iOSMessupApp: App {
     @AppStorage(AppCurrency.storageKey) private var currencyCode = AppCurrency.defaultCode
     @State private var expenseService: ExpensesServiceProtocol = MUEnvironmentConfigurator.expenseService
     @State private var incomeService: IncomeServiceProtocol = MUEnvironmentConfigurator.incomeService
+    @State private var savingsService: SavingsServiceProtocol = MUEnvironmentConfigurator.savingsService
 
     init() {
         #if DEBUG
@@ -29,6 +30,7 @@ struct iOSMessupApp: App {
                 .errorAlert(loadError)
                 .environment(\.expenseService, expenseService)
                 .environment(\.incomeService, incomeService)
+                .environment(\.savingsService, savingsService)
                 .environment(\.currencyCode, currencyCode)
         }
     }
@@ -45,6 +47,7 @@ extension iOSMessupApp {
             status = .loading
             try await expenseService.loadExpenses()
             try await incomeService.load()
+            try await savingsService.load()
             status = .idle
         } catch {
             status = .error(error)

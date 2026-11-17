@@ -7,10 +7,13 @@
     "Add Expense" : {
 
     },
-    "Add deposit" : {
+    "Add contribution" : {
 
     },
     "Add expense" : {
+
+    },
+    "Add income" : {
 
     },
     "Add your first expense to see it here." : {
@@ -19,7 +22,7 @@
     "Add your first expense to see your spending here." : {
 
     },
-    "All Deposits" : {
+    "Add your salary, gifts and other money coming in." : {
 
     },
     "All transactions" : {
@@ -35,6 +38,15 @@
 
     },
     "Content" : {
+
+    },
+    "Contribution" : {
+
+    },
+    "Contributions" : {
+
+    },
+    "Contributions you add count toward your saving goal." : {
 
     },
     "Create goal" : {
@@ -61,9 +73,6 @@
     "Delete saving goal?" : {
 
     },
-    "Deposits you add count toward your saving goal." : {
-
-    },
     "Details" : {
 
     },
@@ -76,10 +85,13 @@
     "Edit Expense" : {
 
     },
-    "Edit deposit" : {
+    "Edit contribution" : {
 
     },
     "Edit goal" : {
+
+    },
+    "Edit income" : {
 
     },
     "Edit saving goal" : {
@@ -89,9 +101,6 @@
 
     },
     "Export data" : {
-
-    },
-    "Founding Source" : {
 
     },
     "Goal options" : {
@@ -112,16 +121,22 @@
     "New saving goal" : {
 
     },
-    "No deposits" : {
+    "No contributions" : {
 
     },
     "No expenses in the last 30 days." : {
+
+    },
+    "No income" : {
 
     },
     "No saving goal" : {
 
     },
     "No transactions" : {
+
+    },
+    "Note (optional)" : {
 
     },
     "OK" : {
@@ -133,16 +148,13 @@
     "Preferences" : {
 
     },
-    "Recent Deposits" : {
-
-    },
     "Required" : {
 
     },
     "Save" : {
 
     },
-    "Saving Goal" : {
+    "Savings" : {
 
     },
     "Selected" : {
@@ -158,6 +170,9 @@
 
     },
     "Something went wrong" : {
+
+    },
+    "Source" : {
 
     },
     "Spending by category" : {
@@ -184,7 +199,7 @@
     "View all" : {
 
     },
-    "Your deposits are kept." : {
+    "Your contributions are kept." : {
 
     }
   },

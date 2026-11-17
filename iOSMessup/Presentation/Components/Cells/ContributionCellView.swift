@@ -1,19 +1,19 @@
 //
-//  DepositCellView.swift
+//  ContributionCellView.swift
 //  iOSMessup
 //
-//  Created by Rafael Serrano Gamarra on 24/1/25.
+//  Created by Rafael Serrano Gamarra on 17/11/26.
 //
 
 import SwiftUI
 import MUDesignSystem
 
 /// Plain row content: the enclosing `List` provides the surface.
-struct DepositCellView: View {
+struct ContributionCellView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.currencyCode) private var currencyCode
     @ScaledMetric private var iconSize: CGFloat = 40
-    let deposit: Deposit
+    let contribution: Contribution
 
     var body: some View {
         let isAccessibilitySize = dynamicTypeSize.isAccessibilitySize
@@ -22,27 +22,28 @@ struct DepositCellView: View {
             : AnyLayout(HStackLayout(spacing: MUSpacer.size03))
 
         layout {
-            Image(systemName: deposit.foundingSource.icon)
-                .symbolVariant(.fill)
-                .foregroundStyle(deposit.foundingSource.color)
+            Image(systemName: "target")
+                .foregroundStyle(.green)
                 .frame(width: iconSize, height: iconSize)
-                .background(deposit.foundingSource.color.opacity(0.15), in: .rect(cornerRadius: MURadius.small))
+                .background(Color.green.opacity(0.15), in: .rect(cornerRadius: MURadius.small))
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading) {
-                Text(deposit.concept)
-                    .font(.headline)
-                Text(deposit.foundingSource.rawValue)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                if contribution.note.isEmpty {
+                    Text("Contribution")
+                        .font(.headline)
+                } else {
+                    Text(contribution.note)
+                        .font(.headline)
+                }
             }
             .frame(maxWidth: isAccessibilitySize ? nil : .infinity, alignment: .leading)
 
             VStack(alignment: isAccessibilitySize ? .leading : .trailing) {
-                Text(deposit.amount.formattedMoney(code: currencyCode))
+                Text(contribution.amount.formattedMoney(code: currencyCode))
                     .bold()
                     .foregroundStyle(.green)
-                Text(deposit.date, format: .dateTime.day().month(.abbreviated).year())
+                Text(contribution.date, format: .dateTime.day().month(.abbreviated).year())
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -55,15 +56,15 @@ struct DepositCellView: View {
 // MARK: - Previews
 
 #Preview("Regular") {
-    List(Deposit.mockArray.sorted().reversed()) { deposit in
-        DepositCellView(deposit: deposit)
+    List(Contribution.mockArray.sorted().reversed()) { contribution in
+        ContributionCellView(contribution: contribution)
     }
     .listStyle(.insetGrouped)
 }
 
 #Preview("Accessibility size") {
-    List(Deposit.mockArray) { deposit in
-        DepositCellView(deposit: deposit)
+    List(Contribution.mockArray) { contribution in
+        ContributionCellView(contribution: contribution)
     }
     .listStyle(.insetGrouped)
     .dynamicTypeSize(.accessibility3)

@@ -10,6 +10,7 @@ import SwiftUI
 enum AppTab: Hashable {
     case expenses
     case income
+    case savings
     case settings
 }
 
@@ -21,8 +22,11 @@ struct MainTabBarView: View {
             Tab("Expenses", systemImage: "creditcard.fill", value: .expenses) {
                 ExpensesView()
             }
-            Tab("Income", systemImage: "chart.pie.fill", value: .income) {
-                IncomeObjectiveView()
+            Tab("Income", systemImage: "arrow.down.circle.fill", value: .income) {
+                IncomeView()
+            }
+            Tab("Savings", systemImage: "target", value: .savings) {
+                SavingsView()
             }
             Tab("Settings", systemImage: "gearshape.fill", value: .settings) {
                 SettingsView()

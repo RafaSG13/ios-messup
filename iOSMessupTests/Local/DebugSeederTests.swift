@@ -29,11 +29,14 @@ struct DebugSeederTests {
         let expected = SampleDataGenerator.make(now: now)
         let expenses = ExpensesService(store: store)
         let income = IncomeService(store: store)
+        let savings = SavingsService(store: store)
         try await expenses.loadExpenses()
         try await income.load()
+        try await savings.load()
         #expect(expenses.expenses.count == expected.expenses.count)
-        #expect(income.deposits.count == expected.deposits.count)
-        #expect(income.savingGoal?.name == expected.goal.name)
+        #expect(income.incomes.count == expected.incomes.count)
+        #expect(savings.contributions.count == expected.contributions.count)
+        #expect(savings.savingGoal?.name == expected.goal.name)
     }
 
     @Test func deleteAllDataEmptiesEverything() async throws {
@@ -44,11 +47,15 @@ struct DebugSeederTests {
 
         let expenses = ExpensesService(store: store)
         let income = IncomeService(store: store)
+        let savings = SavingsService(store: store)
         try await expenses.loadExpenses()
         try await income.load()
+        try await savings.load()
         #expect(expenses.expenses.isEmpty)
-        #expect(income.deposits.isEmpty)
-        #expect(income.savingGoal == nil)
+        #expect(income.incomes.isEmpty)
+        #expect(savings.contributions.isEmpty)
+        #expect(savings.savingGoal == nil)
+        #expect(try DebugSeeder.isEmpty(store))
     }
 
     @Test func seedOnLaunchSeedsAnEmptyStoreByDefault() throws {

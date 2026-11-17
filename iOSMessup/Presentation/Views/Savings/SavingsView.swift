@@ -1,35 +1,32 @@
 //
-//  IncomeObjectiveView.swift
+//  SavingsView.swift
 //  iOSMessup
 //
-//  Created by Rafael Serrano Gamarra on 22/1/25.
+//  Created by Rafael Serrano Gamarra on 17/11/26.
 //
 
 import SwiftUI
 import MUDesignSystem
 
-struct IncomeObjectiveView: View {
-    @Environment(\.incomeService) private var incomeService
-    @State private var selectedDeposit: Deposit?
-    @State private var isAddingDeposit = false
+struct SavingsView: View {
+    @Environment(\.savingsService) private var savingsService
+    @State private var selectedContribution: Contribution?
+    @State private var isAddingContribution = false
     @State private var goalFormMode: SavingGoalFormView.Mode?
     @State private var isConfirmingGoalDeletion = false
     @State private var error: (any Error)?
 
     var body: some View {
-        let recentDeposits = Array(incomeService.lastDeposits(limit: 7).reversed())
-
         NavigationStack {
             List {
                 goalSection
-                depositsSection(recentDeposits)
+                contributionsSection
             }
             .listStyle(.insetGrouped)
-            .navigationTitle("Saving Goal")
+            .navigationTitle("Savings")
             .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(for: Route.self) { $0.destination }
             .toolbar {
-                if let goal = incomeService.savingGoal {
+                if let goal = savingsService.savingGoal {
                     ToolbarItem(placement: .primaryAction) {
                         Menu("Goal options", systemImage: "ellipsis") {
                             Button("Edit goal", systemImage: "pencil") {
@@ -40,25 +37,25 @@ struct IncomeObjectiveView: View {
                             }
                         }
                     }
-                }
-                ToolbarItem(placement: .primaryAction) {
-                    Button("Add deposit", systemImage: "plus") {
-                        isAddingDeposit = true
+                    ToolbarItem(placement: .primaryAction) {
+                        Button("Add contribution", systemImage: "plus") {
+                            isAddingContribution = true
+                        }
+                        .buttonStyle(.glassProminent)
                     }
-                    .buttonStyle(.glassProminent)
                 }
             }
             .confirmationDialog("Delete saving goal?", isPresented: $isConfirmingGoalDeletion, titleVisibility: .visible) {
                 Button("Delete goal", role: .destructive, action: deleteGoal)
             } message: {
-                Text("Your deposits are kept.")
+                Text("Your contributions are kept.")
             }
             .errorAlert($error)
-            .editDepositSheet(deposit: $selectedDeposit) { deposit in
-                try await incomeService.updateDeposit(with: deposit)
+            .editContributionSheet(contribution: $selectedContribution) { contribution in
+                try await savingsService.updateContribution(with: contribution)
             }
-            .addDepositSheet(isPresented: $isAddingDeposit) { deposit in
-                try await incomeService.createDeposit(deposit)
+            .addContributionSheet(isPresented: $isAddingContribution) { contribution in
+                try await savingsService.addContribution(contribution)
             }
             .savingGoalSheet(mode: $goalFormMode, onSubmit: submit)
         }
@@ -67,13 +64,11 @@ struct IncomeObjectiveView: View {
 
 // MARK: - Sections
 
-private extension IncomeObjectiveView {
+private extension SavingsView {
     var goalSection: some View {
         Section {
-            if let goal = incomeService.savingGoal {
-                SavingGoalCardView(goal: goal,
-                                   progress: SavingGoalProgress(earned: incomeService.calculateTotalFounded(),
-                                                                target: goal.amount))
+            if let goal = savingsService.savingGoal, let progress = savingsService.progress() {
+                SavingGoalCardView(goal: goal, progress: progress)
             } else {
                 ContentUnavailableView {
                     Label("No saving goal", systemImage: "flag.checkered")
@@ -91,37 +86,38 @@ private extension IncomeObjectiveView {
     }
 
     @ViewBuilder
-    func depositsSection(_ deposits: [Deposit]) -> some View {
-        if deposits.isEmpty {
-            Section {
-                ContentUnavailableView {
-                    Label("No deposits", systemImage: "banknote")
-                } description: {
-                    Text("Deposits you add count toward your saving goal.")
-                } actions: {
-                    Button("Add deposit") { isAddingDeposit = true }
-                        .buttonStyle(.borderedProminent)
+    var contributionsSection: some View {
+        if savingsService.savingGoal != nil {
+            let contributions = savingsService.contributions.sorted().reversed()
+            if contributions.isEmpty {
+                Section {
+                    ContentUnavailableView {
+                        Label("No contributions", systemImage: "banknote")
+                    } description: {
+                        Text("Contributions you add count toward your saving goal.")
+                    } actions: {
+                        Button("Add contribution") { isAddingContribution = true }
+                            .buttonStyle(.borderedProminent)
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                } header: {
+                    Text("Contributions")
+                        .textCase(nil)
                 }
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-            } header: {
-                Text("Recent Deposits")
-                    .textCase(nil)
-            }
-        } else {
-            Section {
-                ForEach(deposits) { deposit in
-                    DepositCellView(deposit: deposit)
-                        .selectableCell { selectedDeposit = deposit }
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button("Delete", role: .destructive) { delete(deposit) }
-                        }
+            } else {
+                Section {
+                    ForEach(contributions) { contribution in
+                        ContributionCellView(contribution: contribution)
+                            .selectableCell { selectedContribution = contribution }
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button("Delete", role: .destructive) { delete(contribution) }
+                            }
+                    }
+                } header: {
+                    Text("Contributions")
+                        .textCase(nil)
                 }
-            } header: {
-                ListSectionHeaderView(sectionTitle: "Recent Deposits",
-                                      actionTitle: "View all",
-                                      value: Route.depositList)
-                    .textCase(nil)
             }
         }
     }
@@ -129,11 +125,11 @@ private extension IncomeObjectiveView {
 
 // MARK: - Actions
 
-private extension IncomeObjectiveView {
-    func delete(_ deposit: Deposit) {
+private extension SavingsView {
+    func delete(_ contribution: Contribution) {
         Task {
             do {
-                try await incomeService.deleteDeposit(deposit)
+                try await savingsService.deleteContribution(contribution)
             } catch {
                 self.error = error
             }
@@ -143,7 +139,7 @@ private extension IncomeObjectiveView {
     func deleteGoal() {
         Task {
             do {
-                try await incomeService.deleteSavingGoal()
+                try await savingsService.deleteSavingGoal()
             } catch {
                 self.error = error
             }
@@ -152,10 +148,10 @@ private extension IncomeObjectiveView {
 
     /// The form keeps the goal `id` when editing, so a matching id means update, anything else is a new goal.
     func submit(_ goal: SavingGoal) async throws {
-        if incomeService.savingGoal?.id == goal.id {
-            try await incomeService.updateSavingGoal(with: goal)
+        if savingsService.savingGoal?.id == goal.id {
+            try await savingsService.updateSavingGoal(with: goal)
         } else {
-            try await incomeService.createSavingGoal(goal)
+            try await savingsService.createSavingGoal(goal)
         }
     }
 }
@@ -266,20 +262,20 @@ private struct StatTileView: View {
 // MARK: - Preview
 
 #Preview("Mock data") {
-    IncomeObjectiveView()
+    SavingsView()
 }
 
 #Preview("Empty") {
-    IncomeObjectiveView()
-        .environment(\.incomeService, MockIncomeService(initialDeposits: [], initialGoal: nil, delay: 0))
+    SavingsView()
+        .environment(\.savingsService, MockSavingsService(initialGoal: nil, initialContributions: [], delay: 0))
 }
 
-#Preview("No goal") {
-    IncomeObjectiveView()
-        .environment(\.incomeService, MockIncomeService(initialGoal: nil, delay: 0))
+#Preview("No contributions") {
+    SavingsView()
+        .environment(\.savingsService, MockSavingsService(initialContributions: [], delay: 0))
 }
 
 #Preview("Failing service") {
-    IncomeObjectiveView()
-        .environment(\.incomeService, MockIncomeService(delay: 0, shouldFail: true))
+    SavingsView()
+        .environment(\.savingsService, MockSavingsService(delay: 0, shouldFail: true))
 }

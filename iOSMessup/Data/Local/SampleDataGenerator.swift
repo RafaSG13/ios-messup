@@ -30,11 +30,13 @@ nonisolated struct SeededGenerator: RandomNumberGenerator {
 // MARK: - SampleDataGenerator
 
 /// Builds several months of realistic, deterministic data relative to `now`, for Debug builds only.
-/// The current month stops at `now`; nothing is generated in the future.
+/// The current month stops at `now`; nothing is generated in the future. Each month adds a salary, expenses and a
+/// monthly contribution (plus occasional extra income/contribution), so the goal shows a partial progress.
 enum SampleDataGenerator {
     struct Output {
         var expenses: [Expense]
-        var deposits: [Deposit]
+        var incomes: [Income]
+        var contributions: [Contribution]
         var goal: SavingGoal
     }
 
@@ -59,8 +61,11 @@ enum SampleDataGenerator {
                      months: Int = 4,
                      seed: UInt64 = 42) -> Output {
         var rng = SeededGenerator(seed: seed)
+        // Separate stream so contributions do not shift the expense/income sequence.
+        var savingsRng = SeededGenerator(seed: seed &+ 1)
         var expenses: [Expense] = []
-        var deposits: [Deposit] = []
+        var incomes: [Income] = []
+        var contributions: [Contribution] = []
         let currentMonthStart = calendar.dateInterval(of: .month, for: now)!.start
 
         for monthsAgo in (0..<months).reversed() {
@@ -89,14 +94,20 @@ enum SampleDataGenerator {
                                         category: category))
             }
 
-            func addDeposit(_ concept: String, _ amount: Double, day: Int,
-                            _ source: FoundingSource) {
+            func addIncome(_ concept: String, _ amount: Double, day: Int,
+                           _ source: IncomeSource) {
                 guard let date = moment(day: day, hour: 9) else { return }
-                deposits.append(Deposit(concept: concept, amount: amount, date: date, foundingSource: source))
+                incomes.append(Income(concept: concept, amount: amount, date: date, source: source))
+            }
+
+            func addContribution(_ amount: Double, day: Int, _ note: String) {
+                guard let date = moment(day: day, hour: 12) else { return }
+                contributions.append(Contribution(amount: amount, date: date, note: note))
             }
 
             // Fixed monthly items.
-            addDeposit("Monthly Salary", 2100, day: 1, .salary)
+            addIncome("Monthly Salary", 2100, day: 1, .salary)
+            addContribution(Double(Int.random(in: 300...450, using: &savingsRng)), day: 5, "Monthly saving")
             addExpense("Rent", 650, day: 1, hour: 10, .home, .debitCard)
             addExpense("Gym Membership", 45, day: 3, hour: 19, .health, .debitCard)
             addExpense("Electricity", Double.random(in: 40...70, using: &rng), day: 5, hour: 11, .home, .debitCard)
@@ -142,12 +153,13 @@ enum SampleDataGenerator {
 
             // Extra income in some months.
             if monthsAgo % 2 == 1 {
-                addDeposit("Freelance Payment",
+                addIncome("Freelance Payment",
                            Double.random(in: 400...900, using: &rng).rounded(),
                            day: 15, .freelance)
             }
             if monthsAgo == 2 {
-                addDeposit("Gift", 120, day: 20, .gifts)
+                addIncome("Gift", 120, day: 20, .gifts)
+                addContribution(120, day: 21, "Gift saved")
             }
         }
 
@@ -155,7 +167,7 @@ enum SampleDataGenerator {
                               completionDate: .fixed(calendar.date(byAdding: .month, value: 18, to: now)!),
                               amount: 15_000,
                               savingCategory: .assetPurchase)
-        return Output(expenses: expenses, deposits: deposits, goal: goal)
+        return Output(expenses: expenses, incomes: incomes, contributions: contributions, goal: goal)
     }
 }
 #endif

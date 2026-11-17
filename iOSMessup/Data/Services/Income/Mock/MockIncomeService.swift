@@ -11,86 +11,52 @@ import Observation
 
 @Observable
 final class MockIncomeService: IncomeServiceProtocol {
-    private(set) var deposits: [Deposit]
-    private(set) var savingGoal: SavingGoal?
+    private(set) var incomes: [Income]
     var delay: TimeInterval
     var shouldFail: Bool
-    
-    init(initialDeposits: [Deposit] = Deposit.mockArray,
-         initialGoal: SavingGoal? = SavingGoal.mock,
+
+    init(initialIncomes: [Income] = Income.mockArray,
          delay: TimeInterval = 0.1,
          shouldFail: Bool = false) {
-        self.deposits = initialDeposits
-        self.savingGoal = initialGoal
+        self.incomes = initialIncomes
         self.delay = delay
         self.shouldFail = shouldFail
     }
-    
+
     private func simulateNetwork() async throws {
         try await Task.sleep(for: .seconds(delay))
         if shouldFail {
             throw NSError(domain: "NetworkError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Simulated error"])
         }
     }
-    
+
     func load() async throws {
         try await simulateNetwork()
     }
-    
-    func createSavingGoal(_ goal: SavingGoal) async throws {
+
+    func createIncome(_ income: Income) async throws {
         try await simulateNetwork()
-        savingGoal = goal
+        incomes.append(income)
     }
-    
-    func createDeposit(_ deposit: Deposit) async throws {
+
+    func updateIncome(with newValue: Income) async throws {
         try await simulateNetwork()
-        deposits.append(deposit)
-    }
-    
-    func updateSavingGoal(with newValue: SavingGoal) async throws {
-        try await simulateNetwork()
-        savingGoal = newValue
-    }
-    
-    func updateDeposit(with newValue: Deposit) async throws {
-        try await simulateNetwork()
-        if let index = deposits.firstIndex(where: { $0.id == newValue.id }) {
-            deposits[index] = newValue
+        if let index = incomes.firstIndex(where: { $0.id == newValue.id }) {
+            incomes[index] = newValue
         }
     }
-    
-    func deleteSavingGoal() async throws {
+
+    func deleteIncome(_ income: Income) async throws {
         try await simulateNetwork()
-        savingGoal = nil
+        incomes.removeAll(where: { $0.id == income.id })
     }
-    
-    func deleteDeposits(removeAt indices: IndexSet) async throws {
-        try await simulateNetwork()
-        let depositsToDelete = indices.compactMap { deposits.indices.contains($0) ? deposits[$0] : nil }
-        deposits.removeAll(where: { depositsToDelete.contains($0) })
+
+    func lastIncomes(limit: Int) -> [Income] {
+        Array(incomes.sorted().suffix(limit))
     }
-    
-    func deleteDeposit(_ deposit: Deposit) async throws {
-        try await simulateNetwork()
-        deposits.removeAll(where: { $0.id == deposit.id })
-    }
-    
-    func lastDeposits(limit: Int) -> [Deposit] {
-        Array(deposits.sorted().suffix(limit))
-    }
-    
-    func calculateTotalFounded() -> Double {
-        deposits.reduce(0) { $0 + $1.amount }
-    }
-    
-    func calculateActualProgress() -> Double {
-        guard let savingGoal, savingGoal.amount > 0 else { return 0 }
-        let progress = calculateTotalFounded() / savingGoal.amount
-        return min(progress, 1.0)
-    }
-    
-    func filteredDeposits(on searchTerm: String) -> [Deposit] {
-        guard !searchTerm.isEmpty, searchTerm.count > 3 else { return deposits }
-        return deposits.filter { $0.concept.localizedCaseInsensitiveContains(searchTerm) }
+
+    func filteredIncomes(on searchTerm: String) -> [Income] {
+        guard !searchTerm.isEmpty, searchTerm.count > 3 else { return incomes }
+        return incomes.filter { $0.concept.localizedCaseInsensitiveContains(searchTerm) }
     }
 }

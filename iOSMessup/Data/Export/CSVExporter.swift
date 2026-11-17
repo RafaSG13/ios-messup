@@ -13,13 +13,16 @@ import Foundation
 enum CSVExporter {
     static let header = "type,date,name,amount,category,payment_method_or_source"
 
-    static func csv(expenses: [Expense], deposits: [Deposit]) -> String {
+    static func csv(expenses: [Expense], incomes: [Income], contributions: [Contribution]) -> String {
         var rows: [(date: Date, fields: [String])] = []
         rows += expenses.map {
             ($0.date, ["expense", format($0.date), $0.name, format($0.amount), $0.category.rawValue, $0.paymentMethod.rawValue])
         }
-        rows += deposits.map {
-            ($0.date, ["deposit", format($0.date), $0.concept, format($0.amount), "", $0.foundingSource.rawValue])
+        rows += incomes.map {
+            ($0.date, ["income", format($0.date), $0.concept, format($0.amount), "", $0.source.rawValue])
+        }
+        rows += contributions.map {
+            ($0.date, ["contribution", format($0.date), $0.note, format($0.amount), "", ""])
         }
         let lines = rows
             .sorted { $0.date < $1.date }

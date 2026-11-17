@@ -46,37 +46,64 @@ final class ExpenseRecord {
     }
 }
 
-// MARK: - DepositRecord
+// MARK: - IncomeRecord
 
 @Model
-final class DepositRecord {
+final class IncomeRecord {
     @Attribute(.unique) var id: String
     var concept: String
     var amount: Double
     var date: Date
-    var foundingSourceRaw: String
+    var sourceRaw: String
 
-    init(_ deposit: Deposit) {
-        self.id = deposit.id
-        self.concept = deposit.concept
-        self.amount = deposit.amount
-        self.date = deposit.date
-        self.foundingSourceRaw = deposit.foundingSource.rawValue
+    init(_ income: Income) {
+        self.id = income.id
+        self.concept = income.concept
+        self.amount = income.amount
+        self.date = income.date
+        self.sourceRaw = income.source.rawValue
     }
 
-    var domain: Deposit {
-        Deposit(id: id,
-                concept: concept,
-                amount: amount,
-                date: date,
-                foundingSource: FoundingSource(rawValue: foundingSourceRaw) ?? .other)
+    var domain: Income {
+        Income(id: id,
+               concept: concept,
+               amount: amount,
+               date: date,
+               source: IncomeSource(rawValue: sourceRaw) ?? .other)
     }
 
-    func apply(_ deposit: Deposit) {
-        concept = deposit.concept
-        amount = deposit.amount
-        date = deposit.date
-        foundingSourceRaw = deposit.foundingSource.rawValue
+    func apply(_ income: Income) {
+        concept = income.concept
+        amount = income.amount
+        date = income.date
+        sourceRaw = income.source.rawValue
+    }
+}
+
+// MARK: - ContributionRecord
+
+@Model
+final class ContributionRecord {
+    @Attribute(.unique) var id: String
+    var amount: Double
+    var date: Date
+    var note: String
+
+    init(_ contribution: Contribution) {
+        self.id = contribution.id
+        self.amount = contribution.amount
+        self.date = contribution.date
+        self.note = contribution.note
+    }
+
+    var domain: Contribution {
+        Contribution(id: id, amount: amount, date: date, note: note)
+    }
+
+    func apply(_ contribution: Contribution) {
+        amount = contribution.amount
+        date = contribution.date
+        note = contribution.note
     }
 }
 
