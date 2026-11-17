@@ -10,16 +10,52 @@ import MUDesignSystem
 
 struct IncomeView: View {
     @Environment(\.incomeService) private var incomeService
+    @Environment(\.expenseService) private var expenseService
+    @Environment(\.savingsService) private var savingsService
+    @State private var kind = PeriodKind.month
+    @State private var anchor = Date.now
     @State private var selectedIncome: Income?
     @State private var isAddingIncome = false
     @State private var searchText = ""
     @State private var error: (any Error)?
 
     var body: some View {
-        let sections = incomeService.filteredIncomes(on: searchText).groupedByDay(date: \.date)
+        let period = Period(kind: kind, containing: anchor)
+        let hasIncomes = !incomeService.incomes.isEmpty
+        let periodHasIncomes = incomeService.incomes.contains { period.contains($0.date) }
+        let sections = incomeService.filteredIncomes(on: searchText)
+            .filter { period.contains($0.date) }
+            .groupedByDay(date: \.date)
+        let summary = PeriodSummary(period: period,
+                                    expenses: expenseService.expenses,
+                                    incomes: incomeService.incomes,
+                                    contributions: savingsService.contributions)
 
         NavigationStack {
             List {
+                if hasIncomes {
+                    Section {
+                        PeriodPicker(kind: $kind, anchor: $anchor)
+                    }
+                    Section {
+                        BalanceSummaryCard(summary: summary)
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
+                    .listRowSeparator(.hidden)
+                    if sections.isEmpty {
+                        Section {
+                            if periodHasIncomes {
+                                ContentUnavailableView.search(text: searchText)
+                            } else {
+                                ContentUnavailableView("No income in this period",
+                                                       systemImage: "arrow.down.circle")
+                            }
+                        }
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                    }
+                }
                 ForEach(sections) { section in
                     Section {
                         ForEach(section.items) { income in
@@ -36,7 +72,7 @@ struct IncomeView: View {
             }
             .listStyle(.insetGrouped)
             .overlay {
-                if incomeService.incomes.isEmpty {
+                if !hasIncomes {
                     ContentUnavailableView {
                         Label("No income", systemImage: "arrow.down.circle")
                     } description: {
@@ -45,8 +81,6 @@ struct IncomeView: View {
                         Button("Add income") { isAddingIncome = true }
                             .buttonStyle(.borderedProminent)
                     }
-                } else if sections.isEmpty {
-                    ContentUnavailableView.search(text: searchText)
                 }
             }
             .searchable(text: $searchText, placement: .toolbar)

@@ -17,7 +17,6 @@ protocol ExpensesServiceProtocol: AnyObject {
     func delete(at offsets: IndexSet) async throws
     func updateExpense(with newValue: Expense) async throws
     func filteredExpenses(on searchTerm: String) -> [Expense]
-    func getActualWeekExpenses() -> [Expense]
     func lastExpenses(limit: Int) -> [Expense]
 }
 
@@ -85,12 +84,6 @@ final class ExpensesService: ExpensesServiceProtocol {
     func filteredExpenses(on searchTerm: String) -> [Expense] {
         guard !searchTerm.isEmpty, searchTerm.count > 3 else { return expenses }
         return expenses.filter { $0.name.localizedCaseInsensitiveContains(searchTerm) }
-    }
-
-    func getActualWeekExpenses() -> [Expense] {
-        expenses.filter { expense in
-            Calendar.current.isDateInThisWeek(expense.date)
-        }
     }
 
     func lastExpenses(limit: Int) -> [Expense] {

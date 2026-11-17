@@ -137,3 +137,33 @@ final class SavingGoalRecord {
                    savingCategory: SavingCategory(rawValue: savingCategoryRaw) ?? .liquidity)
     }
 }
+
+// MARK: - BudgetRecord
+
+@Model
+final class BudgetRecord {
+    @Attribute(.unique) var id: String
+    var monthlyLimit: Double
+    /// Keyed by `Category.rawValue`.
+    var categoryLimitsRaw: [String: Double]
+
+    init(_ budget: Budget) {
+        self.id = budget.id
+        self.monthlyLimit = budget.monthlyLimit
+        self.categoryLimitsRaw = Dictionary(uniqueKeysWithValues: budget.categoryLimits.map { ($0.key.rawValue, $0.value) })
+    }
+
+    /// Limits of categories that no longer exist are dropped.
+    var domain: Budget {
+        var limits: [Category: Double] = [:]
+        for (raw, limit) in categoryLimitsRaw {
+            if let category = Category(rawValue: raw) { limits[category] = limit }
+        }
+        return Budget(id: id, monthlyLimit: monthlyLimit, categoryLimits: limits)
+    }
+
+    func apply(_ budget: Budget) {
+        monthlyLimit = budget.monthlyLimit
+        categoryLimitsRaw = Dictionary(uniqueKeysWithValues: budget.categoryLimits.map { ($0.key.rawValue, $0.value) })
+    }
+}

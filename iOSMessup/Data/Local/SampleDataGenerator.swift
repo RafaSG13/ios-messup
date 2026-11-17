@@ -38,6 +38,7 @@ enum SampleDataGenerator {
         var incomes: [Income]
         var contributions: [Contribution]
         var goal: SavingGoal
+        var budget: Budget
     }
 
     private struct MiscPurchase {
@@ -167,7 +168,8 @@ enum SampleDataGenerator {
                               completionDate: .fixed(calendar.date(byAdding: .month, value: 18, to: now)!),
                               amount: 15_000,
                               savingCategory: .assetPurchase)
-        return Output(expenses: expenses, incomes: incomes, contributions: contributions, goal: goal)
+        let budget = Budget(monthlyLimit: 1_900, categoryLimits: [.food: 500, .transportation: 150])
+        return Output(expenses: expenses, incomes: incomes, contributions: contributions, goal: goal, budget: budget)
     }
 }
 #endif

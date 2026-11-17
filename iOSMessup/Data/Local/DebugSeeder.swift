@@ -37,6 +37,7 @@ enum DebugSeeder {
         sample.incomes.forEach { context.insert(IncomeRecord($0)) }
         sample.contributions.forEach { context.insert(ContributionRecord($0)) }
         context.insert(SavingGoalRecord(sample.goal))
+        context.insert(BudgetRecord(sample.budget))
         try context.save()
     }
 
@@ -46,6 +47,7 @@ enum DebugSeeder {
         try context.delete(model: IncomeRecord.self)
         try context.delete(model: ContributionRecord.self)
         try context.delete(model: SavingGoalRecord.self)
+        try context.delete(model: BudgetRecord.self)
         try context.save()
     }
 
@@ -55,6 +57,7 @@ enum DebugSeeder {
             && context.fetchCount(FetchDescriptor<IncomeRecord>()) == 0
             && context.fetchCount(FetchDescriptor<ContributionRecord>()) == 0
             && context.fetchCount(FetchDescriptor<SavingGoalRecord>()) == 0
+            && context.fetchCount(FetchDescriptor<BudgetRecord>()) == 0
     }
 }
 #endif

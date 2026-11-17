@@ -110,6 +110,24 @@ struct PeriodSummaryTests {
         #expect(notStarted.dailyAverage == 0)
     }
 
+    @Test func partialPeriodIsComparedWithTheSameDaysOfThePreviousOne() {
+        let partial = november(now: date(2026, 11, 17), expenses: [
+            expense(100, on: date(2026, 10, 5)),
+            expense(900, on: date(2026, 10, 25)),
+            expense(150, on: date(2026, 11, 5))
+        ])
+        let finished = november(now: date(2026, 12, 20), expenses: [
+            expense(100, on: date(2026, 10, 5)),
+            expense(900, on: date(2026, 10, 25)),
+            expense(1000, on: date(2026, 11, 5))
+        ])
+
+        #expect(partial.previousSpentToDate == 100)
+        #expect(partial.changeVersusPrevious == 0.5)
+        #expect(finished.previousSpentToDate == 1000)
+        #expect(finished.changeVersusPrevious == 0)
+    }
+
     @Test func emptyPeriodIsAllZeros() {
         let summary = november(now: date(2026, 11, 17))
 

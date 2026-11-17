@@ -81,29 +81,6 @@ struct ExpensesServiceTests {
         #expect(filtered.count == expenses.count)
     }
 
-    @Test func getActualWeekExpenses() async throws {
-        let actualWeekExpense = Expense(
-            name: "Today Expense",
-            amount: 100,
-            date: Date(),
-            paymentMethod: .cash,
-            category: .food
-        )
-        let lastWeekExpense = Expense(
-            name: "Last Week",
-            amount: 50,
-            date: Calendar.current.date(byAdding: .weekOfYear, value: -1, to: Date())!,
-            paymentMethod: .cash,
-            category: .food
-        )
-        let mockService = MockExpensesService(initialExpenses: [actualWeekExpense, lastWeekExpense])
-
-        let weekExpenses = mockService.getActualWeekExpenses()
-
-        #expect(weekExpenses.count == 1)
-        #expect(weekExpenses.first?.name == "Today Expense")
-    }
-
     @Test func addExpenseFailure() async throws {
         let mockService = MockExpensesService(initialExpenses: [], shouldFail: true)
 

@@ -10,6 +10,7 @@ import SwiftUI
 
 struct DebugSection: View {
     @Environment(\.expenseService) private var expenseService
+    @Environment(\.budgetService) private var budgetService
     @Environment(\.incomeService) private var incomeService
     @Environment(\.savingsService) private var savingsService
     @AppStorage(DebugSeeder.autoSeedKey) private var isAutoSeedOn = true
@@ -48,6 +49,7 @@ struct DebugSection: View {
                 try await expenseService.loadExpenses()
                 try await incomeService.load()
                 try await savingsService.load()
+                try await budgetService.load()
             } catch {
                 self.error = error
             }

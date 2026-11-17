@@ -67,6 +67,13 @@ struct SampleDataGeneratorTests {
         #expect(total > 0 && total < sample.goal.amount)
     }
 
+    @Test func includesABudgetWithCategoryLimits() {
+        let sample = SampleDataGenerator.make(now: now, calendar: calendar)
+
+        #expect(sample.budget.monthlyLimit == 1_900)
+        #expect(sample.budget.categoryLimits == [.food: 500, .transportation: 150])
+    }
+
     @Test func spreadsSpendingAcrossManyCategories() {
         let sample = SampleDataGenerator.make(now: now, calendar: calendar)
 

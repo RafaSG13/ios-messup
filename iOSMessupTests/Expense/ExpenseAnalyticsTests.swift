@@ -48,4 +48,30 @@ struct ExpenseAnalyticsTests {
     @Test func emptyInputYieldsNoTotals() {
         #expect([Expense]().totalsByCategory().isEmpty)
     }
+
+    @Test func topCategoriesKeepsTheFirstOnesAndSumsTheRest() {
+        let totals = [expense(50, .travel), expense(30, .food), expense(20, .health), expense(5, .home),
+                      expense(1, .taxes)].totalsByCategory()
+
+        let result = CategoryTotal.topCategories(totals, limit: 3)
+
+        #expect(result.top.map(\.category) == [.travel, .food, .health])
+        #expect(result.other == 6)
+    }
+
+    @Test func topCategoriesWithFewerThanLimitHasNoOther() {
+        let totals = [expense(50, .travel), expense(30, .food)].totalsByCategory()
+
+        let result = CategoryTotal.topCategories(totals, limit: 5)
+
+        #expect(result.top == totals)
+        #expect(result.other == 0)
+    }
+
+    @Test func topCategoriesOfNothingIsEmpty() {
+        let result = CategoryTotal.topCategories([], limit: 5)
+
+        #expect(result.top.isEmpty)
+        #expect(result.other == 0)
+    }
 }

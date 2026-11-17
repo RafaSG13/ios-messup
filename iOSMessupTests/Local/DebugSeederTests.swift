@@ -37,6 +37,10 @@ struct DebugSeederTests {
         #expect(income.incomes.count == expected.incomes.count)
         #expect(savings.contributions.count == expected.contributions.count)
         #expect(savings.savingGoal?.name == expected.goal.name)
+        let budget = BudgetService(store: store)
+        try await budget.load()
+        #expect(budget.budget?.monthlyLimit == expected.budget.monthlyLimit)
+        #expect(budget.budget?.categoryLimits == expected.budget.categoryLimits)
     }
 
     @Test func deleteAllDataEmptiesEverything() async throws {
@@ -53,6 +57,9 @@ struct DebugSeederTests {
         try await savings.load()
         #expect(expenses.expenses.isEmpty)
         #expect(income.incomes.isEmpty)
+        let budget = BudgetService(store: store)
+        try await budget.load()
+        #expect(budget.budget == nil)
         #expect(savings.contributions.isEmpty)
         #expect(savings.savingGoal == nil)
         #expect(try DebugSeeder.isEmpty(store))

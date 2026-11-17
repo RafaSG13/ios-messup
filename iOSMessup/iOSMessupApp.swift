@@ -14,6 +14,7 @@ struct iOSMessupApp: App {
     @State private var expenseService: ExpensesServiceProtocol = MUEnvironmentConfigurator.expenseService
     @State private var incomeService: IncomeServiceProtocol = MUEnvironmentConfigurator.incomeService
     @State private var savingsService: SavingsServiceProtocol = MUEnvironmentConfigurator.savingsService
+    @State private var budgetService: BudgetServiceProtocol = MUEnvironmentConfigurator.budgetService
 
     init() {
         #if DEBUG
@@ -31,6 +32,7 @@ struct iOSMessupApp: App {
                 .environment(\.expenseService, expenseService)
                 .environment(\.incomeService, incomeService)
                 .environment(\.savingsService, savingsService)
+                .environment(\.budgetService, budgetService)
                 .environment(\.currencyCode, currencyCode)
         }
     }
@@ -48,6 +50,7 @@ extension iOSMessupApp {
             try await expenseService.loadExpenses()
             try await incomeService.load()
             try await savingsService.load()
+            try await budgetService.load()
             status = .idle
         } catch {
             status = .error(error)
