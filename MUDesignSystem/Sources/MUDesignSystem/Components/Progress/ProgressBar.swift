@@ -7,48 +7,43 @@
 
 import SwiftUI
 
+/// Horizontal capsule progress indicator. `progress` is clamped to `0...1`.
 public struct ProgressBar: View {
     var progress: Double
-    var barColor: LinearGradient
-    var progressColor: LinearGradient
-    var cornerRadius: CGFloat
+    var tint: Color
     var barHeight: CGFloat
 
     public init(progress: Double,
-                barColor: LinearGradient = .init(colors: [.gray.opacity(0.3), .gray.opacity(0.3)],
-                                                 startPoint: .leading,
-                                                 endPoint: .trailing),
-                progressColor: LinearGradient = .init(colors: [.green, .green],
-                                                      startPoint: .leading,
-                                                      endPoint: .trailing),
-                cornerRadius: CGFloat = 5,
-                barHeight: CGFloat = 10) {
+                tint: Color = .green,
+                barHeight: CGFloat = MUSpacer.size03) {
         self.progress = progress
-        self.barColor = barColor
-        self.progressColor = progressColor
-        self.cornerRadius = cornerRadius
+        self.tint = tint
         self.barHeight = barHeight
     }
 
     public var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .leading) {
-                Rectangle()
-                    .frame(height: barHeight)
-                    .foregroundStyle(barColor)
-                    .clipShape(.rect(cornerRadius: cornerRadius))
-
-                Rectangle()
-                    .frame(width: CGFloat(progress) * geometry.size.width, height: barHeight)
-                    .foregroundStyle(progressColor)
-                    .clipShape(.rect(cornerRadius: cornerRadius))
+        Capsule()
+            .fill(.quaternary)
+            .frame(height: barHeight)
+            .overlay(alignment: .leading) {
+                GeometryReader { geometry in
+                    Capsule()
+                        .fill(tint)
+                        .frame(width: geometry.size.width * min(max(progress, 0), 1))
+                }
             }
-        }
-        .frame(height: barHeight)
+            .animation(.easeInOut, value: progress)
+            .accessibilityElement()
+            .accessibilityLabel("Progress")
+            .accessibilityValue(Text(min(max(progress, 0), 1), format: .percent.precision(.fractionLength(0))))
     }
 }
 
 #Preview {
-    ProgressBar(progress: 0.6)
-        .padding()
+    VStack(spacing: MUSpacer.size04) {
+        ProgressBar(progress: 0.6)
+        ProgressBar(progress: 1, tint: .blue)
+        ProgressBar(progress: 0)
+    }
+    .padding()
 }

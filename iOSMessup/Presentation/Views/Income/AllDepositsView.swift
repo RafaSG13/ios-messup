@@ -9,65 +9,99 @@ import SwiftUI
 import MUDesignSystem
 
 struct AllDepositsView: View {
-    @Environment(\.incomeService) var incomeService
-    @State private var selectedItem: Deposit?
-    @State private var shouldPresentEditDeposit = false
-    @State private var shouldPresentAddDeposit = false
+    @Environment(\.incomeService) private var incomeService
+    @State private var selectedDeposit: Deposit?
+    @State private var isAddingDeposit = false
     @State private var searchText = ""
     @State private var error: (any Error)?
 
     var body: some View {
+        let sections = incomeService.filteredDeposits(on: searchText).groupedByDay(date: \.date)
+
         List {
-            ForEach(incomeService.filteredDeposits(on: searchText)) { deposit in
-                DepositCellView(deposit: deposit)
-                    .selectableCell {
-                        selectedItem = deposit
+            ForEach(sections) { section in
+                Section {
+                    ForEach(section.items) { deposit in
+                        DepositCellView(deposit: deposit)
+                            .selectableCell { selectedDeposit = deposit }
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button("Delete", role: .destructive) { delete(deposit) }
+                            }
                     }
-                    .onChange(of: selectedItem) { _, newValue in
-                        shouldPresentEditDeposit = newValue != nil
-                    }
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 7.5, leading: 20, bottom: 7.5, trailing: 20))
-            }.onDelete { indexSet in
-                let displayed = incomeService.filteredDeposits(on: searchText)
-                let depositsToDelete = indexSet.map { displayed[$0] }
-                Task {
-                    do {
-                        for deposit in depositsToDelete {
-                            try await incomeService.deleteDeposit(deposit)
-                        }
-                    } catch {
-                        self.error = error
-                    }
+                } header: {
+                    Text(section.day, format: .dateTime.weekday(.wide).day().month(.wide).year())
                 }
             }
         }
-        .listStyle(.plain)
+        .listStyle(.insetGrouped)
+        .overlay {
+            if incomeService.deposits.isEmpty {
+                ContentUnavailableView {
+                    Label("No deposits", systemImage: "banknote")
+                } description: {
+                    Text("Deposits you add count toward your saving goal.")
+                } actions: {
+                    Button("Add deposit") { isAddingDeposit = true }
+                        .buttonStyle(.borderedProminent)
+                }
+            } else if sections.isEmpty {
+                ContentUnavailableView.search(text: searchText)
+            }
+        }
         .searchable(text: $searchText, placement: .toolbar)
         .searchToolbarBehavior(.minimize)
-        .scrollIndicators(.hidden)
         .navigationTitle("All Deposits")
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("Add deposit", systemImage: "plus") {
-                    shouldPresentAddDeposit = true
+                    isAddingDeposit = true
                 }
                 .buttonStyle(.glassProminent)
             }
         }
         .errorAlert($error)
-        .editDepositSheet(isPresented: $shouldPresentEditDeposit, selectedDeposit: $selectedItem) { deposit in
+        .editDepositSheet(deposit: $selectedDeposit) { deposit in
             try await incomeService.updateDeposit(with: deposit)
         }
-        .addDepositSheet(isPresented: $shouldPresentAddDeposit) { deposit in
+        .addDepositSheet(isPresented: $isAddingDeposit) { deposit in
             try await incomeService.createDeposit(deposit)
         }
     }
 }
 
-#Preview {
+// MARK: - Actions
+
+private extension AllDepositsView {
+    func delete(_ deposit: Deposit) {
+        Task {
+            do {
+                try await incomeService.deleteDeposit(deposit)
+            } catch {
+                self.error = error
+            }
+        }
+    }
+}
+
+// MARK: - Preview
+
+#Preview("Mock data") {
     NavigationStack {
         AllDepositsView()
     }
+}
+
+#Preview("Empty") {
+    NavigationStack {
+        AllDepositsView()
+    }
+    .environment(\.incomeService, MockIncomeService(initialDeposits: [], initialGoal: nil, delay: 0))
+}
+
+#Preview("Failing service") {
+    NavigationStack {
+        AllDepositsView()
+    }
+    .environment(\.incomeService, MockIncomeService(delay: 0, shouldFail: true))
 }

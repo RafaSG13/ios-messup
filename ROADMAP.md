@@ -72,21 +72,20 @@ Rebuilding with the new SDK already gives glass bars/sheets; the work was removi
 
 **Accept (met, except the icon):** screenshots in light/dark and Reduce Transparency on/off show no custom bar backgrounds; no `NavigationView`/`.thinMaterial` left. Screenshots were produced by a throwaway XCUITest (not committed, recipe in `AGENTS.md`). The same run exercised add → edit → delete of an expense through the UI (including swipe-to-delete in `MUCustomVerticalForEach`), which confirms the Phase 2 edit-modal fix.
 
-**Carried to Phase 4:** the Income dashboard hero / circular progress and the section headers still do not reflow at accessibility sizes.
+**Carried to Phase 4:** the Income dashboard hero / circular progress and the section headers did not reflow at accessibility sizes (resolved in Phase 4: the dashboard was redesigned and the goal card stacks at accessibility sizes).
 
-## Phase 4 – Screen redesign
-Design tokens (spacing, radii, semantic colors, glass usage) are defined once in `MUDesignSystem`; screens consume them.
+## Phase 4 – Screen redesign (done)
+Tokens live in `MUDesignSystem` (`MUSpacer`, new `MURadius`, `MUCard`); screens consume them. Decisions taken (no input was available): **Social groups is hidden** (tab and stub deleted; it needs a data model and there is no backend), the fake Profile rows were **removed** instead of stubbed, and **Currency + data export were built** because the app hard-coded `$`.
+- [x] **Expenses dashboard**: `List(.insetGrouped)` with a weekly-chart card, newest-first recent transactions (swipe-to-delete, tap to edit) and a category donut card (last 30 days, `Domain/ExpenseAnalytics.swift`); empty state with an add action. The neutral chart replaces the old gradient/threshold-coloured card.
+- [x] **All transactions / All deposits**: sections by day (`Domain/DaySection.swift`), swipe-to-delete on the resolved row, search with `.searchToolbarBehavior(.minimize)`, `ContentUnavailableView` for empty and no-results.
+- [x] **Income / saving goal**: new goal card (icon, name, target date with a real relative label instead of the hard-coded "In 122 days", progress bar, Earned/Left/Required tiles with `Left` clamped at 0), **goal create/edit/delete** (`SavingGoalFormView`, toolbar menu; previously there was no way to create a goal), no-goal and no-deposits empty states.
+- [x] **Settings** (was Profile; tab renamed): Currency picker (live across the app via `\.currencyCode`), CSV export (`ShareLink`), About/version, Debug. Removed: subscriptions, biometry toggle (read nowhere), categories (fixed enum), SVG export, support links (`apple.com` was not a valid URL), and the stale `Settings.bundle` (its `dev`/`pro` values stopped meaning anything in Phase 1).
+- [x] **Forms**: 4 near-duplicate modals → `ExpenseFormView`, `DepositFormView` (+ new `SavingGoalFormView`), each with a `Mode`; edit uses `.sheet(item:)`.
+- [x] **Money formatting**: `Double.formattedMoney(code:)` / `formattedCompactMoney(code:)` replace `toMoneyString` / `toAbbreviateMoneyString`, which rounded every amount up to 0.1 and hard-coded `$`.
+- [x] **Deleted as dead or replaced**: `MUCustomVerticalForEach` (native `List` swipe actions replace it), `CircularSavingProgressView` (no users after the card redesign), `LoadingScreen`, `Date.categoryFormattedDate`, `Calendar.actualMonthToString`.
+- Not built: search on the dashboard (search lives on the All lists), a floating quick-add, app icon (Phase 3 leftover).
 
-| Screen | Work |
-|---|---|
-| Expenses | Dashboard: weekly chart + category chart (Swift Charts) in cards, recent list, search, add/edit sheets as `NavigationStack` forms with glass toolbar buttons |
-| All expenses / All deposits | Sections by day, swipe actions, empty states (`ContentUnavailableView`) |
-| Income / Savings objective | Redesign progress (ring + bar) with tokens; goal editing |
-| Social groups | Currently a stub. **Decision needed:** build it (requires backend/data model) or hide the tab until built |
-| Profile | Replace `Text(...)` placeholder destinations (Export, Categories, Currency, Password, Subscriptions) with real screens or remove the rows |
-| Add/Edit modals | Unify Expense/Deposit add+edit into shared form components (4 near-duplicate modals today) |
-
-**Accept:** every screen has `#Preview`s for mock data, empty state and error state; no placeholder `Text` destinations remain.
+**Accept (met):** every screen has `#Preview`s for mock data and empty state; screens that call services also have a "Failing service" preview, where the error alert only appears when the user acts (alerts are driven by `@State`, so a preview cannot start in the error state). No placeholder `Text` destinations remain. Verified through the UI with a throwaway XCUITest (light, dark, Reduce Transparency, XXL type): add/edit/delete expense, delete-all → empty states, create goal, add deposit, currency switch.
 
 ## Phase 5 – Adaptive layouts: iPhone, iPad, iPhone Duo
 - [ ] **Measure first**: boot `iPhone Duo`, record window size, size classes, safe areas and orientations the sim offers; write results here. Do not assume a fold/hinge API (none found in SDK 27.1).
@@ -124,7 +123,7 @@ Design tokens (spacing, radii, semantic colors, glass usage) are defined once in
 | No iOS 26.x simulator runtime | Test on 27.x; install a 26.x runtime if a 26-specific bug is suspected |
 
 ## Open questions
-1. Build the Social groups feature, or hide the tab?
+1. ~~Build the Social groups feature, or hide the tab?~~ Hidden in Phase 4 (assumed default; revert by adding a `Tab` and a feature with its own data model if it is wanted).
 2. Keep Spanish, English, or both (String Catalog) as launch languages?
 3. Confirm "iPhone Duo" means the simulator device above (and not another device/feature).
 

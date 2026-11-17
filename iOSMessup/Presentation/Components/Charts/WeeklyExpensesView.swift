@@ -9,66 +9,42 @@ import SwiftUI
 import Charts
 import MUDesignSystem
 
+// MARK: - WeeklyExpensesView
+
+/// Bar chart with the amount spent on each weekday of the current week. Meant to live inside a card.
 struct WeeklyExpensesView: View {
-    @Environment(\.expenseService) var expenseService
+    @Environment(\.expenseService) private var expenseService
+    @Environment(\.currencyCode) private var currencyCode
 
     var body: some View {
         let data = buildData(for: expenseService.getActualWeekExpenses())
 
-        VStack(spacing: 20) {
-            // Header
-            HStack {
-                Spacer()
-                Text("Last 7 days")
-                    .font(.caption)
-                    .bold()
-                    .foregroundStyle(.white)
-            }
-            .padding(.horizontal)
-
-            // Chart
-            Chart {
-                ForEach(data, id: \.day) { day, amount in
-                    BarMark(
-                        x: .value("Day", day),
-                        y: .value("Spent", amount)
-                    )
-                    .foregroundStyle(getExpenseChartColor(for: amount))
-                    .cornerRadius(5)
-                    .annotation(position: .top) {
-                        amount == 0
-                        ? nil
-                        : Text("$\(String(format: "%.2f", amount))")
-                            .font(.caption)
-                            .bold()
-                            .foregroundStyle(.white)
-                            .padding(MUSpacer.size02)
+        Chart {
+            ForEach(data, id: \.day) { day, amount in
+                BarMark(
+                    x: .value("Day", day),
+                    y: .value("Spent", amount)
+                )
+                .foregroundStyle(Color.accentColor)
+                .cornerRadius(MURadius.small)
+                .annotation(position: .top) {
+                    if amount > 0 {
+                        Text(amount.formattedCompactMoney(code: currencyCode))
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
                     }
                 }
             }
-            .chartXAxis {
-                AxisMarks { value in
-                    AxisValueLabel()
-                        .font(.system(size: 14, weight: .semibold, design: .default))
-                        .foregroundStyle(.white)
-                }
-            }
-            .chartYAxis(.hidden)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
-        .background(
-            LinearGradient(
-                  gradient: Gradient(colors: [
-                    Color.blue.opacity(1),
-                    Color.darkGreen.opacity(1),
-                  ]),
-                  startPoint: .topLeading,
-                  endPoint: .bottomTrailing
-            ).shadow(color: .black, radius: 10, x: 0, y: 10)
-        )
-        .clipShape(.rect(cornerRadius: 20))
+        .chartXAxis {
+            AxisMarks { _ in
+                AxisValueLabel()
+            }
+        }
+        .chartYAxis(.hidden)
         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+        .accessibilityLabel("Spending in the last 7 days")
+        .accessibilityValue(accessibilitySummary(for: data))
     }
 }
 
@@ -85,16 +61,28 @@ extension WeeklyExpensesView {
         }
     }
 
-    func getExpenseChartColor(for amount: Double) -> Color {
-        return switch amount {
-        case 0..<100: .green
-        case 100..<500: .yellow
-        case 500...: .red
-        default: .clear
-        }
+    private func accessibilitySummary(for data: [(day: String, amount: Double)]) -> String {
+        data.filter { $0.amount > 0 }
+            .map { "\($0.day): \($0.amount.formattedMoney(code: currencyCode))" }
+            .joined(separator: ", ")
     }
 }
 
-#Preview {
-    WeeklyExpensesView()
+// MARK: - Previews
+
+#Preview("Mock data") {
+    MUCard("Last 7 days") {
+        WeeklyExpensesView()
+            .frame(height: 200)
+    }
+    .padding()
+}
+
+#Preview("Empty") {
+    MUCard("Last 7 days") {
+        WeeklyExpensesView()
+            .frame(height: 200)
+    }
+    .padding()
+    .environment(\.expenseService, MockExpensesService(initialExpenses: [], delay: 0))
 }

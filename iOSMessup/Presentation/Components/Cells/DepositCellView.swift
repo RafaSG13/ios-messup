@@ -6,64 +6,65 @@
 //
 
 import SwiftUI
+import MUDesignSystem
 
+/// Plain row content: the enclosing `List` provides the surface.
 struct DepositCellView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    var deposit: Deposit
-
-    private enum ViewTraits {
-        static let imageSize: CGFloat = 40
-        static let imageInternalPadding: CGFloat = 5
-        static let generalPadding: CGFloat = 10
-        static let backgroundColor: Color = .secondary.opacity(0.15)
-        static let cornerRadius: CGFloat = 10
-        static let generalSpacing: CGFloat = 10
-        static let cellHeight: CGFloat = 70
-    }
+    @Environment(\.currencyCode) private var currencyCode
+    @ScaledMetric private var iconSize: CGFloat = 40
+    let deposit: Deposit
 
     var body: some View {
         let isAccessibilitySize = dynamicTypeSize.isAccessibilitySize
         let layout = isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: ViewTraits.generalPadding))
-            : AnyLayout(HStackLayout(spacing: ViewTraits.generalPadding))
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: MUSpacer.size03))
+            : AnyLayout(HStackLayout(spacing: MUSpacer.size03))
 
         layout {
             Image(systemName: deposit.foundingSource.icon)
-                .resizable()
-                .frame(width: ViewTraits.imageSize, height: ViewTraits.imageSize)
-                .scaledToFill()
-                .padding(ViewTraits.imageInternalPadding)
-                .background(deposit.foundingSource.color)
-                .foregroundStyle(.white)
-                .clipShape(.rect(cornerRadius: ViewTraits.cornerRadius))
+                .symbolVariant(.fill)
+                .foregroundStyle(deposit.foundingSource.color)
+                .frame(width: iconSize, height: iconSize)
+                .background(deposit.foundingSource.color.opacity(0.15), in: .rect(cornerRadius: MURadius.small))
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading) {
                 Text(deposit.concept)
-                    .bold()
                     .font(.headline)
                 Text(deposit.foundingSource.rawValue)
                     .font(.caption)
+                    .foregroundStyle(.secondary)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: isAccessibilitySize ? nil : .infinity, alignment: .leading)
 
             VStack(alignment: isAccessibilitySize ? .leading : .trailing) {
-                Text(deposit.amount.toMoneyString())
+                Text(deposit.amount.formattedMoney(code: currencyCode))
                     .bold()
                     .foregroundStyle(.green)
-                Text(deposit.date.formatted())
+                Text(deposit.date, format: .dateTime.day().month(.abbreviated).year())
                     .font(.caption)
+                    .foregroundStyle(.secondary)
             }
         }
-        .padding(ViewTraits.generalPadding)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .frame(minHeight: ViewTraits.cellHeight)
-        .background(ViewTraits.backgroundColor)
-        .clipShape(.rect(cornerRadius: ViewTraits.cornerRadius))
+        .frame(maxWidth: .infinity, minHeight: iconSize, alignment: .leading)
+        .accessibilityElement(children: .combine)
     }
 }
 
-//MARK: - Previews
+// MARK: - Previews
 
-#Preview {
-    DepositCellView(deposit: Deposit.mock)
+#Preview("Regular") {
+    List(Deposit.mockArray.sorted().reversed()) { deposit in
+        DepositCellView(deposit: deposit)
+    }
+    .listStyle(.insetGrouped)
+}
+
+#Preview("Accessibility size") {
+    List(Deposit.mockArray) { deposit in
+        DepositCellView(deposit: deposit)
+    }
+    .listStyle(.insetGrouped)
+    .dynamicTypeSize(.accessibility3)
 }

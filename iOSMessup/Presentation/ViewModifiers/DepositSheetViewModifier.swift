@@ -7,18 +7,16 @@
 
 import SwiftUI
 
-//MARK: - AddDepositSheetModifier
+// MARK: - AddDepositSheetModifier
 
 struct AddDepositSheetModifier: ViewModifier {
     @Binding var isPresented: Bool
     var onSubmit: (Deposit) async throws -> Void
-    
+
     func body(content: Content) -> some View {
         content
             .sheet(isPresented: $isPresented) {
-                AddDepositViewModal() { deposit in
-                    try await onSubmit(deposit)
-                }
+                DepositFormView(mode: .add, onSubmit: onSubmit)
             }
     }
 }
@@ -29,31 +27,44 @@ extension View {
     }
 }
 
-//MARK: - EditDepositSheetModifier
+// MARK: - EditDepositSheetModifier
 
 struct EditDepositSheetModifier: ViewModifier {
-    @Binding var isPresented: Bool
-    @Binding var selectedDeposit: Deposit?
+    @Binding var deposit: Deposit?
     var onSubmit: (Deposit) async throws -> Void
-    
+
     func body(content: Content) -> some View {
         content
-            .sheet(isPresented: $isPresented, onDismiss: resetSelectedDeposit) {
-                if let selectedDeposit {
-                    EditDepositModalView(deposit: selectedDeposit) { deposit in
-                        try await onSubmit(deposit)
-                    }
-                } else { Text("No deposit selected") }
+            .sheet(item: $deposit) { deposit in
+                DepositFormView(mode: .edit(deposit), onSubmit: onSubmit)
             }
-    }
-    
-    private func resetSelectedDeposit() {
-        selectedDeposit = nil
     }
 }
 
 extension View {
-    func editDepositSheet(isPresented: Binding<Bool>, selectedDeposit: Binding<Deposit?>, onSubmit: @escaping (Deposit) async throws -> Void) -> some View {
-        modifier(EditDepositSheetModifier(isPresented: isPresented, selectedDeposit: selectedDeposit, onSubmit: onSubmit))
+    /// Presents the edit form while `deposit` is non-nil and clears it on dismiss.
+    func editDepositSheet(deposit: Binding<Deposit?>, onSubmit: @escaping (Deposit) async throws -> Void) -> some View {
+        modifier(EditDepositSheetModifier(deposit: deposit, onSubmit: onSubmit))
+    }
+}
+
+// MARK: - SavingGoalSheetModifier
+
+struct SavingGoalSheetModifier: ViewModifier {
+    @Binding var mode: SavingGoalFormView.Mode?
+    var onSubmit: (SavingGoal) async throws -> Void
+
+    func body(content: Content) -> some View {
+        content
+            .sheet(item: $mode) { mode in
+                SavingGoalFormView(mode: mode, onSubmit: onSubmit)
+            }
+    }
+}
+
+extension View {
+    /// Presents the saving goal form (create or edit) while `mode` is non-nil and clears it on dismiss.
+    func savingGoalSheet(mode: Binding<SavingGoalFormView.Mode?>, onSubmit: @escaping (SavingGoal) async throws -> Void) -> some View {
+        modifier(SavingGoalSheetModifier(mode: mode, onSubmit: onSubmit))
     }
 }

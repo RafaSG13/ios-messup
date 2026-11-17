@@ -3,7 +3,7 @@
 ## Project Overview
 iOS expense/income tracker (SwiftUI, iOS 26 minimum, Swift 6 language mode with default MainActor isolation + Approachable Concurrency). Two code bases in one repo:
 - `iOSMessup/` – the app (hand-managed `iOSMessup.xcodeproj`, Xcode 16+ synchronized folders; **no XcodeGen, no `project.yml`**).
-- `MUDesignSystem/` – local SPM package (swift-tools 6.2, iOS 26) that the app imports (`import MUDesignSystem`, local package reference in the pbxproj). It holds the shared components (`ListSectionHeaderView`, `MUCustomVerticalForEach`, `ProgressBar`, `CircularSavingProgressView`, `SelectableCell` + `selectableCell(_:)`) and tokens (`MUSpacer`, `Color.designSystem`). The app has no copies of them. Package strings are passed in by the caller (`LocalizedStringKey` parameters) so they are extracted into the app's catalog.
+- `MUDesignSystem/` – local SPM package (swift-tools 6.2, iOS 26) that the app imports (`import MUDesignSystem`, local package reference in the pbxproj). It holds the shared components (`MUCard`, `ListSectionHeaderView`, `ProgressBar`, `SelectableCell` + `selectableCell(_:)`) and tokens (`MUSpacer`, `MURadius`, `Color.designSystem`). The app has no copies of them. Package strings are passed in by the caller (`LocalizedStringKey` parameters) so they are extracted into the app's catalog.
 
 No backend, no login, no third-party dependencies. The app is local-only: one implicit user, data persisted on device with SwiftData (`Data/Local/`) in every build.
 
@@ -13,7 +13,7 @@ Model-View, no ViewModels. Layers: Domain → Data → Presentation, plus Core i
 ```
 iOSMessupApp (@main)  --@State services built by-->  MUEnvironmentConfigurator (local→SwiftData services, mock→Mock*)
   .environment(\.expenseService / \.incomeService)
-    → MainTabBarView → Expenses / IncomeObjective / SocialGroups / Profile views
+    → MainTabBarView (Expenses / Income / Settings) → ExpensesView, IncomeObjectiveView, SettingsView (+ All* lists, form sheets)
       → @Environment(\.xService) (protocol-typed) → service methods
         → ExpensesService / IncomeService (@Observable) → LocalStore (SwiftData ModelContainer) → ExpenseRecord / DepositRecord / SavingGoalRecord
 ```
@@ -21,7 +21,8 @@ iOSMessupApp (@main)  --@State services built by-->  MUEnvironmentConfigurator (
 - Write: views pass `onSubmit` closures through sheet modifiers (`Presentation/ViewModifiers/ExpenseSheetViewModifier.swift`: `addExpenseSheet`, `editExpenseSheet`; same for deposits) to `async throws` service methods; the service writes records through `LocalStore.context`, saves, then reloads its observable array (sorted by `date` ascending). Everything is main-actor isolated by default (no per-method `@MainActor`).
 - Persistence: `@Model` records (`Data/Local/LocalRecords.swift`) map to/from the domain structs (`init(_:)`, `domain`, `apply(_:)`; enums stored as raw strings). `LocalStore.shared` is the on-disk store (`Application Support/Messup.store`); `LocalStore(storage: .inMemory)` is for tests. There is only ever one saving goal.
 - Environment switch: `UserDefaults "messup_environment"` = `"local"` (default, SwiftData) or `"mock"` (in-memory sample data, nothing persisted). Launch arg: `-messup_environment mock`.
-- Debug only (`#if DEBUG`): `DebugSeeder` + Profile ▸ Debug section (replace with sample data / delete all data); launch arg `-messup_seed_sample_data YES` replaces the store content with the mock data at launch. First launch is otherwise empty.
+- Debug only (`#if DEBUG`): `DebugSeeder` + Settings ▸ Debug section (replace with sample data / delete all data); launch arg `-messup_seed_sample_data YES` replaces the store content with the mock data at launch. First launch is otherwise empty.
+- Currency: the user picks it in Settings (`@AppStorage(AppCurrency.storageKey)`); `iOSMessupApp` injects it as `\.currencyCode`. Format amounts with `Double.formattedMoney(code:)` / `formattedCompactMoney(code:)` and type them with `.currency(code: currencyCode)`; never hard-code `$`/`USD`.
 - DI: each service protocol file ends with
   ```swift
   extension EnvironmentValues { @Entry var incomeService: IncomeServiceProtocol = MockIncomeService() }
@@ -61,14 +62,14 @@ No linter/formatter, Makefile, CI, or code generation exists. Edit the pbxproj o
 - Persistence changes: add/modify the `@Model` record and its mapping together with the domain struct; keep derived (sync) methods on the service reading only the observable arrays.
 - Async in views: plain `Task { do { try await service.x() } catch { self.error = error } }` with `@State private var error: (any Error)?` and `.errorAlert($error)` (`Presentation/ViewModifiers/ErrorAlertModifier.swift`). Add/edit modals `await` the submit, dismiss only on success and show the error otherwise.
 - Load errors: `Status` (`Domain/Status.swift`) is set in `iOSMessupApp.loadInitialData()` and shown through `errorAlert`.
-- Navigation: `NavigationStack` per tab; value links `NavigationLink(value:)` + `.navigationDestination(for: Route.self)` (`Presentation/Navigation/Route.swift`; Profile has a private `ProfileRoute`). Tabs use `Tab(_:systemImage:value:)` with the `AppTab` enum. Placeholder Profile destinations are still `Text` (ROADMAP Phase 4).
+- Navigation: `NavigationStack` per tab; value links `NavigationLink(value:)` + `.navigationDestination(for: Route.self)` (`Presentation/Navigation/Route.swift`; Settings has a private `SettingsRoute`). Tabs use `Tab(_:systemImage:value:)` with the `AppTab` enum. There is no Social groups tab (decision: hidden until it has a data model) and no profile/user.
+- Screens: dashboards (Expenses, Income) and the All lists are `List(.insetGrouped)`: rows are plain content (`ExpenseCellView`/`DepositCellView` have no own background), delete is `.swipeActions` on the resolved row, row tap opens the edit sheet, empty/no-results states are `ContentUnavailableView`. Charts/summaries live in `MUCard`s as full-width list rows. Add/edit share one form per entity (`ExpenseFormView`, `DepositFormView`, `SavingGoalFormView`, each with a `Mode`); edit presents via `.sheet(item:)`. Lists grouped by day use `groupedByDay(date:)` (`Domain/DaySection.swift`).
 - Liquid Glass: bars, sheets and the tab bar get glass from the system, so do not add bar/sheet backgrounds, `.buttonStyle(.plain)` on toolbar items, or `.thinMaterial`-style fills. Glass only on navigation/controls (toolbar primary action uses `.buttonStyle(.glassProminent)`; modals use `Button(role: .cancel)` in `.cancellationAction` and `Button(role: .confirm)` in `.confirmationAction`), never on content cells. Glass elements near each other go in one `GlassEffectContainer`. The tab bar minimizes on scroll (`.tabBarMinimizeBehavior(.onScrollDown)`), lists use `.searchToolbarBehavior(.minimize)`. Never hard-code `.white`/`.black` in surfaces (use `Color(.systemBackground)` / semantic styles); cells must not use fixed heights (`minHeight`) and restack vertically at accessibility type sizes.
 - Every SwiftUI view gets a `#Preview` using mocks. Use `// MARK: -` headers. Default access `private`.
-- Gotchas: `filteredExpenses(on:)` returns everything for terms ≤3 chars (intentional); the "recent" lists in `ExpensesView`/`IncomeObjectiveView` are `@State` snapshots refreshed by `.onChange(of: service.expenses/deposits, initial: true)` because the store loads after the first appearance; the "All" lists delete by resolving the displayed (filtered) rows, not by offsets into the full array; edit modals must keep the original `id` (`updateExpense`/`updateDeposit` ignore unknown ids).
+- Gotchas: `filteredExpenses(on:)` returns everything for terms ≤3 chars (intentional); `lastExpenses(limit:)`/`lastDeposits(limit:)` return the last N oldest-first, so dashboards reverse them to show newest first; the "All" lists delete by resolving the displayed (filtered) rows, not by offsets into the full array; edit forms must keep the original `id` (`updateExpense`/`updateDeposit` ignore unknown ids); `Settings.bundle` no longer exists (the environment is only selected by launch argument/UserDefaults).
 
 ### Known defects (do not copy; fix only when asked)
-- Hard-coded content: "In 122 days" in `IncomeObjectiveView`, a literal `$` in the `WeeklyExpensesView` annotations, Profile `Link`s pointing at `apple.com`.
-- Accessibility sizes: the Income dashboard (hero, circular progress labels) and section header titles ("Transactions" hyphenates) are not reflowed for accessibility Dynamic Type; the weekly chart is capped at `.xxxLarge`. ROADMAP Phase 4.
+- None recorded. Open product items live in `ROADMAP.md`.
 
 ## Important Files
 - `iOSMessup/iOSMessupApp.swift` – entry, DI root, Debug seeding hook
@@ -87,7 +88,7 @@ No linter/formatter, Makefile, CI, or code generation exists. Edit the pbxproj o
 
 ## Testing & QA
 - Swift Testing (`import Testing`, `@Test`, `#expect`, `await #expect(throws:)`), `struct` suites, behavior-named tests, `@testable import iOSMessup`.
-- Real coverage: `iOSMessupTests/Expense/ExpensesServiceTests.swift` (against `MockExpensesService`) and `iOSMessupTests/Local/` (SwiftData services on in-memory stores, one on-disk relaunch test, `DebugSeeder`). The package has no tests; `iOSMessupUITests` target has no sources.
+- Real coverage: `iOSMessupTests/Expense/` (`ExpensesServiceTests` against `MockExpensesService`, `ExpenseAnalyticsTests`), `iOSMessupTests/Local/` (SwiftData services on in-memory stores, one on-disk relaunch test, `DebugSeeder`), `iOSMessupTests/Income/` (`SavingGoalProgressTests`), `iOSMessupTests/Domain/` (`DaySectionTests`), `iOSMessupTests/Export/` (`CSVExporterTests`). The package has no tests; `iOSMessupUITests` target has no sources.
 - UI taps: `simctl` cannot tap. To drive the app, temporarily add a `iOSMessupUITests` synchronized folder to the pbxproj (the target exists but has no folder) and a scheme with that testable, launch with `-messup_environment local -messup_seed_sample_data YES`, and write `app.screenshot().pngRepresentation` to `/tmp` from the test (simulator processes share the host filesystem). `xcodebuild` stalls ~10 min after the tests finish; kill it once `Test Suite … passed` appears. Accessibility settings: `xcrun simctl ui booted appearance|content_size|increase_contrast`; Reduce Transparency via `xcrun simctl spawn booted defaults write com.apple.Accessibility EnhancedBackgroundContrastEnabled -bool true` (relaunch the app). No UI test is committed.
 - Pattern:
   ```swift
