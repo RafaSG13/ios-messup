@@ -1,10 +1,11 @@
-# Roadmap: Modernize iOSMessup (Liquid Glass, local dev DB, adaptive layouts)
+# Roadmap: iOSMessup (local app, Liquid Glass, useful insights, adaptive layouts)
 
 Goals, in the order the user gave them:
 1. A **local, persistent, no-login app** on SwiftData – no backend, no auth (done in milestone 1).
 2. **Refactor** the old codebase onto current SwiftUI/Swift APIs.
 3. **Redesign** with Liquid Glass.
 4. **Support every form factor**: iPhone (incl. Air), iPad, and the **iPhone Duo** simulator device.
+5. **Make the app useful** (added after Phase 4): it recorded data but answered nothing. Budgets, monthly balance, insights and fast capture come before the adaptive-layout work, because they change what the screens contain.
 
 Phases are ordered by dependency. Each ends with acceptance checks that must pass before the next starts. Update `AGENTS.md` at the end of every phase (several of its statements become false as work lands).
 
@@ -24,10 +25,13 @@ Phases are ordered by dependency. Each ends with acceptance checks that must pas
 
 ## Decisions (change them here before starting if you disagree)
 1. **Minimum iOS 26.0.** Liquid Glass APIs are iOS 26+; a lower floor means `#available` forks in every view. Test on the 27.x runtimes (no 26.x runtime installed; install one from Xcode ▸ Settings ▸ Components if 26.0-specific behavior matters).
-2. **"iPhone Duo" = the `iPhone Duo` simulator device type** in Xcode 27.1. Because there is no hinge API, support it through size-class/width-adaptive layout, not device checks. Phase 5 measures its real geometry first.
+2. **"iPhone Duo" = the `iPhone Duo` simulator device type** in Xcode 27.1. Because there is no hinge API, support it through size-class/width-adaptive layout, not device checks. Phase 7 measures its real geometry first.
 3. **Local DB = SwiftData in all builds** (Debug and Release), no backend and no login. Domain stays plain `struct`s (project rule); `@Model` records map to/from them. Sample data is Debug-only.
 4. **Adopt `MUDesignSystem` as a real dependency** of the app and delete the app's duplicate components (today the app does not import it). Alternative: delete the package. Recommended: adopt, because glass tokens/components then live in one place.
 5. **Clean cutover, no shims**: each phase migrates every caller and deletes the old path.
+6. **Deposits become general income; contributions reduce the balance** (decided). Money in is "Income"; the saving goal is funded by explicit contributions, not by summing every deposit. **Balance = income − expenses − contributions** (what is left to spend); the balance card also shows income, expenses and "Saved" so the split stays visible.
+7. **Recurring expenses / "upcoming payments" are parked** (decided): they only make sense once the user declares recurrences, and the manual-entry question the app answers is "how am I doing this month?". Revisit if users re-enter the same expenses every month.
+8. **Each phase ships its own tests** (pure logic in Swift Testing) and previews; Phase 9 only adds the cross-cutting UI tests, CI and release work.
 
 ---
 
@@ -61,7 +65,7 @@ Backend, auth, Keychain and the `keychain-swift` dependency were deleted; the ap
 
 ## Phase 3 – Liquid Glass shell (done except the app icon)
 Rebuilding with the new SDK already gives glass bars/sheets; the work was removing things that fight it and adding glass only on the controls layer.
-- [x] Tab bar: `.tabBarMinimizeBehavior(.onScrollDown)` and `.tabViewStyle(.sidebarAdaptable)` (`Tab` API was already in place). `sidebarAdaptable` is only exercised on iPhone so far; iPad is Phase 5.
+- [x] Tab bar: `.tabBarMinimizeBehavior(.onScrollDown)` and `.tabViewStyle(.sidebarAdaptable)` (`Tab` API was already in place). `sidebarAdaptable` is only exercised on iPhone so far; iPad is Phase 7.
 - [x] Chrome that fought glass removed: `.buttonStyle(.plain)` on toolbars (all screens), the `.ultraThinMaterial` label fill in `IncomeObjectiveView` (now `.quaternary`), and the hard-coded `.white` stop in the goal-summary gradient (it rendered a white band in dark mode; now `systemBackground`). There were no custom bar/sheet backgrounds.
 - [x] Primary action: toolbar "+" is `.buttonStyle(.glassProminent)` on all four screens that have it. Modals use `.cancellationAction` / `.confirmationAction` with `Button(role: .cancel)` / `Button(role: .confirm)`, and the padding/`fixedSize` hacks are gone. No floating button / `tabViewBottomAccessory`: the toolbar action is enough until Phase 4 designs the dashboard.
 - [x] Search: `.searchToolbarBehavior(.minimize)` on the All lists (expense search only exists there; the >3-character rule is unchanged).
@@ -87,12 +91,43 @@ Tokens live in `MUDesignSystem` (`MUSpacer`, new `MURadius`, `MUCard`); screens 
 
 **Accept (met):** every screen has `#Preview`s for mock data and empty state; screens that call services also have a "Failing service" preview, where the error alert only appears when the user acts (alerts are driven by `@State`, so a preview cannot start in the error state). No placeholder `Text` destinations remain. Verified through the UI with a throwaway XCUITest (light, dark, Reduce Transparency, XXL type): add/edit/delete expense, delete-all → empty states, create goal, add deposit, currency switch.
 
-## Phase 5 – Adaptive layouts: iPhone, iPad, iPhone Duo
+## Order at a glance
+| Phase | Theme | Why here |
+|---|---|---|
+| 5 | Money picture: periods, budget, balance, insights, new Expenses/Income/Savings screens | The app has no value today; screen contents change here, so layouts are adapted afterwards |
+| 6 | Quick capture and reminders: App Intent, widgets, controls, notifications | Biggest lever for real use; needs the store in an App Group, which must precede sync |
+| 7 | Adaptive layouts: iPhone, iPad, iPhone Duo | Done once the screens are settled (was Phase 5) |
+| 8 | Savings and data portability: multiple goals, filters, CSV import, lock, iCloud sync | Builds on Phases 5-6 |
+| 9 | Tests, QA, release | Was Phase 6 |
+
+## Phase 5 – Money picture
+Goal: opening the app answers "how am I doing this month?".
+- [ ] **Domain split and renames** (clean cutover, update mocks, seeder, tests, String Catalog): `Deposit` → `Income`, `FoundingSource` → `IncomeSource` (also fixes the typo), `IncomeService` keeps income only, new `SavingsService` owns the goal and new `Contribution` (id, amount, date, note); goal progress = sum of contributions. `IncomeObjectiveView` is split into an Income screen and a Savings screen.
+- [ ] **SwiftData migration** for the above. Renaming an `@Model` class changes the store entity, so either keep the record class names or write a migration stage; see open question 4.
+- [ ] **`Period` + `PeriodSummary`** (pure, `Domain/`, unit-tested): week / month / year with previous/next; total, previous-period total and delta, daily average, projection to the end of the period, top categories, cumulative daily series for the current and previous period. Tests: month and year boundaries, leap years, empty periods, partially elapsed current period, time zone / `startOfDay`.
+- [ ] **Budget**: `Budget` (monthly total, optional per-category limits), service, edit screen reachable from the summary card and Settings; states under budget / ≥80 % / over.
+- [ ] **Expenses screen redesign**: period selector; summary card (spent, vs previous period, budget remaining); cumulative-spend line chart against the previous period with a touch selection (`chartXSelection`); categories as horizontal bars (top N + "other"); recent transactions. Replaces the 7-day bar chart and the donut.
+- [ ] **Income screen**: period income total, **balance card (income − expenses − contributions)**, income list. **Savings screen**: goal card, contributions list, "Add to goal" (still one goal).
+- [ ] **Insights**: 2-3 generated, localized sentences (top category, change vs previous period, projection) on the Expenses screen.
+- [x] **Debug sample data** (`#if DEBUG`): `SampleDataGenerator` builds ~4 months of deterministic, today-relative data (seeded RNG: expenses across categories, monthly salary plus extras, a goal) instead of the fixed mock arrays; it is extended with contributions and a budget when those models exist. The store is **auto-seeded in Debug builds when it is empty** (Settings ▸ Debug toggle "Auto-seed when empty", launch arg `-messup_autoseed NO` to test the real empty state); "Replace with sample data" / "Delete all data" stay. Release is unaffected.
+
+**Accept:** with the sample data the Expenses screen shows a total, a comparison and a budget state; balance and projection match hand-computed values in tests; every screen has mock and empty previews; screenshots (light/dark, XXL) reviewed; `AGENTS.md` updated.
+
+## Phase 6 – Quick capture and reminders
+- [ ] **Move `LocalStore` to an App Group container** (migrate the existing store on first launch). Prerequisite for the widget/intent targets; needs the App Group entitlement in the signing setup (hand-edited pbxproj, like before).
+- [ ] **App Intent** `AddExpenseIntent` (amount, name, category) + `AppShortcutsProvider`: Siri, Shortcuts, Spotlight, Action button.
+- [ ] **Widgets**: spent this month vs budget (small/medium), interactive quick-add, Lock Screen widget, Control Center control. Reload timelines after every write.
+- [ ] **Local notifications** (opt-in in Settings, permission requested in context): budget at 80 % and 100 %, weekly summary.
+
+**Accept:** an expense added from Siri/Shortcuts or the widget shows up in the app; widget values match the app; notifications fire at the thresholds (unit-tested threshold logic, manual check of delivery).
+
+## Phase 7 – Adaptive layouts: iPhone, iPad, iPhone Duo (was Phase 5)
+Applies to the screens as they stand after Phases 5-6 (period selector, charts and the new Income/Savings screens included).
 - [ ] **Measure first**: boot `iPhone Duo`, record window size, size classes, safe areas and orientations the sim offers; write results here. Do not assume a fold/hinge API (none found in SDK 27.1).
 - [ ] Lift iPhone portrait-only restriction (`INFOPLIST_KEY_UISupportedInterfaceOrientations`) → allow landscape.
 - [ ] Width-driven layout, never device checks: `NavigationSplitView` (sidebar/list/detail) in regular width, `NavigationStack` in compact; `ViewThatFits`, `containerRelativeFrame`, `onGeometryChange` for charts/grids (adaptive `LazyVGrid` columns).
-- [ ] Dashboard: single column compact → two-column (chart | list) wide. Forms: sheet compact, popover/centered regular.
-- [ ] Multitasking: resize window in Split View / Stage Manager on iPad; no layout jumps, no `UIScreen` use (removed in Phase 2).
+- [ ] Dashboard: single column compact → two-column (summary + chart | list) wide. Forms: sheet compact, popover/centered regular.
+- [ ] Multitasking: resize window in Split View / Stage Manager on iPad; no layout jumps, no `UIScreen` use.
 - [ ] Keyboard/pointer: hardware keyboard shortcuts for add (⌘N), search (⌘F), hover effects on rows.
 
 **Test matrix (screenshot each, both orientations, light/dark):**
@@ -106,26 +141,47 @@ Tokens live in `MUDesignSystem` (`MUSpacer`, new `MURadius`, `MUCard`); screens 
 
 **Accept:** no clipped/overlapping content on any matrix device; resizing an iPad window through compact↔regular preserves state.
 
-## Phase 6 – Tests, QA, release
-- [ ] Unit tests: domain sorting/filtering (service tests exist in `iOSMessupTests/Local/`). Follow existing Swift Testing style; `delay: 0` on mocks.
-- [ ] UI smoke tests (target exists with no sources): launch with `-messup_environment local -messup_seed_sample_data YES`, add expense, verify list; run on iPhone and iPad.
+## Phase 8 – Savings and data portability
+- [ ] **Multiple savings goals** (goal detail, archive completed); `SavingsService` already owns contributions per goal from Phase 5 (add `goalID` then).
+- [ ] **Filters and sorting** in the All lists: category, date range, amount range.
+- [ ] **CSV import** using the export format (bank-specific column mapping is out of scope).
+- [ ] **Face ID / passcode lock** (LocalAuthentication, optional in Settings).
+- [ ] **iCloud sync** (SwiftData + CloudKit). Constraints to resolve first: no `@Attribute(.unique)` (dedupe by `id` in the services), every property optional or defaulted, iCloud entitlement and paid team, CloudKit schema deployment; tests keep using in-memory/local configurations.
+- [ ] Optional: receipt photo attached to an expense (VisionKit scan/OCR).
+
+**Accept:** data survives reinstall and appears on a second device (manual check); import(export(x)) round-trips in a unit test.
+
+## Phase 9 – Tests, QA, release (was Phase 6)
+- [ ] **Commit the UI tests** used for verification so far (add → edit → delete, delete-all → empty states, goal creation, currency switch) in `iOSMessupUITests` (wire the target as a synchronized folder, recipe in `AGENTS.md`); run on iPhone and iPad.
 - [ ] `performAccessibilityAudit()` in UI tests for main screens.
+- [ ] Run the service contract tests against both the mock and the SwiftData services.
 - [ ] CI: GitHub Actions running build + unit tests on a 27.x simulator (none exists today).
-- [ ] Release checklist: privacy manifest, Release build has no debug code, icon, localization review, TestFlight.
+- [ ] Localization: add Spanish to the String Catalog (see open question 2) and review all strings, including generated insight sentences.
+- [ ] New app icon via Icon Composer (Phase 3 leftover; needs artwork).
+- [ ] Release checklist: privacy manifest, Release build has no debug code, TestFlight.
+
+## Parked (not planned)
+Recurring expenses / upcoming payments (decision 7), shared/group expenses (needs CloudKit sharing or a backend; the Social tab was removed in Phase 4), per-entry multi-currency, Live Activities, bank sync.
 
 ## Risks
 | Risk | Mitigation |
 |---|---|
 | Raising to iOS 26 drops older devices | Explicit decision #1; revisit only if distribution needs them |
 | Glass over charts hurts legibility | Glass only on controls; test Reduce Transparency / Increase Contrast each phase |
-| SwiftData store diverges from mock semantics | Mock and SwiftData services implement the same protocols; extend the shared contract tests to run against both |
-| Swift 6 migration noise | Staged: Approachable Concurrency under Swift 5 first |
+| SwiftData store diverges from mock semantics | Mock and SwiftData services implement the same protocols; contract tests run against both (Phase 9) |
+| Swift 6 migration noise | Staged: Approachable Concurrency under Swift 5 first (done) |
 | No iOS 26.x simulator runtime | Test on 27.x; install a 26.x runtime if a 26-specific bug is suspected |
+| Renaming `@Model` classes (Phase 5) loses existing local data | Keep record class names or add a migration stage; confirm whether any data must survive (open question 4) |
+| Moving the store to an App Group (Phase 6) can orphan the old store | Migrate on first launch and test it with an on-disk store |
+| CloudKit forbids unique constraints and non-optional-without-default properties (Phase 8) | Schema review before Phase 8; dedupe in services |
+| Period maths (time zones, month ends, leap years) | Pure `Period`/`PeriodSummary` with boundary tests before any UI |
 
 ## Open questions
 1. ~~Build the Social groups feature, or hide the tab?~~ Hidden in Phase 4 (assumed default; revert by adding a `Tab` and a feature with its own data model if it is wanted).
-2. Keep Spanish, English, or both (String Catalog) as launch languages?
-3. Confirm "iPhone Duo" means the simulator device above (and not another device/feature).
+2. Keep Spanish, English, or both (String Catalog) as launch languages? Recommendation: both; the work is scheduled in Phase 9.
+3. Confirm "iPhone Duo" means the simulator device above (and not another device/feature). Needed before Phase 7.
+4. Does any existing local data have to survive the Phase 5 renames (`Deposit` → `Income`)? There is no released build, so the default is: rename and wipe is acceptable.
+5. ~~Do goal contributions reduce the monthly balance?~~ Yes (decision 6).
 
 ## Baseline results
 Recorded before the local-only/SwiftData milestone (Xcode 27 toolchain, iPhone 17 simulator).
