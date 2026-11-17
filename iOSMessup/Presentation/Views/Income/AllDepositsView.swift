@@ -44,16 +44,16 @@ struct AllDepositsView: View {
         }
         .listStyle(.plain)
         .searchable(text: $searchText, placement: .toolbar)
+        .searchToolbarBehavior(.minimize)
         .scrollIndicators(.hidden)
         .navigationTitle("All Deposits")
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button {
+                Button("Add deposit", systemImage: "plus") {
                     shouldPresentAddDeposit = true
-                } label: {
-                    Label("Add deposit", systemImage: "plus")
-                }.buttonStyle(.plain)
+                }
+                .buttonStyle(.glassProminent)
             }
         }
         .errorAlert($error)

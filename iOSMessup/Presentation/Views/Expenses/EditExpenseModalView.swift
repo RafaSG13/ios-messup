@@ -30,18 +30,14 @@ struct EditExpenseModalView: View {
             .navigationTitle("Edit Expense")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") { dismiss() }
-                        .padding()
-                        .fixedSize()
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", role: .cancel) { dismiss() }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save", action: save)
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save", role: .confirm, action: save)
                         .disabled(isSaving)
-                        .padding()
-                        .fixedSize()
                 }
-            }.buttonStyle(.plain)
+            }
             .errorAlert($error)
         }
         .onAppear {

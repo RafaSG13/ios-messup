@@ -62,11 +62,13 @@ No linter/formatter, Makefile, CI, or code generation exists. Edit the pbxproj o
 - Async in views: plain `Task { do { try await service.x() } catch { self.error = error } }` with `@State private var error: (any Error)?` and `.errorAlert($error)` (`Presentation/ViewModifiers/ErrorAlertModifier.swift`). Add/edit modals `await` the submit, dismiss only on success and show the error otherwise.
 - Load errors: `Status` (`Domain/Status.swift`) is set in `iOSMessupApp.loadInitialData()` and shown through `errorAlert`.
 - Navigation: `NavigationStack` per tab; value links `NavigationLink(value:)` + `.navigationDestination(for: Route.self)` (`Presentation/Navigation/Route.swift`; Profile has a private `ProfileRoute`). Tabs use `Tab(_:systemImage:value:)` with the `AppTab` enum. Placeholder Profile destinations are still `Text` (ROADMAP Phase 4).
+- Liquid Glass: bars, sheets and the tab bar get glass from the system, so do not add bar/sheet backgrounds, `.buttonStyle(.plain)` on toolbar items, or `.thinMaterial`-style fills. Glass only on navigation/controls (toolbar primary action uses `.buttonStyle(.glassProminent)`; modals use `Button(role: .cancel)` in `.cancellationAction` and `Button(role: .confirm)` in `.confirmationAction`), never on content cells. Glass elements near each other go in one `GlassEffectContainer`. The tab bar minimizes on scroll (`.tabBarMinimizeBehavior(.onScrollDown)`), lists use `.searchToolbarBehavior(.minimize)`. Never hard-code `.white`/`.black` in surfaces (use `Color(.systemBackground)` / semantic styles); cells must not use fixed heights (`minHeight`) and restack vertically at accessibility type sizes.
 - Every SwiftUI view gets a `#Preview` using mocks. Use `// MARK: -` headers. Default access `private`.
 - Gotchas: `filteredExpenses(on:)` returns everything for terms ≤3 chars (intentional); the "recent" lists in `ExpensesView`/`IncomeObjectiveView` are `@State` snapshots refreshed by `.onChange(of: service.expenses/deposits, initial: true)` because the store loads after the first appearance; the "All" lists delete by resolving the displayed (filtered) rows, not by offsets into the full array; edit modals must keep the original `id` (`updateExpense`/`updateDeposit` ignore unknown ids).
 
 ### Known defects (do not copy; fix only when asked)
 - Hard-coded content: "In 122 days" in `IncomeObjectiveView`, a literal `$` in the `WeeklyExpensesView` annotations, Profile `Link`s pointing at `apple.com`.
+- Accessibility sizes: the Income dashboard (hero, circular progress labels) and section header titles ("Transactions" hyphenates) are not reflowed for accessibility Dynamic Type; the weekly chart is capped at `.xxxLarge`. ROADMAP Phase 4.
 
 ## Important Files
 - `iOSMessup/iOSMessupApp.swift` – entry, DI root, Debug seeding hook
@@ -86,6 +88,7 @@ No linter/formatter, Makefile, CI, or code generation exists. Edit the pbxproj o
 ## Testing & QA
 - Swift Testing (`import Testing`, `@Test`, `#expect`, `await #expect(throws:)`), `struct` suites, behavior-named tests, `@testable import iOSMessup`.
 - Real coverage: `iOSMessupTests/Expense/ExpensesServiceTests.swift` (against `MockExpensesService`) and `iOSMessupTests/Local/` (SwiftData services on in-memory stores, one on-disk relaunch test, `DebugSeeder`). The package has no tests; `iOSMessupUITests` target has no sources.
+- UI taps: `simctl` cannot tap. To drive the app, temporarily add a `iOSMessupUITests` synchronized folder to the pbxproj (the target exists but has no folder) and a scheme with that testable, launch with `-messup_environment local -messup_seed_sample_data YES`, and write `app.screenshot().pngRepresentation` to `/tmp` from the test (simulator processes share the host filesystem). `xcodebuild` stalls ~10 min after the tests finish; kill it once `Test Suite … passed` appears. Accessibility settings: `xcrun simctl ui booted appearance|content_size|increase_contrast`; Reduce Transparency via `xcrun simctl spawn booted defaults write com.apple.Accessibility EnhancedBackgroundContrastEnabled -bool true` (relaunch the app). No UI test is committed.
 - Pattern:
   ```swift
   @Test func addExpenseFailure() async throws {

@@ -29,11 +29,11 @@ struct AddExpenseViewModal: View {
             .navigationTitle("Add Expense")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") { dismiss() }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", role: .cancel) { dismiss() }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save", action: save)
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save", role: .confirm, action: save)
                         .disabled(isSaving || name.isEmpty || amount <= 0)
                 }
                 ToolbarItem(placement: .keyboard) {
