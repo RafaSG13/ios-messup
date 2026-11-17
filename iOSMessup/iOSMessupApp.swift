@@ -17,9 +17,7 @@ struct iOSMessupApp: App {
         #if DEBUG
         if UserDefaults.standard.bool(forKey: "messup_seed_sample_data"),
            MUEnvironmentConfigurator.current == .local {
-            MainActor.assumeIsolated {
-                try? DebugSeeder.replaceWithSampleData(in: .shared)
-            }
+            try? DebugSeeder.replaceWithSampleData(in: .shared)
         }
         #endif
     }
@@ -28,6 +26,7 @@ struct iOSMessupApp: App {
         WindowGroup {
             MainTabBarView()
                 .task { await loadInitialData() }
+                .errorAlert(loadError)
                 .environment(\.expenseService, expenseService)
                 .environment(\.incomeService, incomeService)
         }
@@ -35,13 +34,16 @@ struct iOSMessupApp: App {
 }
 
 extension iOSMessupApp {
+    private var loadError: Binding<(any Error)?> {
+        Binding(get: { if case .error(let error) = status { error } else { nil } },
+                set: { _ in status = .idle })
+    }
+
     func loadInitialData() async {
         do {
             status = .loading
-            async let loadExpenses: () = expenseService.loadExpenses()
-            async let loadIncomes: () = incomeService.load()
-
-            let _ = try await (loadExpenses, loadIncomes)
+            try await expenseService.loadExpenses()
+            try await incomeService.load()
             status = .idle
         } catch {
             status = .error(error)

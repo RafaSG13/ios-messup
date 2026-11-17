@@ -9,7 +9,6 @@ import Foundation
 @testable import iOSMessup
 import Testing
 
-@MainActor
 struct IncomeServiceLocalTests {
 
     private func makeDeposit(_ concept: String, daysAgo: Int = 0, amount: Double = 100) -> Deposit {

@@ -1,0 +1,165 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "$%@" : {
+
+    },
+    "Add Deposit" : {
+
+    },
+    "Add Expense" : {
+
+    },
+    "Add deposit" : {
+
+    },
+    "Add expense" : {
+
+    },
+    "Additional tools" : {
+
+    },
+    "All Deposits" : {
+
+    },
+    "All transactions" : {
+
+    },
+    "Amount" : {
+
+    },
+    "Analytics" : {
+
+    },
+    "App actions" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Category" : {
+
+    },
+    "Change Currency" : {
+
+    },
+    "Concept" : {
+
+    },
+    "Contact us" : {
+
+    },
+    "Content" : {
+
+    },
+    "Date" : {
+
+    },
+    "Day" : {
+
+    },
+    "Delete" : {
+
+    },
+    "Details" : {
+
+    },
+    "Donations and Support" : {
+
+    },
+    "Done" : {
+
+    },
+    "Edit Expense" : {
+
+    },
+    "Edit deposit" : {
+
+    },
+    "Enable Biometry" : {
+
+    },
+    "Expenses" : {
+
+    },
+    "Export to SVG" : {
+
+    },
+    "Founding Source" : {
+
+    },
+    "In 122 days" : {
+
+    },
+    "Income" : {
+
+    },
+    "Last 7 days" : {
+
+    },
+    "Manage Categories" : {
+
+    },
+    "Manage subscriptions" : {
+
+    },
+    "Name" : {
+
+    },
+    "No deposit selected" : {
+
+    },
+    "No expense selected." : {
+
+    },
+    "OK" : {
+
+    },
+    "Payment Method" : {
+
+    },
+    "Profile" : {
+
+    },
+    "Recent Deposits" : {
+
+    },
+    "Save" : {
+
+    },
+    "Saving Goal" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Social groups" : {
+
+    },
+    "Something went wrong" : {
+
+    },
+    "Spent" : {
+
+    },
+    "Support" : {
+
+    },
+    "These are my groups" : {
+
+    },
+    "Transactions" : {
+
+    },
+    "User account" : {
+
+    },
+    "View all" : {
+
+    },
+    "of %@ 🏁" : {
+
+    }
+  },
+  "version" : "1.0"
+}

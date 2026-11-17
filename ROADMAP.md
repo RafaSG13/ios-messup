@@ -47,22 +47,22 @@ Backend, auth, Keychain and the `keychain-swift` dependency were deleted; the ap
 - Debug only: `DebugSeeder`, Profile ▸ Debug section, launch arg `-messup_seed_sample_data YES`. First launch is empty.
 - Tests: `iOSMessupTests/Local/` (in-memory stores, one on-disk relaunch test).
 
-## Phase 2 – Refactor foundation
-Order matters: do toolchain/dead code first so later phases touch less.
-- [ ] Raise deployment target to 26.0 (project level 17.0 and targets 17.5 → one value; **change in Xcode, not by hand-editing the pbxproj**). Same for `MUDesignSystem/Package.swift` (`.iOS(.v26)`).
-- [ ] Concurrency: enable Approachable Concurrency / default MainActor isolation under Swift 5 first, fix diagnostics, then move the app target to Swift 6 language mode. Services are `@Observable` UI-state holders → `@MainActor`; drop per-method `@MainActor` on protocols.
-- [ ] Modern API sweep (mechanical, grep-driven): `NavigationView`→`NavigationStack`; `foregroundColor`→`foregroundStyle`; `cornerRadius`→`clipShape(.rect(cornerRadius:))`; `NavigationLink(destination:)`→`NavigationLink(value:)` + `navigationDestination(for: Route.self)`, one `NavigationStack` with a path per tab; `.tabItem`→`Tab`; `UIScreen.main` removed (replace `MUCustomVerticalForEach` with `List` + `.swipeActions`, or `onGeometryChange` if the custom gesture is kept); `autocapitalization`→`textInputAutocapitalization`.
-- [ ] Adopt `MUDesignSystem`: add as local package dependency, delete the app's copies (`MUSpacer`, `MUTextField`, `ProgressBar`, `CircularSavingProgressView`, `MUCustomVerticalForEach`, `SelectableCell`, `MULoadingHudModifier`), fix/remove the broken showcase.
-- [ ] Make errors visible: views currently never read `Status`; several write paths swallow errors (`AddExpenseViewModal`, `ExpensesView` onDelete). Surface via alert/inline state.
-- [ ] Localization: UI mixes English and Spanish ("Iniciar Sesión" vs "Login"). Move strings to a String Catalog; pick base language.
-- [ ] Fix stale file headers.
+## Phase 2 – Refactor foundation (done)
+- [x] Deployment target 26.0 at project level (iOS and macOS; per-target overrides removed); `MUDesignSystem/Package.swift` is `.iOS(.v26)`. The pbxproj was hand-edited (no Xcode GUI available in the CLI session); `xcodebuild -list` and all builds resolve it.
+- [x] Concurrency: `SWIFT_APPROACHABLE_CONCURRENCY = YES` + `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` first (clean under Swift 5), then app/test/UI-test targets on Swift 6. Per-method `@MainActor` removed from services, `DebugSeeder`, `LocalStore` and tests; `async let` in `loadInitialData` replaced by sequential awaits (services are not `Sendable`).
+- [x] Modern API sweep: `NavigationView`→`NavigationStack`, `foregroundColor`→`foregroundStyle`, `cornerRadius`→`clipShape(.rect(cornerRadius:))`, `NavigationLink(destination:)`→`NavigationLink(value:)` + `navigationDestination(for:)` (`Route`, private `ProfileRoute`), `.tabItem`→`Tab` (old `Tab` enum renamed `AppTab`), `UIScreen.main` gone (`onGeometryChange`), `autocapitalization` gone with the deleted `MUTextField`. The only `.cornerRadius(` left is `ChartContent.cornerRadius` on a `BarMark` (Charts API, no replacement). `MUCustomVerticalForEach` was kept (not replaced by `List`).
+- [x] `MUDesignSystem` adopted as a local package dependency; app copies deleted. The package was trimmed to what the app uses: removed `MUTextField`, `MUPasswordField`, `MULoadingHudModifier` (no users after the login removal) and the broken showcase executable and placeholder test target. Package components are public and iOS-only (`xcodebuild -scheme MUDesignSystem`; `swift build` on macOS still fails by design). Fixes while moving: `CircularSavingProgressView` no longer freezes `progress` in `@State`; `MUCustomVerticalForEach` measures width with `onGeometryChange` instead of `UIScreen`/`GeometryReader`; `ListSectionHeaderView` takes a `Hashable` value instead of `AnyView`.
+- [x] Errors visible: `ErrorAlertModifier` (`.errorAlert($error)`) on all add/edit/delete paths and on the initial load; modals dismiss only after a successful save. `TaskStore` (swallowed errors, unused after this) deleted.
+- [x] Localization: `Localizable.xcstrings`, English base (no Spanish strings remained after the login removal). Other languages are not added yet (open question 2 below).
+- [x] File headers fixed; `SavingsObjectiveView.swift` renamed to `IncomeObjectiveView.swift` to match its type; dead `HideTabBarAfterScrollingThreshold` deleted (Phase 3 still adds `.tabBarMinimizeBehavior`).
+- Bugs found by reading and fixed on the way (not reproduced in the UI, since `simctl` cannot tap): the edit-expense modal built a new `Expense` with a fresh `id`, which `updateExpense` ignores as unknown; the "All" lists deleted by offsets into the unfiltered array while a search was active; toolbar "+" buttons had no accessibility label.
 
-**Accept:** app + tests build with zero warnings at Swift 6; `grep` for the legacy symbols above returns nothing in `iOSMessup/`; the app compiles with the design-system package as the only source of the shared components.
+**Accept (met):** app + tests build with zero warnings at Swift 6 (clean build); legacy-symbol grep is empty apart from the Charts `cornerRadius` above; the app compiles with the package as the only source of the shared components.
 
 ## Phase 3 – Liquid Glass shell
 Rebuilding with the new SDK already gives glass bars/sheets; the work is removing things that fight it and adding glass only on the controls layer.
-- [ ] Delete custom chrome: `HideTabBarAfterScrollingThreshold` → `.tabBarMinimizeBehavior(.onScrollDown)`; remove custom sheet/toolbar backgrounds and `.thinMaterial` field fills.
-- [ ] `TabView` with `Tab` API; on iPad/wide windows `.tabViewStyle(.sidebarAdaptable)`.
+- [ ] Custom chrome: add `.tabBarMinimizeBehavior(.onScrollDown)`; remove custom sheet/toolbar backgrounds and the remaining `.ultraThinMaterial` label fill in `IncomeObjectiveView`.
+- [ ] `TabView` already uses the `Tab` API; add `.tabViewStyle(.sidebarAdaptable)` for iPad/wide windows.
 - [ ] Primary action ("add expense/deposit") as a glass control: `.buttonStyle(.glassProminent)` in the toolbar, or a floating button inside a `GlassEffectContainer`; consider `tabViewBottomAccessory` for the quick-add.
 - [ ] Search: `.searchable` + `searchToolbarBehavior` for expenses (keep the >3-character filter rule documented in `AGENTS.md`).
 - [ ] Scroll edges: `scrollEdgeEffectStyle` / `backgroundExtensionEffect` on hero content (dashboard header).

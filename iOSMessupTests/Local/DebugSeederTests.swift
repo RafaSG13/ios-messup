@@ -10,7 +10,6 @@ import Foundation
 @testable import iOSMessup
 import Testing
 
-@MainActor
 struct DebugSeederTests {
 
     @Test func replaceWithSampleDataDoesNotDuplicate() async throws {

@@ -34,12 +34,10 @@ final class ExpensesService: ExpensesServiceProtocol {
         self.store = store
     }
 
-    @MainActor
     func loadExpenses() async throws {
         try reload()
     }
 
-    @MainActor
     func addExpense(_ expense: Expense) async throws {
         let context = store.context
         context.insert(ExpenseRecord(expense))
@@ -47,18 +45,15 @@ final class ExpensesService: ExpensesServiceProtocol {
         try reload()
     }
 
-    @MainActor
     func delete(_ expense: Expense) async throws {
         try deleteRecords(withIDs: [expense.id])
     }
 
-    @MainActor
     func delete(at offSets: IndexSet) async throws {
         let ids = offSets.compactMap { expenses.indices.contains($0) ? expenses[$0].id : nil }
         try deleteRecords(withIDs: ids)
     }
 
-    @MainActor
     func updateExpense(with newValue: Expense) async throws {
         let context = store.context
         let id = newValue.id
@@ -72,7 +67,6 @@ final class ExpensesService: ExpensesServiceProtocol {
 
     // MARK: - Persistence
 
-    @MainActor
     private func deleteRecords(withIDs ids: [String]) throws {
         let context = store.context
         let records = try context.fetch(FetchDescriptor<ExpenseRecord>(predicate: #Predicate { ids.contains($0.id) }))
@@ -81,7 +75,6 @@ final class ExpensesService: ExpensesServiceProtocol {
         try reload()
     }
 
-    @MainActor
     private func reload() throws {
         let descriptor = FetchDescriptor<ExpenseRecord>(sortBy: [SortDescriptor(\.date)])
         expenses = try store.context.fetch(descriptor).map(\.domain)

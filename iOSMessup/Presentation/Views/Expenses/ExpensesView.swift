@@ -1,11 +1,12 @@
 //
-//  ContentView.swift
+//  ExpensesView.swift
 //  iOSMessup
 //
 //  Created by Rafael Serrano Gamarra on 21/1/25.
 //
 
 import SwiftUI
+import MUDesignSystem
 
 struct ExpensesView: View {
     @Environment(\.expenseService) var expenseService
@@ -13,6 +14,7 @@ struct ExpensesView: View {
     @State private var shouldPresentAddExpense = false
     @State private var shouldPresentEditExpense = false
     @State private var selectedItem: Expense?
+    @State private var error: (any Error)?
 
     private enum ViewTraits {
         static let headerSpacing: CGFloat = 10
@@ -31,15 +33,23 @@ struct ExpensesView: View {
 
                     LazyVStack(spacing: ViewTraits.headerSpacing) {
                         ListSectionHeaderView(sectionTitle: "Transactions",
-                                              route: .transactionList)
+                                              actionTitle: "View all",
+                                              value: Route.transactionList)
                         .padding(.horizontal)
 
                         MUCustomVerticalForEach(items: $lastExpenses,
-                                                selection: $selectedItem) { expense in
+                                                selection: $selectedItem,
+                                                deleteTitle: "Delete") { expense in
                             ExpenseCellView(expense: expense)
                         }
                         onDelete: { expense, _ in
-                            Task { try await expenseService.delete(expense) }
+                            Task {
+                                do {
+                                    try await expenseService.delete(expense)
+                                } catch {
+                                    self.error = error
+                                }
+                            }
                         }
                         .onChange(of: selectedItem) { _, new in
                             shouldPresentEditExpense = new != nil
@@ -49,11 +59,13 @@ struct ExpensesView: View {
             }
             .navigationTitle("Expenses")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(for: Route.self) { $0.destination }
+            .errorAlert($error)
             .scrollIndicators(.hidden)
             .scrollBounceBehavior(.always)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button("", systemImage: "plus") {
+                    Button("Add expense", systemImage: "plus") {
                         shouldPresentAddExpense.toggle()
                     }.buttonStyle(.plain)
                 }

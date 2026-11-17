@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import MUDesignSystem
 
 struct IncomeObjectiveView: View {
     @Environment(\.incomeService) private var incomeService
     @State private var selectedDeposit: Deposit? = nil
+    @State private var error: (any Error)?
     @State private var lastDeposits: [Deposit] = []
     @State private var shouldPresentAddDepositModal: Bool = false
     @State private var shouldPresentEditDepositModal: Bool = false
@@ -25,13 +27,22 @@ struct IncomeObjectiveView: View {
                     CircularProgressSection
                     
                     VStack(alignment: .leading) {
-                        ListSectionHeaderView(sectionTitle: "Recent Deposits", route: .depositList)
+                        ListSectionHeaderView(sectionTitle: "Recent Deposits",
+                                              actionTitle: "View all",
+                                              value: Route.depositList)
                             .padding(.horizontal)
                         MUCustomVerticalForEach(items: $lastDeposits,
-                                                selection: $selectedDeposit) { deposit in
+                                                selection: $selectedDeposit,
+                                                deleteTitle: "Delete") { deposit in
                             DepositCellView(deposit: deposit)
                         } onDelete: { deposit, _ in
-                            Task { try await incomeService.deleteDeposit(deposit) }
+                            Task {
+                                do {
+                                    try await incomeService.deleteDeposit(deposit)
+                                } catch {
+                                    self.error = error
+                                }
+                            }
                         }
                         .onChange(of: selectedDeposit) { _, newValue in
                             shouldPresentEditDepositModal = newValue != nil
@@ -45,7 +56,7 @@ struct IncomeObjectiveView: View {
                     Button {
                         shouldPresentAddDepositModal = true
                     } label: {
-                        Image(systemName: "plus")
+                        Label("Add deposit", systemImage: "plus")
                     }
                 }
             }
@@ -54,6 +65,8 @@ struct IncomeObjectiveView: View {
             .scrollBounceBehavior(.always)
             .navigationTitle("Saving Goal")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(for: Route.self) { $0.destination }
+            .errorAlert($error)
             .editDepositSheet(isPresented: $shouldPresentEditDepositModal, selectedDeposit: $selectedDeposit) { deposit in
                 try await incomeService.updateDeposit(with: deposit)
             }

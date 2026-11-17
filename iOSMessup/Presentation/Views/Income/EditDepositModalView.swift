@@ -11,6 +11,8 @@ struct EditDepositModalView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var deposit: Deposit
 
+    @State private var isSaving = false
+    @State private var error: (any Error)?
     private var onSubmit: (_ deposit: Deposit) async throws -> Void
 
     init(deposit: Deposit, onSubmit: @escaping (_: Deposit) async throws -> Void) {
@@ -19,7 +21,7 @@ struct EditDepositModalView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
                 Section(header: Text("Details")) {
                     TextField("Name", text: $deposit.concept)
@@ -39,18 +41,32 @@ struct EditDepositModalView: View {
             .navigationTitle("Edit deposit")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") { dismiss() }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
-                        Task { try? await onSubmit(deposit) }
-                        dismiss()
-                    }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Save", action: save)
+                        .disabled(isSaving)
                 }
             }.buttonStyle(.plain)
+            .errorAlert($error)
+        }
+    }
+}
+
+// MARK: - Actions
+
+private extension EditDepositModalView {
+    func save() {
+        isSaving = true
+        Task {
+            do {
+                try await onSubmit(deposit)
+                dismiss()
+            } catch {
+                self.error = error
+                isSaving = false
+            }
         }
     }
 }

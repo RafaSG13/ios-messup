@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Charts
+import MUDesignSystem
 
 struct CategoryPieChart: View {
     var expenses: [Expense]

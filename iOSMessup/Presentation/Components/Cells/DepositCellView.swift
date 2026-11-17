@@ -1,5 +1,5 @@
 //
-//  DepositCellvView.swift
+//  DepositCellView.swift
 //  iOSMessup
 //
 //  Created by Rafael Serrano Gamarra on 24/1/25.
@@ -28,7 +28,7 @@ struct DepositCellView: View {
                 .scaledToFill()
                 .padding(ViewTraits.imageInternalPadding)
                 .background(deposit.foundingSource.color)
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
                 .clipShape(.rect(cornerRadius: ViewTraits.cornerRadius))
 
             VStack(alignment: .leading) {
@@ -59,12 +59,4 @@ struct DepositCellView: View {
 
 #Preview {
     DepositCellView(deposit: Deposit.mock)
-}
-
-//MARK: - DepositCellView + SelectableCell
-
-extension DepositCellView {
-    func selectableCell(_ onTap: @escaping () -> Void) -> some View {
-        self.modifier(SelectableCell(onTap: onTap))
-    }
 }

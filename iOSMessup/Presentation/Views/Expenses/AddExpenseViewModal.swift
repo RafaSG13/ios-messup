@@ -14,11 +14,13 @@ struct AddExpenseViewModal: View {
     @State private var date: Date = .now
     @State private var paymentMethod: PaymentMethod = .cash
     @State private var category: Category = .miscellaneous
+    @State private var isSaving = false
+    @State private var error: (any Error)?
 
     var onSubmit: ((_ expense: Expense) async throws -> Void)?
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
                 DetailsSection(name: $name, amount: $amount, date: $date)
                 PaymentMethodSection(paymentMethod: $paymentMethod)
@@ -27,22 +29,12 @@ struct AddExpenseViewModal: View {
             .navigationTitle("Add Expense")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
-                        Task {
-                            let newExpense = Expense(name: name,
-                                                     amount: amount,
-                                                     date: date,
-                                                     paymentMethod: paymentMethod,
-                                                     category: category)
-                            try? await onSubmit?(newExpense)
-                        }
-                        dismiss()
-                    }
-                    .disabled(name.isEmpty || amount <= 0)
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Save", action: save)
+                        .disabled(isSaving || name.isEmpty || amount <= 0)
                 }
                 ToolbarItem(placement: .keyboard) {
                     HStack {
@@ -52,6 +44,29 @@ struct AddExpenseViewModal: View {
                         }.tint(.blue)
                     }
                 }
+            }
+            .errorAlert($error)
+        }
+    }
+}
+
+// MARK: - Actions
+
+private extension AddExpenseViewModal {
+    func save() {
+        let newExpense = Expense(name: name,
+                                 amount: amount,
+                                 date: date,
+                                 paymentMethod: paymentMethod,
+                                 category: category)
+        isSaving = true
+        Task {
+            do {
+                try await onSubmit?(newExpense)
+                dismiss()
+            } catch {
+                self.error = error
+                isSaving = false
             }
         }
     }

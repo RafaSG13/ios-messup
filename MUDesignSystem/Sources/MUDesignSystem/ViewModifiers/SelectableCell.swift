@@ -1,16 +1,15 @@
 //
 //  SelectableCell.swift
-//  iOSMessup
+//  MUDesignSystem
 //
 //  Created by Rafael Serrano Gamarra on 26/1/25.
 //
 
 import SwiftUI
 
-//MARK: - Selectable Cell ViewModifier
+// MARK: - Selectable Cell ViewModifier
 
 public struct SelectableCell: ViewModifier {
-
     var onTap: () -> Void
 
     public init(onTap: @escaping () -> Void) {
@@ -23,5 +22,11 @@ public struct SelectableCell: ViewModifier {
         } label: {
             content
         }
+    }
+}
+
+public extension View {
+    func selectableCell(_ onTap: @escaping () -> Void) -> some View {
+        modifier(SelectableCell(onTap: onTap))
     }
 }

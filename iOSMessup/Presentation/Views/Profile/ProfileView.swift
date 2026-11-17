@@ -7,6 +7,25 @@
 
 import SwiftUI
 
+// MARK: - ProfileRoute
+
+private enum ProfileRoute: Hashable {
+    case exportToSVG
+    case manageCategories
+    case changeCurrency
+    case manageSubscriptions
+
+    @ViewBuilder
+    var destination: some View {
+        switch self {
+        case .exportToSVG: Text("Export to SVG")
+        case .manageCategories: Text("Manage Categories")
+        case .changeCurrency: Text("Change Currency")
+        case .manageSubscriptions: Text("Manage subscriptions")
+        }
+    }
+}
+
 struct ProfileView: View {
     @AppStorage("MUBiometryEnabled") private var enableBiometry = true
 
@@ -23,6 +42,7 @@ struct ProfileView: View {
             }
             .scrollBounceBehavior(.basedOnSize)
             .navigationTitle("Settings")
+            .navigationDestination(for: ProfileRoute.self) { $0.destination }
         }
     }
 }
@@ -34,7 +54,7 @@ struct ProfileView: View {
 
 // MARK: - View Components
 
-struct SupportSection: View {
+private struct SupportSection: View {
     var body: some View {
         Section("Support") {
             Link(destination: URL(string: "apple.com")!) {
@@ -47,17 +67,17 @@ struct SupportSection: View {
     }
 }
 
-struct AdditionalToolsSection: View {
+private struct AdditionalToolsSection: View {
     var body: some View {
         Section("Additional tools") {
-            NavigationLink(destination: Text("Export to SVG")) {
+            NavigationLink(value: ProfileRoute.exportToSVG) {
                 Label("Export to SVG", systemImage:"square.and.arrow.up")
             }
         }
     }
 }
 
-struct AppActionsSection: View {
+private struct AppActionsSection: View {
     @Binding var enableBiometry: Bool
 
     var body: some View {
@@ -65,20 +85,20 @@ struct AppActionsSection: View {
             Toggle(isOn: $enableBiometry) {
                 Label("Enable Biometry", systemImage:"faceid")
             }
-            NavigationLink(destination: Text("Manage Categories")) {
+            NavigationLink(value: ProfileRoute.manageCategories) {
                 Label("Manage Categories", systemImage:"folder.badge.gearshape")
             }
-            NavigationLink(destination: Text("Change Currency")) {
+            NavigationLink(value: ProfileRoute.changeCurrency) {
                 Label("Change Currency", systemImage:"dollarsign")
             }
         }
     }
 }
 
-struct UserAccountSection: View {
+private struct UserAccountSection: View {
     var body: some View {
         Section("User account") {
-            NavigationLink(destination: Text("Change password")) {
+            NavigationLink(value: ProfileRoute.manageSubscriptions) {
                 Label("Manage subscriptions", systemImage:"star.fill")
             }
         }

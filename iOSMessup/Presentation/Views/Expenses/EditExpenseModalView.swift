@@ -17,9 +17,11 @@ struct EditExpenseModalView: View {
     @State private var date: Date = Date()
     @State private var paymentMethod: PaymentMethod = .cash
     @State private var category: Category = .miscellaneous
+    @State private var isSaving = false
+    @State private var error: (any Error)?
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
                 DetailSection(name: $name, amount: $amount, date: $date)
                 PaymentSection(paymentMethod: $paymentMethod)
@@ -34,21 +36,13 @@ struct EditExpenseModalView: View {
                         .fixedSize()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
-                        Task {
-                            let newExpense = Expense(name: name,
-                                                     amount: amount,
-                                                     date: date,
-                                                     paymentMethod: paymentMethod,
-                                                     category: category)
-                            try? await onSubmit(newExpense)
-                        }
-                        dismiss()
-                    }
-                    .padding()
-                    .fixedSize()
+                    Button("Save", action: save)
+                        .disabled(isSaving)
+                        .padding()
+                        .fixedSize()
                 }
             }.buttonStyle(.plain)
+            .errorAlert($error)
         }
         .onAppear {
             name = expense.name
@@ -56,6 +50,29 @@ struct EditExpenseModalView: View {
             date = expense.date
             paymentMethod = expense.paymentMethod
             category = expense.category
+        }
+    }
+}
+
+// MARK: - Actions
+
+private extension EditExpenseModalView {
+    func save() {
+        let updatedExpense = Expense(id: expense.id,
+                                     name: name,
+                                     amount: amount,
+                                     date: date,
+                                     paymentMethod: paymentMethod,
+                                     category: category)
+        isSaving = true
+        Task {
+            do {
+                try await onSubmit(updatedExpense)
+                dismiss()
+            } catch {
+                self.error = error
+                isSaving = false
+            }
         }
     }
 }

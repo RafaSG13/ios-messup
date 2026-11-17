@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct LoadingScreen: View {
     @State private var loadingText: [String] = "Loading Messup...".map { String($0) }

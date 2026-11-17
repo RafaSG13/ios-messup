@@ -9,7 +9,6 @@ import Foundation
 @testable import iOSMessup
 import Testing
 
-@MainActor
 struct ExpensesServiceLocalTests {
 
     private func makeExpense(_ name: String, daysAgo: Int, amount: Double = 10) -> Expense {
