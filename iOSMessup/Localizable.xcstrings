@@ -4,16 +4,16 @@
     "$%@" : {
 
     },
-    "Add Deposit" : {
-
-    },
-    "Add Expense" : {
-
-    },
     "Add deposit" : {
 
     },
+    "Add Deposit" : {
+
+    },
     "Add expense" : {
+
+    },
+    "Add Expense" : {
 
     },
     "Additional tools" : {
@@ -49,9 +49,6 @@
     "Contact us" : {
 
     },
-    "Content" : {
-
-    },
     "Date" : {
 
     },
@@ -70,10 +67,10 @@
     "Done" : {
 
     },
-    "Edit Expense" : {
+    "Edit deposit" : {
 
     },
-    "Edit deposit" : {
+    "Edit Expense" : {
 
     },
     "Enable Biometry" : {
@@ -110,6 +107,9 @@
 
     },
     "No expense selected." : {
+
+    },
+    "of %@ 🏁" : {
 
     },
     "OK" : {
@@ -155,9 +155,6 @@
 
     },
     "View all" : {
-
-    },
-    "of %@ 🏁" : {
 
     }
   },

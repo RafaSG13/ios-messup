@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DepositCellView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     var deposit: Deposit
 
     private enum ViewTraits {
@@ -21,7 +22,12 @@ struct DepositCellView: View {
     }
 
     var body: some View {
-        HStack(spacing: ViewTraits.generalPadding) {
+        let isAccessibilitySize = dynamicTypeSize.isAccessibilitySize
+        let layout = isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: ViewTraits.generalPadding))
+            : AnyLayout(HStackLayout(spacing: ViewTraits.generalPadding))
+
+        layout {
             Image(systemName: deposit.foundingSource.icon)
                 .resizable()
                 .frame(width: ViewTraits.imageSize, height: ViewTraits.imageSize)
@@ -38,8 +44,9 @@ struct DepositCellView: View {
                 Text(deposit.foundingSource.rawValue)
                     .font(.caption)
             }
-            Spacer()
-            VStack(alignment: .trailing) {
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            VStack(alignment: isAccessibilitySize ? .leading : .trailing) {
                 Text(deposit.amount.toMoneyString())
                     .bold()
                     .foregroundStyle(.green)
@@ -48,8 +55,8 @@ struct DepositCellView: View {
             }
         }
         .padding(ViewTraits.generalPadding)
-        .frame(maxWidth: .infinity)
-        .frame(height: ViewTraits.cellHeight)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(minHeight: ViewTraits.cellHeight)
         .background(ViewTraits.backgroundColor)
         .clipShape(.rect(cornerRadius: ViewTraits.cornerRadius))
     }

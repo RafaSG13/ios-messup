@@ -67,7 +67,8 @@ struct ExpensesView: View {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Add expense", systemImage: "plus") {
                         shouldPresentAddExpense.toggle()
-                    }.buttonStyle(.plain)
+                    }
+                    .buttonStyle(.glassProminent)
                 }
             }
             .addExpenseSheet(isPresented: $shouldPresentAddExpense,

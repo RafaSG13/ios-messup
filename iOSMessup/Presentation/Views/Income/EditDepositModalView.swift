@@ -41,14 +41,14 @@ struct EditDepositModalView: View {
             .navigationTitle("Edit deposit")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") { dismiss() }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", role: .cancel) { dismiss() }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save", action: save)
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save", role: .confirm, action: save)
                         .disabled(isSaving)
                 }
-            }.buttonStyle(.plain)
+            }
             .errorAlert($error)
         }
     }
