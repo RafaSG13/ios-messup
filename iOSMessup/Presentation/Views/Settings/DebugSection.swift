@@ -11,6 +11,7 @@ import SwiftUI
 struct DebugSection: View {
     @Environment(\.expenseService) private var expenseService
     @Environment(\.incomeService) private var incomeService
+    @AppStorage(DebugSeeder.autoSeedKey) private var isAutoSeedOn = true
     @State private var isConfirmingDelete = false
     @State private var error: (any Error)?
 
@@ -20,6 +21,7 @@ struct DebugSection: View {
         Section("Debug") {
             LabeledContent("Environment", value: MUEnvironmentConfigurator.current.rawValue)
             if isLocal {
+                Toggle("Auto-seed when empty", isOn: $isAutoSeedOn)
                 Button("Replace with sample data") {
                     run { try DebugSeeder.replaceWithSampleData(in: .shared) }
                 }
