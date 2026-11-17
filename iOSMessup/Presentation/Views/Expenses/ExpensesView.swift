@@ -63,7 +63,7 @@ struct ExpensesView: View {
             .editExpenseSheet(isPresented: $shouldPresentEditExpense,
                               selectedItem: $selectedItem,
                               onSubmit: expenseService.updateExpense(with:))
-        }.onAppear {
+        }.onChange(of: expenseService.expenses, initial: true) {
             lastExpenses = expenseService.lastExpenses(limit: Constants.maximumNumberOfExpenses)
         }
     }

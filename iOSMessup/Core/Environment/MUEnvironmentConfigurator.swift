@@ -11,25 +11,27 @@ import SwiftUI
 
 final class MUEnvironmentConfigurator {
 
-    private enum EnvironmentKey: String {
-        case dev
-        case pro
+    enum Environment: String {
+        case mock
+        case local
     }
 
-    private static var environment: EnvironmentKey {
-        EnvironmentKey(rawValue: UserDefaults.standard.string(forKey: "messup_environment") ?? "dev") ?? .dev
-    }
-
-    static var authenticationService: AuthServiceProtocol {
-        environment == .dev ? MockAuthService() : AuthService(client: MUClient(),
-                                                              tokenStorage: KeyChainTokenStorage())
+    /// Reads UserDefaults `messup_environment` (launch arg `-messup_environment mock`). Anything else is `.local`.
+    static var current: Environment {
+        UserDefaults.standard.string(forKey: "messup_environment").flatMap(Environment.init(rawValue:)) ?? .local
     }
 
     static var expenseService: ExpensesServiceProtocol {
-        environment == .dev ? MockExpensesService() : ExpensesService(client: MUClient())
+        switch current {
+        case .mock: MockExpensesService()
+        case .local: ExpensesService(store: .shared)
+        }
     }
 
     static var incomeService: IncomeServiceProtocol {
-        environment == .dev ? MockIncomeService() : IncomeService(client: MUClient())
+        switch current {
+        case .mock: MockIncomeService()
+        case .local: IncomeService(store: .shared)
+        }
     }
 }

@@ -31,7 +31,7 @@ struct MainTabBarView: View {
             ProfileView()
                 .tabItem { Label("Profile", systemImage: "person.fill") }
                 .tag(Tab.profile)
-        }.resettable(selection: $activeTab, firstTabTag: .expenses)
+        }
     }
 }
 

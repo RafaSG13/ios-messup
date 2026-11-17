@@ -10,24 +10,26 @@ import SwiftUI
 @main
 struct iOSMessupApp: App {
     @State private var status: Status = .idle
-    @State private var authService: AuthServiceProtocol = MUEnvironmentConfigurator.authenticationService
     @State private var expenseService: ExpensesServiceProtocol = MUEnvironmentConfigurator.expenseService
     @State private var incomeService: IncomeServiceProtocol = MUEnvironmentConfigurator.incomeService
+
+    init() {
+        #if DEBUG
+        if UserDefaults.standard.bool(forKey: "messup_seed_sample_data"),
+           MUEnvironmentConfigurator.current == .local {
+            MainActor.assumeIsolated {
+                try? DebugSeeder.replaceWithSampleData(in: .shared)
+            }
+        }
+        #endif
+    }
 
     var body: some Scene {
         WindowGroup {
             MainTabBarView()
-                .allowsTabReset(triggeredBy: .constant(!authService.isAuthenticated))
                 .task { await loadInitialData() }
-                .fullScreenCover(isPresented: .constant(!authService.isAuthenticated)) {
-                    LandingView()
-                }
-                .onChange(of: authService.isAuthenticated) { _, newValue in
-                    if !newValue { resetAppServices() }
-                }
                 .environment(\.expenseService, expenseService)
                 .environment(\.incomeService, incomeService)
-                .environment(\.authService, authService)
         }
     }
 }
@@ -44,11 +46,5 @@ extension iOSMessupApp {
         } catch {
             status = .error(error)
         }
-    }
-
-    func resetAppServices() {
-        expenseService = MUEnvironmentConfigurator.expenseService
-        incomeService = MUEnvironmentConfigurator.incomeService
-        authService = MUEnvironmentConfigurator.authenticationService
     }
 }
