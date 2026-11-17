@@ -30,3 +30,16 @@ extension Sequence where Element == Expense {
             .sorted { $0.amount != $1.amount ? $0.amount > $1.amount : $0.category.rawValue < $1.category.rawValue }
     }
 }
+
+// MARK: - Top categories
+
+extension CategoryTotal {
+    /// Splits `totals` (biggest first, as `totalsByCategory` returns them) into the first `limit` categories and the
+    /// sum of the rest (`0` when nothing is left over).
+    static func topCategories(_ totals: [CategoryTotal], limit: Int) -> (top: [CategoryTotal], other: Double) {
+        let count = max(limit, 0)
+        let top = Array(totals.prefix(count))
+        let other = totals.dropFirst(count).reduce(0) { $0 + $1.amount }
+        return (top, other)
+    }
+}

@@ -25,7 +25,11 @@ struct CumulativePoint: Identifiable, Equatable {
 struct PeriodSummary: Equatable {
     let period: Period
     let spent: Double
+    /// Total of the whole previous period.
     let previousSpent: Double
+    /// What the previous period had spent by the same day (`elapsedDays`), the fair comparison while the current
+    /// period is still in progress.
+    let previousSpentToDate: Double
     let income: Double
     let contributed: Double
     /// Biggest category first.
@@ -57,6 +61,8 @@ struct PeriodSummary: Equatable {
         self.previousCumulativeSpend = Self.buildCumulative(of: inPrevious,
                                                             in: previousPeriod,
                                                             throughDay: previousPeriod.dayCount)
+        let comparableDay = min(elapsedDays, previousPeriod.dayCount)
+        self.previousSpentToDate = comparableDay > 0 ? previousCumulativeSpend[comparableDay - 1].amount : 0
     }
 
     /// What is left to spend: income − expenses − contributions.
@@ -75,10 +81,11 @@ struct PeriodSummary: Equatable {
         return dailyAverage * Double(period.dayCount)
     }
 
-    /// Relative change versus the previous period (`0.1` = 10 % more). `nil` when the previous period has no spending.
+    /// Relative change versus the previous period at the same point in time (`0.1` = 10 % more); a partial month is
+    /// compared with the first days of the previous month, not with its total. `nil` when there is nothing to compare.
     var changeVersusPrevious: Double? {
-        guard previousSpent > 0 else { return nil }
-        return (spent - previousSpent) / previousSpent
+        guard previousSpentToDate > 0 else { return nil }
+        return (spent - previousSpentToDate) / previousSpentToDate
     }
 
     private static func buildCumulative(of expenses: [Expense],

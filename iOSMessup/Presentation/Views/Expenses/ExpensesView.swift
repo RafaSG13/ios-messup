@@ -12,24 +12,37 @@ import MUDesignSystem
 
 struct ExpensesView: View {
     @Environment(\.expenseService) private var expenseService
+    @Environment(\.incomeService) private var incomeService
+    @Environment(\.savingsService) private var savingsService
+    @Environment(\.budgetService) private var budgetService
+    @State private var kind = PeriodKind.month
+    @State private var anchor = Date.now
     @State private var shouldPresentAddExpense = false
+    @State private var isPresentingBudget = false
     @State private var selectedItem: Expense?
     @State private var error: (any Error)?
 
     private enum Constants {
         static let maximumNumberOfExpenses = 6
-        static let categoryWindowInDays = 30
+        static let maximumNumberOfCategories = 5
     }
 
     var body: some View {
+        let period = Period(kind: kind, containing: anchor)
+        let summary = PeriodSummary(period: period,
+                                    expenses: expenseService.expenses,
+                                    incomes: incomeService.incomes,
+                                    contributions: savingsService.contributions)
+
         NavigationStack {
             List {
                 if expenseService.expenses.isEmpty {
                     emptyState
                 } else {
-                    weeklySection
-                    recentSection
-                    categorySection
+                    summarySection(summary)
+                    insightsSection(summary)
+                    categoriesSection(summary)
+                    recentSection(period)
                 }
             }
             .listStyle(.insetGrouped)
@@ -49,6 +62,9 @@ struct ExpensesView: View {
                              onSubmit: expenseService.addExpense)
             .editExpenseSheet(item: $selectedItem,
                               onSubmit: expenseService.updateExpense(with:))
+            .sheet(isPresented: $isPresentingBudget) {
+                BudgetFormView()
+            }
         }
     }
 }
@@ -69,38 +85,63 @@ private extension ExpensesView {
         .listRowSeparator(.hidden)
     }
 
-    var weeklySection: some View {
+    @ViewBuilder
+    func summarySection(_ summary: PeriodSummary) -> some View {
         Section {
-            MUCard("Last 7 days") {
-                WeeklyExpensesView()
-                    .frame(height: 200)
-            }
+            PeriodPicker(kind: $kind, anchor: $anchor)
         }
-        .listRowBackground(Color.clear)
-        .listRowInsets(EdgeInsets())
-        .listRowSeparator(.hidden)
+
+        Section {
+            ExpensesSummaryCard(summary: summary,
+                                showsBudget: kind == .month,
+                                budgetProgress: kind == .month ? budgetService.progress(spent: summary.spent) : nil,
+                                onEditBudget: { isPresentingBudget = true })
+                .cardRow()
+
+            MUCard("Spending") {
+                CumulativeSpendingChart(summary: summary, monthlyLimit: monthlyLimit)
+            }
+            .cardRow()
+        }
     }
 
-    var categorySection: some View {
+    @ViewBuilder
+    func insightsSection(_ summary: PeriodSummary) -> some View {
+        let insights = Insight.make(from: summary, monthlyLimit: monthlyLimit)
+        if !insights.isEmpty {
+            Section {
+                ExpenseInsightsCard(insights: insights, kind: kind)
+                    .cardRow()
+            }
+        }
+    }
+
+    func categoriesSection(_ summary: PeriodSummary) -> some View {
         Section {
-            MUCard("Spending by category") {
-                if categoryTotals.isEmpty {
-                    Text("No expenses in the last 30 days.")
+            MUCard("Categories") {
+                if summary.categoryTotals.isEmpty {
+                    Text("No expenses in this period.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 } else {
-                    CategorySpendingChart(totals: categoryTotals)
+                    CategoryBreakdownView(totals: summary.categoryTotals,
+                                          limit: Constants.maximumNumberOfCategories) { category in
+                        categoryLimitProgress(for: category, in: summary)
+                    }
                 }
             }
+            .cardRow()
         }
-        .listRowBackground(Color.clear)
-        .listRowInsets(EdgeInsets())
-        .listRowSeparator(.hidden)
     }
 
-    var recentSection: some View {
-        Section {
-            ForEach(recentExpenses) { expense in
+    func recentSection(_ period: Period) -> some View {
+        let recent = recentExpenses(in: period)
+        return Section {
+            if recent.isEmpty {
+                Text("No expenses in this period")
+                    .foregroundStyle(.secondary)
+            }
+            ForEach(recent) { expense in
                 Button {
                     selectedItem = expense
                 } label: {
@@ -120,17 +161,33 @@ private extension ExpensesView {
     }
 }
 
+private extension View {
+    /// Full-width card on the grouped list background.
+    func cardRow() -> some View {
+        listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets())
+            .listRowSeparator(.hidden)
+    }
+}
+
 // MARK: - Data
 
 private extension ExpensesView {
-    /// Most recent first.
-    var recentExpenses: [Expense] {
-        Array(expenseService.lastExpenses(limit: Constants.maximumNumberOfExpenses).reversed())
+    /// The overall limit, only meaningful for months.
+    var monthlyLimit: Double? {
+        kind == .month ? budgetService.budget?.monthlyLimit : nil
     }
 
-    var categoryTotals: [CategoryTotal] {
-        let since = Calendar.current.date(byAdding: .day, value: -Constants.categoryWindowInDays, to: .now)
-        return expenseService.expenses.totalsByCategory(since: since)
+    func categoryLimitProgress(for category: Category, in summary: PeriodSummary) -> BudgetProgress? {
+        guard kind == .month,
+              let spent = summary.categoryTotals.first(where: { $0.category == category })?.amount else { return nil }
+        return budgetService.progress(for: category, spent: spent)
+    }
+
+    /// The newest expenses of the period, most recent first.
+    func recentExpenses(in period: Period) -> [Expense] {
+        let inPeriod = expenseService.expenses.filter { period.contains($0.date) }
+        return Array(inPeriod.sorted().suffix(Constants.maximumNumberOfExpenses).reversed())
     }
 
     func delete(_ expense: Expense) {
@@ -148,6 +205,11 @@ private extension ExpensesView {
 
 #Preview("Mock data") {
     ExpensesView()
+}
+
+#Preview("No budget") {
+    ExpensesView()
+        .environment(\.budgetService, MockBudgetService(initialBudget: nil, delay: 0))
 }
 
 #Preview("Empty") {

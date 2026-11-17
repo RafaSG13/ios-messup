@@ -1,6 +1,60 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ is your top category, %@ of your spending" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ is your top category, %2$@ of your spending"
+          }
+        }
+      }
+    },
+    "%@ left" : {
+
+    },
+    "%@ less than last month" : {
+
+    },
+    "%@ less than last week" : {
+
+    },
+    "%@ less than last year" : {
+
+    },
+    "%@ more than last month" : {
+
+    },
+    "%@ more than last week" : {
+
+    },
+    "%@ more than last year" : {
+
+    },
+    "%@ of %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ of %2$@"
+          }
+        }
+      }
+    },
+    "%@ over" : {
+
+    },
+    "%@%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@%2$@"
+          }
+        }
+      }
+    },
     "About" : {
 
     },
@@ -31,10 +85,48 @@
     "Amount" : {
 
     },
+    "At this pace you will spend %@ by the end of the period" : {
+
+    },
+    "At this pace you will spend %@, over your %@ budget" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "At this pace you will spend %1$@, over your %2$@ budget"
+          }
+        }
+      }
+    },
+    "At this pace you will spend %@, within your %@ budget" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "At this pace you will spend %1$@, within your %2$@ budget"
+          }
+        }
+      }
+    },
+    "Balance" : {
+
+    },
+    "Balance is income minus expenses minus savings contributions." : {
+
+    },
+    "Budget" : {
+
+    },
     "Cancel" : {
 
     },
+    "Categories" : {
+
+    },
     "Category" : {
+
+    },
+    "Category limits (optional)" : {
 
     },
     "Content" : {
@@ -50,6 +142,9 @@
 
     },
     "Create goal" : {
+
+    },
+    "Cumulative spending" : {
 
     },
     "Currency" : {
@@ -85,6 +180,9 @@
     "Edit Expense" : {
 
     },
+    "Edit budget" : {
+
+    },
     "Edit contribution" : {
 
     },
@@ -109,10 +207,22 @@
     "Income" : {
 
     },
-    "Last 7 days" : {
+    "Insights" : {
 
     },
     "Left" : {
+
+    },
+    "Limit %@" : {
+
+    },
+    "Month" : {
+
+    },
+    "Monthly limit" : {
+
+    },
+    "Monthly limit %@" : {
 
     },
     "Name" : {
@@ -121,13 +231,25 @@
     "New saving goal" : {
 
     },
+    "Next period" : {
+
+    },
     "No contributions" : {
 
     },
-    "No expenses in the last 30 days." : {
+    "No expenses in this period" : {
+
+    },
+    "No expenses in this period." : {
 
     },
     "No income" : {
+
+    },
+    "No income in this period" : {
+
+    },
+    "No limit" : {
 
     },
     "No saving goal" : {
@@ -136,16 +258,43 @@
     "No transactions" : {
 
     },
+    "Not set" : {
+
+    },
     "Note (optional)" : {
 
     },
     "OK" : {
 
     },
+    "On pace for %@" : {
+
+    },
+    "Other" : {
+
+    },
     "Payment Method" : {
 
     },
+    "Period" : {
+
+    },
     "Preferences" : {
+
+    },
+    "Previous %@" : {
+
+    },
+    "Previous period" : {
+
+    },
+    "Previous period %@" : {
+
+    },
+    "Remove budget" : {
+
+    },
+    "Remove budget?" : {
 
     },
     "Required" : {
@@ -154,10 +303,19 @@
     "Save" : {
 
     },
+    "Saved" : {
+
+    },
     "Savings" : {
 
     },
     "Selected" : {
+
+    },
+    "Series" : {
+
+    },
+    "Set a budget" : {
 
     },
     "Set a target amount to track your progress." : {
@@ -175,13 +333,13 @@
     "Source" : {
 
     },
-    "Spending by category" : {
-
-    },
-    "Spending in the last 7 days" : {
+    "Spending" : {
 
     },
     "Spent" : {
+
+    },
+    "Spent %@" : {
 
     },
     "Target amount" : {
@@ -199,7 +357,22 @@
     "View all" : {
 
     },
+    "Week" : {
+
+    },
+    "Year" : {
+
+    },
+    "You spend %@ per day on average" : {
+
+    },
     "Your contributions are kept." : {
+
+    },
+    "left to spend" : {
+
+    },
+    "over" : {
 
     }
   },

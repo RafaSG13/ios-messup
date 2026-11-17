@@ -60,10 +60,6 @@ final class MockExpensesService: ExpensesServiceProtocol {
         return expenses.filter { $0.name.localizedCaseInsensitiveContains(searchTerm) }
     }
 
-    func getActualWeekExpenses() -> [Expense] {
-        expenses.filter { Calendar.current.isDateInThisWeek($0.date) }
-    }
-
     func lastExpenses(limit: Int) -> [Expense]{
         expenses.sorted().suffix(limit)
     }

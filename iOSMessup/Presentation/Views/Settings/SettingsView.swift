@@ -19,6 +19,8 @@ struct SettingsView: View {
     @Environment(\.expenseService) private var expenseService
     @Environment(\.incomeService) private var incomeService
     @Environment(\.savingsService) private var savingsService
+    @Environment(\.budgetService) private var budgetService
+    @State private var isShowingBudget = false
     @AppStorage(AppCurrency.storageKey) private var currencyCode = AppCurrency.defaultCode
     @State private var exportURL: URL?
     @State private var error: (any Error)?
@@ -47,6 +49,19 @@ struct SettingsView: View {
                     NavigationLink(value: SettingsRoute.currency) {
                         LabeledContent("Currency", value: "\(AppCurrency.localizedName(for: currencyCode)) (\(currencyCode))")
                     }
+                    Button {
+                        isShowingBudget = true
+                    } label: {
+                        LabeledContent("Budget") {
+                            if let budget = budgetService.budget {
+                                Text(budget.monthlyLimit.formattedMoney(code: currencyCode))
+                            } else {
+                                Text("Not set")
+                            }
+                        }
+                        .contentShape(.rect)
+                    }
+                    .foregroundStyle(.primary)
                 }
                 Section("Data") {
                     exportRow
@@ -67,6 +82,7 @@ struct SettingsView: View {
             }
             .task(id: csv) { writeExport(csv) }
             .errorAlert($error)
+            .sheet(isPresented: $isShowingBudget) { BudgetFormView() }
         }
     }
 
