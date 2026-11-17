@@ -16,9 +16,8 @@ struct iOSMessupApp: App {
 
     init() {
         #if DEBUG
-        if UserDefaults.standard.bool(forKey: "messup_seed_sample_data"),
-           MUEnvironmentConfigurator.current == .local {
-            try? DebugSeeder.replaceWithSampleData(in: .shared)
+        if MUEnvironmentConfigurator.current == .local {
+            try? DebugSeeder.seedOnLaunch(in: .shared)
         }
         #endif
     }

@@ -9,13 +9,33 @@
 import Foundation
 import SwiftData
 
+// MARK: - DebugSeeder
+
 enum DebugSeeder {
-    static func replaceWithSampleData(in store: LocalStore) throws {
+    /// Launch arg `-messup_seed_sample_data YES`: replace the store content with sample data at every launch.
+    static let forceSeedKey = "messup_seed_sample_data"
+    /// Launch arg `-messup_autoseed NO` (or the Settings ▸ Debug toggle): do not seed an empty store.
+    static let autoSeedKey = "messup_autoseed"
+
+    /// Called at launch. Forced seeding replaces the data; otherwise an empty store is seeded unless auto-seed is off.
+    static func seedOnLaunch(in store: LocalStore, defaults: UserDefaults = .standard) throws {
+        if defaults.bool(forKey: forceSeedKey) {
+            try replaceWithSampleData(in: store)
+            return
+        }
+        let isAutoSeedOn = defaults.object(forKey: autoSeedKey) == nil || defaults.bool(forKey: autoSeedKey)
+        if isAutoSeedOn, try isEmpty(store) {
+            try replaceWithSampleData(in: store)
+        }
+    }
+
+    static func replaceWithSampleData(in store: LocalStore, now: Date = .now) throws {
         try deleteAllData(in: store)
+        let sample = SampleDataGenerator.make(now: now)
         let context = store.context
-        Expense.mockArray.forEach { context.insert(ExpenseRecord($0)) }
-        Deposit.mockArray.forEach { context.insert(DepositRecord($0)) }
-        context.insert(SavingGoalRecord(SavingGoal.mock))
+        sample.expenses.forEach { context.insert(ExpenseRecord($0)) }
+        sample.deposits.forEach { context.insert(DepositRecord($0)) }
+        context.insert(SavingGoalRecord(sample.goal))
         try context.save()
     }
 
@@ -25,6 +45,13 @@ enum DebugSeeder {
         try context.delete(model: DepositRecord.self)
         try context.delete(model: SavingGoalRecord.self)
         try context.save()
+    }
+
+    static func isEmpty(_ store: LocalStore) throws -> Bool {
+        let context = store.context
+        return try context.fetchCount(FetchDescriptor<ExpenseRecord>()) == 0
+            && context.fetchCount(FetchDescriptor<DepositRecord>()) == 0
+            && context.fetchCount(FetchDescriptor<SavingGoalRecord>()) == 0
     }
 }
 #endif
