@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @Environment(\.authService) var authenticationService
     @AppStorage("MUBiometryEnabled") private var enableBiometry = true
 
     var body: some View {
@@ -18,7 +17,9 @@ struct ProfileView: View {
                 AppActionsSection(enableBiometry: $enableBiometry)
                 AdditionalToolsSection()
                 SupportSection()
-                LogOutSection(authenticationService: authenticationService)
+                #if DEBUG
+                DebugSection()
+                #endif
             }
             .scrollBounceBehavior(.basedOnSize)
             .navigationTitle("Settings")
@@ -32,22 +33,6 @@ struct ProfileView: View {
 }
 
 // MARK: - View Components
-
-struct LogOutSection: View {
-
-    let authenticationService: AuthServiceProtocol
-
-    var body: some View {
-        Section {
-            Button(role: .destructive) {
-                authenticationService.logout()
-            } label: {
-                Label("Log out", systemImage:"power")
-                    .foregroundColor(.red)
-            }
-        }
-    }
-}
 
 struct SupportSection: View {
     var body: some View {
@@ -93,9 +78,6 @@ struct AppActionsSection: View {
 struct UserAccountSection: View {
     var body: some View {
         Section("User account") {
-            NavigationLink(destination: Text("Change password")) {
-                Label("Change Password", systemImage:"lock.rotation")
-            }
             NavigationLink(destination: Text("Change password")) {
                 Label("Manage subscriptions", systemImage:"star.fill")
             }

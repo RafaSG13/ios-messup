@@ -6,10 +6,6 @@
 	objectVersion = 70;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		AA9930C52E0064CE001CC3B2 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AA9930C42E0064CE001CC3B2 /* KeychainSwift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		AA51463D2D40450700FE93E5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -53,7 +49,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA9930C52E0064CE001CC3B2 /* KeychainSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,7 +108,6 @@
 			);
 			name = iOSMessup;
 			packageProductDependencies = (
-				AA9930C42E0064CE001CC3B2 /* KeychainSwift */,
 			);
 			productName = iOSMessup;
 			productReference = AA51462B2D40450600FE93E5 /* iOSMessup.app */;
@@ -190,9 +184,6 @@
 				Base,
 			);
 			mainGroup = AA5146222D40450600FE93E5;
-			packageReferences = (
-				AA9930C12E00645D001CC3B2 /* XCRemoteSwiftPackageReference "keychain-swift" */,
-			);
 			productRefGroup = AA51462C2D40450600FE93E5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -602,25 +593,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		AA9930C12E00645D001CC3B2 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/evgenyneu/keychain-swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 24.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		AA9930C42E0064CE001CC3B2 /* KeychainSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AA9930C12E00645D001CC3B2 /* XCRemoteSwiftPackageReference "keychain-swift" */;
-			productName = KeychainSwift;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AA5146232D40450600FE93E5 /* Project object */;
 }

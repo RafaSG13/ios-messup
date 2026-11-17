@@ -1,7 +1,7 @@
 # Roadmap: Modernize iOSMessup (Liquid Glass, local dev DB, adaptive layouts)
 
 Goals, in the order the user gave them:
-1. A **local, persistent debug database with login in dev mode** – no backend required.
+1. A **local, persistent, no-login app** on SwiftData – no backend, no auth (done in milestone 1).
 2. **Refactor** the old codebase onto current SwiftUI/Swift APIs.
 3. **Redesign** with Liquid Glass.
 4. **Support every form factor**: iPhone (incl. Air), iPad, and the **iPhone Duo** simulator device.
@@ -15,7 +15,7 @@ Phases are ordered by dependency. Each ends with acceptance checks that must pas
 | 79 Swift files in app; ~1.2k lines in `Presentation/Views` | `find` / `wc` |
 | Deployment target: project 17.0, targets 17.5; Swift 5 mode; device family iPhone+iPad | `project.pbxproj` |
 | iPhone is **portrait only**; iPad all orientations | `INFOPLIST_KEY_UISupportedInterfaceOrientations*` |
-| `dev` = in-memory mocks: `MockAuthService.login` accepts any credentials, data is lost on relaunch | `MockAuthenticationService.swift`, `MUEnvironmentConfigurator.swift` |
+| (historical, before milestone 1) `dev` = in-memory mocks with a login that accepted any credentials; data lost on relaunch. Now: `local` (SwiftData, default) and `mock` | `MUEnvironmentConfigurator.swift` |
 | `SocialGroupsView` is a stub (`Text("These are my groups")`); Profile sub-screens are `Text(...)` placeholders | views |
 | Legacy API in use: `NavigationView` (4 modals), `NavigationLink(destination:)`, `.foregroundColor`, `.cornerRadius`, `.tabItem`, `UIScreen.main` (`MUCustomVerticalForEach`), `.thinMaterial` field backgrounds | grep over `Presentation/` |
 | Installed simulators: iPhone 17e/Air/17, iPad Pro/Air/mini/A16, **iPhone Duo**; runtimes iOS 18.4, 18.6, 27.0, 27.1 (no iOS 26.x runtime) | `simctl` |
@@ -25,46 +25,35 @@ Phases are ordered by dependency. Each ends with acceptance checks that must pas
 ## Decisions (change them here before starting if you disagree)
 1. **Minimum iOS 26.0.** Liquid Glass APIs are iOS 26+; a lower floor means `#available` forks in every view. Test on the 27.x runtimes (no 26.x runtime installed; install one from Xcode ▸ Settings ▸ Components if 26.0-specific behavior matters).
 2. **"iPhone Duo" = the `iPhone Duo` simulator device type** in Xcode 27.1. Because there is no hinge API, support it through size-class/width-adaptive layout, not device checks. Phase 5 measures its real geometry first.
-3. **Local DB = SwiftData**, `DEBUG` builds only. Domain stays plain `struct`s (project rule); `@Model` records map to/from them.
+3. **Local DB = SwiftData in all builds** (Debug and Release), no backend and no login. Domain stays plain `struct`s (project rule); `@Model` records map to/from them. Sample data is Debug-only.
 4. **Adopt `MUDesignSystem` as a real dependency** of the app and delete the app's duplicate components (today the app does not import it). Alternative: delete the package. Recommended: adopt, because glass tokens/components then live in one place.
 5. **Clean cutover, no shims**: each phase migrates every caller and deletes the old path.
 
 ---
 
 ## Phase 0 – Baseline and safety net
-- [ ] Build and run tests with Xcode 27.1 (`DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer`; `xcode-select` currently points to the Xcode app, but the CLT SDK path error seen with bare `xcodebuild -version` means CI/scripts should set it explicitly). Record warnings.
-- [ ] Run `iOSMessupTests` scheme; confirm `ExpensesServiceTests` pass. Delete the fully commented-out `MUClientTests.swift` (re-created in Phase 6).
-- [ ] Build `MUDesignSystem` (`swift build`); record whether `MUDesignSystemShowcase` compiles (earlier static read says it does not).
-- [ ] Capture "before" screenshots of every screen on iPhone 17 and iPad Pro 11 for later comparison.
+- [x] Build and run tests with Xcode 27.1 (`DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer`). Results in "Baseline results" at the end of this file.
+- [x] Run `iOSMessupTests` scheme; `ExpensesServiceTests` pass. `MUClientTests.swift` deleted together with the backend code.
+- [x] Build `MUDesignSystem` (`swift build`): fails on the macOS host (`UITextContentType`); recorded, not fixed.
+- [x] "Before" screenshots dropped (Landing view deleted; `simctl` cannot drive taps). Post-change screenshots are taken in later phases.
 
-**Accept:** a recorded green/red baseline for app, tests and package.
+**Accept:** a recorded green/red baseline for app, tests and package. Met.
 
-## Phase 1 – Local debug database + login (no backend)
-Today `dev` is not a database: any credentials log in and nothing persists.
-
-**Design**
-- Environments become `mock` (previews/tests, in-memory, deterministic), `local` (SwiftData, default in Debug), `pro` (backend). `MUEnvironmentConfigurator` gains `local`; rename the old `dev`. Select via the `messup_environment` default or the launch argument `-messup_environment local|pro|mock` (launch arguments populate `UserDefaults`).
-- `Data/Local/`: `@Model` records `UserRecord`, `ExpenseRecord`, `DepositRecord`, `SavingGoalRecord`; one `ModelContainer` in Application Support (in-memory variant for tests).
-- `LocalAuthService: AuthServiceProtocol` – validates email/password against `UserRecord` (salted hash via CryptoKit), persists the active user id so relaunch stays logged in, `logout()` clears it, `register` inserts a user. Wrong password throws `AuthError`.
-- `LocalExpensesService`, `LocalIncomeService` conform to the existing protocols; mutate the store, then refresh the observable array (same contract as live services).
-- `DebugSeeder`: if the store is empty, seed a debug user (e.g. `debug@messup.dev` / `debug1234`) plus data from `Expense.mockArray`, `Deposit.mockArray`, `SavingGoal.mock`.
-- UI (all under `#if DEBUG`): "Continue as debug user" on `LandingView`/`LoginView`; Profile ▸ Debug section with *Reset database*, *Reseed*, *Active environment*. **Remove the hard-coded default credentials** currently baked into `LoginView`/`RegistrationView`.
-- Everything under `Data/Local/` and the debug UI is compiled out of Release.
-
-**Accept**
-- Backend off, airplane mode: launch → "Continue as debug user" → add an expense → kill app → relaunch: still logged in, expense present.
-- Logout → login with debug credentials works; wrong password shows an error.
-- In-memory `ModelContainer` tests cover: login ok/fail, register duplicate email, CRUD persistence, seed-once.
-- Release build contains no debug credential string (`strings` on the Release binary).
+## Phase 1 – Local SwiftData store, no login (done)
+Backend, auth, Keychain and the `keychain-swift` dependency were deleted; the app launches straight into the tab bar with a single implicit user.
+- Environments: `local` (SwiftData in Application Support, default) and `mock` (in-memory mocks, `-messup_environment mock`).
+- `Data/Local/`: `@Model` records `ExpenseRecord`, `DepositRecord`, `SavingGoalRecord`; `LocalStore` (file or in-memory).
+- `ExpensesService` / `IncomeService` are SwiftData-backed (same protocols as the mocks).
+- Debug only: `DebugSeeder`, Profile ▸ Debug section, launch arg `-messup_seed_sample_data YES`. First launch is empty.
+- Tests: `iOSMessupTests/Local/` (in-memory stores, one on-disk relaunch test).
 
 ## Phase 2 – Refactor foundation
 Order matters: do toolchain/dead code first so later phases touch less.
 - [ ] Raise deployment target to 26.0 (project level 17.0 and targets 17.5 → one value; **change in Xcode, not by hand-editing the pbxproj**). Same for `MUDesignSystem/Package.swift` (`.iOS(.v26)`).
 - [ ] Concurrency: enable Approachable Concurrency / default MainActor isolation under Swift 5 first, fix diagnostics, then move the app target to Swift 6 language mode. Services are `@Observable` UI-state holders → `@MainActor`; drop per-method `@MainActor` on protocols.
-- [ ] Delete dead code after confirming zero references with `xd://lsp`: `AppEnvironment`, `MUResponse`, `MUAPIError`, `TokenRefreshRequest`, `UserDataStore`, `KeychainStorage`, `ExpenseResponse`.
 - [ ] Modern API sweep (mechanical, grep-driven): `NavigationView`→`NavigationStack`; `foregroundColor`→`foregroundStyle`; `cornerRadius`→`clipShape(.rect(cornerRadius:))`; `NavigationLink(destination:)`→`NavigationLink(value:)` + `navigationDestination(for: Route.self)`, one `NavigationStack` with a path per tab; `.tabItem`→`Tab`; `UIScreen.main` removed (replace `MUCustomVerticalForEach` with `List` + `.swipeActions`, or `onGeometryChange` if the custom gesture is kept); `autocapitalization`→`textInputAutocapitalization`.
-- [ ] Adopt `MUDesignSystem`: add as local package dependency, delete the app's copies (`MUSpacer`, `MUTextField`, `MUPasswordField`, `ProgressBar`, `CircularSavingProgressView`, `MUCustomVerticalForEach`, `SelectableCell`, `MULoadingHudModifier`), fix/remove the broken showcase.
-- [ ] Make errors visible: views currently never read `Status`; several write paths swallow errors (`AddExpenseViewModal`, `RegistrationView`, `ExpensesView` onDelete). Surface via alert/inline state.
+- [ ] Adopt `MUDesignSystem`: add as local package dependency, delete the app's copies (`MUSpacer`, `MUTextField`, `ProgressBar`, `CircularSavingProgressView`, `MUCustomVerticalForEach`, `SelectableCell`, `MULoadingHudModifier`), fix/remove the broken showcase.
+- [ ] Make errors visible: views currently never read `Status`; several write paths swallow errors (`AddExpenseViewModal`, `ExpensesView` onDelete). Surface via alert/inline state.
 - [ ] Localization: UI mixes English and Spanish ("Iniciar Sesión" vs "Login"). Move strings to a String Catalog; pick base language.
 - [ ] Fix stale file headers.
 
@@ -73,7 +62,7 @@ Order matters: do toolchain/dead code first so later phases touch less.
 ## Phase 3 – Liquid Glass shell
 Rebuilding with the new SDK already gives glass bars/sheets; the work is removing things that fight it and adding glass only on the controls layer.
 - [ ] Delete custom chrome: `HideTabBarAfterScrollingThreshold` → `.tabBarMinimizeBehavior(.onScrollDown)`; remove custom sheet/toolbar backgrounds and `.thinMaterial` field fills.
-- [ ] `TabView` with `Tab` API; on iPad/wide windows `.tabViewStyle(.sidebarAdaptable)`. Drop the `resettable` helper if `Tab` selection handling covers re-tap-to-root; otherwise keep it, ported.
+- [ ] `TabView` with `Tab` API; on iPad/wide windows `.tabViewStyle(.sidebarAdaptable)`.
 - [ ] Primary action ("add expense/deposit") as a glass control: `.buttonStyle(.glassProminent)` in the toolbar, or a floating button inside a `GlassEffectContainer`; consider `tabViewBottomAccessory` for the quick-add.
 - [ ] Search: `.searchable` + `searchToolbarBehavior` for expenses (keep the >3-character filter rule documented in `AGENTS.md`).
 - [ ] Scroll edges: `scrollEdgeEffectStyle` / `backgroundExtensionEffect` on hero content (dashboard header).
@@ -88,7 +77,6 @@ Design tokens (spacing, radii, semantic colors, glass usage) are defined once in
 
 | Screen | Work |
 |---|---|
-| Landing / Login / Registration | Glass primary button, system `TextField` styling, autofill content types, inline validation, debug entry (Phase 1) |
 | Expenses | Dashboard: weekly chart + category chart (Swift Charts) in cards, recent list, search, add/edit sheets as `NavigationStack` forms with glass toolbar buttons |
 | All expenses / All deposits | Sections by day, swipe actions, empty states (`ContentUnavailableView`) |
 | Income / Savings objective | Redesign progress (ring + bar) with tokens; goal editing |
@@ -117,20 +105,9 @@ Design tokens (spacing, radii, semantic colors, glass usage) are defined once in
 
 **Accept:** no clipped/overlapping content on any matrix device; resizing an iPad window through compact↔regular preserves state.
 
-## Phase 6 – Live backend hardening (`pro` environment)
-Needs the backend API contract, which is **not in this repo**. Do not change wire formats without it.
-- [ ] Resolve the **token split**: `AuthService` writes tokens to Keychain, `MUClient` reads/refreshes from `UserDefaults` (`TokenKeys`). Make Keychain the single store, `MUClient` takes `TokenStorageProtocol`.
-- [ ] `Authorization: "Bearer:<token>"` (colon) looks wrong; confirm against the backend before changing. Remove the `print` of the token.
-- [ ] `MUClient`: injectable `URLSession` and base URL (per-environment xcconfig, not hard-coded `localhost:3000`); typed errors instead of `NSError`.
-- [ ] Implement real `IncomeService` and `AuthService.refreshSession/resetPassword` (currently `Task.sleep` stubs).
-- [ ] Batch delete: use bulk endpoint if/when backend adds one.
-- [ ] Re-create `MUClientTests` with a `URLProtocol` stub (401→refresh→retry, refresh failure → logout).
-
-**Accept:** login, CRUD and refresh flow pass against a running backend and against the `URLProtocol` stub.
-
-## Phase 7 – Tests, QA, release
-- [ ] Unit tests: Local services (Phase 1), `MUClient` (Phase 6), domain sorting/filtering. Follow existing Swift Testing style; `delay: 0` on mocks.
-- [ ] UI smoke tests (target exists with no sources): launch with `-messup_environment local`, debug login, add expense, verify list; run on iPhone and iPad.
+## Phase 6 – Tests, QA, release
+- [ ] Unit tests: domain sorting/filtering (service tests exist in `iOSMessupTests/Local/`). Follow existing Swift Testing style; `delay: 0` on mocks.
+- [ ] UI smoke tests (target exists with no sources): launch with `-messup_environment local -messup_seed_sample_data YES`, add expense, verify list; run on iPhone and iPad.
 - [ ] `performAccessibilityAudit()` in UI tests for main screens.
 - [ ] CI: GitHub Actions running build + unit tests on a 27.x simulator (none exists today).
 - [ ] Release checklist: privacy manifest, Release build has no debug code, icon, localization review, TestFlight.
@@ -140,12 +117,19 @@ Needs the backend API contract, which is **not in this repo**. Do not change wir
 |---|---|
 | Raising to iOS 26 drops older devices | Explicit decision #1; revisit only if distribution needs them |
 | Glass over charts hurts legibility | Glass only on controls; test Reduce Transparency / Increase Contrast each phase |
-| SwiftData in Debug diverges from live API semantics | Local services implement the same protocols; shared contract tests run against Mock, Local, and (later) live |
+| SwiftData store diverges from mock semantics | Mock and SwiftData services implement the same protocols; extend the shared contract tests to run against both |
 | Swift 6 migration noise | Staged: Approachable Concurrency under Swift 5 first |
 | No iOS 26.x simulator runtime | Test on 27.x; install a 26.x runtime if a 26-specific bug is suspected |
-| Backend contract unknown | Phase 6 is blocked on the API spec; Phases 1–5 do not depend on it |
 
 ## Open questions
 1. Build the Social groups feature, or hide the tab?
 2. Keep Spanish, English, or both (String Catalog) as launch languages?
 3. Confirm "iPhone Duo" means the simulator device above (and not another device/feature).
+
+## Baseline results
+Recorded before the local-only/SwiftData milestone (Xcode 27 toolchain, iPhone 17 simulator).
+
+- `xcodebuild -scheme iOSMessup build`: **succeeded**, 14 distinct warnings (unstructured throwing `Task`s in `ExpensesView`/`AllDepositsView`/`SavingsObjectiveView`/`RegistrationView`, unused `refreshToken` in `AuthService`, `Combine` not imported in `LoadingScreen`).
+- `xcodebuild -scheme iOSMessupTests test`: **succeeded**; all 9 `ExpensesServiceTests` pass.
+- `cd MUDesignSystem && swift build` (macOS host): **fails** (`cannot find type 'UITextContentType' in scope` in `MUTextField`; the package is iOS-only and `swift build` targets macOS). `MUDesignSystemShowcase` not investigated. Not fixed.
+- Landing-screen "before" screenshots not taken: the Landing view is deleted by this milestone and `simctl` cannot drive taps to reach tab screens.

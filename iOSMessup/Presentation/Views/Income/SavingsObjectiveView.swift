@@ -61,7 +61,7 @@ struct IncomeObjectiveView: View {
                 try await incomeService.createDeposit(deposit)
             }
         }
-        .onAppear {
+        .onChange(of: incomeService.deposits, initial: true) {
             lastDeposits = incomeService.lastDeposits(limit: 7)
         }
     }

@@ -129,23 +129,3 @@ enum Category: String, CaseIterable, Hashable, Codable {
         }
     }
 }
-
-struct ExpenseResponse: Decodable {
-    let id: String
-    let name: String
-    let amount: Double
-    let date: Date
-    let paymentMethod: String
-    let category: String
-
-    func map() -> Expense {
-        return Expense(
-            id: id,
-            name: name,
-            amount: amount,
-            date: date,
-            paymentMethod: PaymentMethod(rawValue: paymentMethod) ?? .other,
-            category: Category(rawValue: category) ?? .miscellaneous
-        )
-    }
-}

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftData
 import SwiftUI
 
 protocol ExpensesServiceProtocol: AnyObject {
@@ -27,53 +28,66 @@ extension EnvironmentValues {
 @Observable
 final class ExpensesService: ExpensesServiceProtocol {
     private(set) var expenses: [Expense] = []
-    private let client: MUClientProtocol
+    private let store: LocalStore
 
-    init(client: MUClientProtocol) {
-        self.client = client
+    init(store: LocalStore) {
+        self.store = store
     }
 
+    @MainActor
     func loadExpenses() async throws {
-        let request = GetAllExpensesRequest()
-        self.expenses = try await client.send(request, as: [Expense].self)
+        try reload()
     }
 
+    @MainActor
     func addExpense(_ expense: Expense) async throws {
-        let request = CreateExpenseRequest(expense: expense)
-        let new = try await client.send(request, as: Expense.self)
-        self.expenses.append(new)
+        let context = store.context
+        context.insert(ExpenseRecord(expense))
+        try context.save()
+        try reload()
     }
 
+    @MainActor
     func delete(_ expense: Expense) async throws {
-        let request = DeleteExpenseRequest(id: expense.id)
-        _ = try await client.send(request, as: Expense.self)
-        self.expenses.removeAll(where: { $0.id == expense.id })
+        try deleteRecords(withIDs: [expense.id])
     }
 
-    // TODO: At backend implement a api call to delete multiple expenses at once
+    @MainActor
     func delete(at offSets: IndexSet) async throws {
-        let expensesToDelete = offSets.compactMap { expenses.indices.contains($0) ? expenses[$0] : nil }
-
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            for expense in expensesToDelete {
-                group.addTask { [weak self] in
-                    let request = DeleteExpenseRequest(id: expense.id)
-                    _ = try await self?.client.send(request, as: Expense.self)
-                }
-            }
-            try await group.waitForAll()
-        }
-        expenses.remove(atOffsets: offSets)
+        let ids = offSets.compactMap { expenses.indices.contains($0) ? expenses[$0].id : nil }
+        try deleteRecords(withIDs: ids)
     }
 
+    @MainActor
     func updateExpense(with newValue: Expense) async throws {
-        let request = UpdateExpenseRequest(expense: newValue)
-        _ = try await client.send(request, as: Expense.self)
-
-        if let index = expenses.firstIndex(where: { $0.id == newValue.id }) {
-            expenses[index] = newValue
-        }
+        let context = store.context
+        let id = newValue.id
+        var descriptor = FetchDescriptor<ExpenseRecord>(predicate: #Predicate { $0.id == id })
+        descriptor.fetchLimit = 1
+        guard let record = try context.fetch(descriptor).first else { return }
+        record.apply(newValue)
+        try context.save()
+        try reload()
     }
+
+    // MARK: - Persistence
+
+    @MainActor
+    private func deleteRecords(withIDs ids: [String]) throws {
+        let context = store.context
+        let records = try context.fetch(FetchDescriptor<ExpenseRecord>(predicate: #Predicate { ids.contains($0.id) }))
+        records.forEach { context.delete($0) }
+        try context.save()
+        try reload()
+    }
+
+    @MainActor
+    private func reload() throws {
+        let descriptor = FetchDescriptor<ExpenseRecord>(sortBy: [SortDescriptor(\.date)])
+        expenses = try store.context.fetch(descriptor).map(\.domain)
+    }
+
+    // MARK: - Derived
 
     func filteredExpenses(on searchTerm: String) -> [Expense] {
         guard !searchTerm.isEmpty, searchTerm.count > 3 else { return expenses }
