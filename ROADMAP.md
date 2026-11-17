@@ -59,18 +59,20 @@ Backend, auth, Keychain and the `keychain-swift` dependency were deleted; the ap
 
 **Accept (met):** app + tests build with zero warnings at Swift 6 (clean build); legacy-symbol grep is empty apart from the Charts `cornerRadius` above; the app compiles with the package as the only source of the shared components.
 
-## Phase 3 – Liquid Glass shell
-Rebuilding with the new SDK already gives glass bars/sheets; the work is removing things that fight it and adding glass only on the controls layer.
-- [ ] Custom chrome: add `.tabBarMinimizeBehavior(.onScrollDown)`; remove custom sheet/toolbar backgrounds and the remaining `.ultraThinMaterial` label fill in `IncomeObjectiveView`.
-- [ ] `TabView` already uses the `Tab` API; add `.tabViewStyle(.sidebarAdaptable)` for iPad/wide windows.
-- [ ] Primary action ("add expense/deposit") as a glass control: `.buttonStyle(.glassProminent)` in the toolbar, or a floating button inside a `GlassEffectContainer`; consider `tabViewBottomAccessory` for the quick-add.
-- [ ] Search: `.searchable` + `searchToolbarBehavior` for expenses (keep the >3-character filter rule documented in `AGENTS.md`).
-- [ ] Scroll edges: `scrollEdgeEffectStyle` / `backgroundExtensionEffect` on hero content (dashboard header).
-- [ ] Rules enforced in review: glass only on navigation/controls, **never on content cells** (cells use plain surfaces); glass elements near each other go in one `GlassEffectContainer`; use `glassEffectID` + namespace for morphs.
-- [ ] Accessibility: verify with *Reduce Transparency*, *Increase Contrast*, Dynamic Type XXL; glass over colorful charts must stay legible.
-- [ ] New app icon via Icon Composer (layered glass icon) replacing `AppIcon.appiconset`.
+## Phase 3 – Liquid Glass shell (done except the app icon)
+Rebuilding with the new SDK already gives glass bars/sheets; the work was removing things that fight it and adding glass only on the controls layer.
+- [x] Tab bar: `.tabBarMinimizeBehavior(.onScrollDown)` and `.tabViewStyle(.sidebarAdaptable)` (`Tab` API was already in place). `sidebarAdaptable` is only exercised on iPhone so far; iPad is Phase 5.
+- [x] Chrome that fought glass removed: `.buttonStyle(.plain)` on toolbars (all screens), the `.ultraThinMaterial` label fill in `IncomeObjectiveView` (now `.quaternary`), and the hard-coded `.white` stop in the goal-summary gradient (it rendered a white band in dark mode; now `systemBackground`). There were no custom bar/sheet backgrounds.
+- [x] Primary action: toolbar "+" is `.buttonStyle(.glassProminent)` on all four screens that have it. Modals use `.cancellationAction` / `.confirmationAction` with `Button(role: .cancel)` / `Button(role: .confirm)`, and the padding/`fixedSize` hacks are gone. No floating button / `tabViewBottomAccessory`: the toolbar action is enough until Phase 4 designs the dashboard.
+- [x] Search: `.searchToolbarBehavior(.minimize)` on the All lists (expense search only exists there; the >3-character rule is unchanged).
+- [x] Scroll edges: the default soft scroll-edge effect was checked in screenshots; `backgroundExtensionEffect` is not applied because no hero content sits at a scroll edge yet (revisit with the Phase 4 dashboard).
+- [x] Rules written down in `AGENTS.md` (glass only on controls, never on cells; one `GlassEffectContainer` for neighbouring glass).
+- [x] Accessibility, verified on iPhone 17 (iOS 27.0 simulator) in light and dark with Increase Contrast, Reduce Transparency (bars and the minimized tab bar become opaque) and `accessibility-extra-extra-large` type. Found and fixed: cells had a fixed 70 pt height (text clipped) → `minHeight` + vertical layout at accessibility sizes; chart annotations overlapped the bars → chart capped at `.xxxLarge`.
+- [ ] **Not done:** new app icon via Icon Composer. It needs artwork and the Icon Composer GUI; `AppIcon.appiconset` is unchanged.
 
-**Accept:** screenshots on iPhone 17 (light/dark, Reduce Transparency on/off) show no custom bar backgrounds; no `NavigationView`/`.thinMaterial` left.
+**Accept (met, except the icon):** screenshots in light/dark and Reduce Transparency on/off show no custom bar backgrounds; no `NavigationView`/`.thinMaterial` left. Screenshots were produced by a throwaway XCUITest (not committed, recipe in `AGENTS.md`). The same run exercised add → edit → delete of an expense through the UI (including swipe-to-delete in `MUCustomVerticalForEach`), which confirms the Phase 2 edit-modal fix.
+
+**Carried to Phase 4:** the Income dashboard hero / circular progress and the section headers still do not reflow at accessibility sizes.
 
 ## Phase 4 – Screen redesign
 Design tokens (spacing, radii, semantic colors, glass usage) are defined once in `MUDesignSystem`; screens consume them.

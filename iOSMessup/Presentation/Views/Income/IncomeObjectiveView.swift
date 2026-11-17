@@ -53,14 +53,12 @@ struct IncomeObjectiveView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button {
+                    Button("Add deposit", systemImage: "plus") {
                         shouldPresentAddDepositModal = true
-                    } label: {
-                        Label("Add deposit", systemImage: "plus")
                     }
+                    .buttonStyle(.glassProminent)
                 }
             }
-            .buttonStyle(.plain)
             .scrollIndicators(.hidden)
             .scrollBounceBehavior(.always)
             .navigationTitle("Saving Goal")
@@ -159,16 +157,14 @@ extension IncomeObjectiveView {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .padding(MUSpacer.size02)
-                        .background(
-                            RoundedRectangle(cornerRadius: 5).fill(.ultraThinMaterial)
-                        )
+                        .background(.quaternary, in: .rect(cornerRadius: 5))
                 }
                 .frame(maxHeight: .infinity)
             }
             .padding()
             .padding(.vertical)
             .frame(maxWidth: .infinity)
-            .background(LinearGradient(colors: [color.opacity(0.5), color.opacity(0.1), .white], startPoint: .topLeading, endPoint: .bottomTrailing))
+            .background(LinearGradient(colors: [color.opacity(0.5), color.opacity(0.1), Color(.systemBackground)], startPoint: .topLeading, endPoint: .bottomTrailing))
             Rectangle()
                 .frame(height: 1)
                 .foregroundStyle(.secondary.opacity(0.5))

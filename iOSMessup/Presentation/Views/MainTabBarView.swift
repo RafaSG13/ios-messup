@@ -32,6 +32,8 @@ struct MainTabBarView: View {
                 ProfileView()
             }
         }
+        .tabViewStyle(.sidebarAdaptable)
+        .tabBarMinimizeBehavior(.onScrollDown)
     }
 }
 

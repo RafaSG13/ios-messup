@@ -44,16 +44,16 @@ struct AllExpensesView: View {
         }
         .listStyle(.plain)
         .searchable(text: $searchText, placement: .toolbar)
+        .searchToolbarBehavior(.minimize)
         .scrollIndicators(.hidden)
         .navigationTitle("All transactions")
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
-            ToolbarItem(placement: .automatic) {
-                Button {
+            ToolbarItem(placement: .primaryAction) {
+                Button("Add expense", systemImage: "plus") {
                     shouldPresentAddExpense.toggle()
-                } label: {
-                    Label("Add expense", systemImage: "plus")
-                }.buttonStyle(.plain)
+                }
+                .buttonStyle(.glassProminent)
             }
         }
         .errorAlert($error)

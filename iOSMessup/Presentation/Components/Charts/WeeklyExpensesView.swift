@@ -68,6 +68,7 @@ struct WeeklyExpensesView: View {
             ).shadow(color: .black, radius: 10, x: 0, y: 10)
         )
         .clipShape(.rect(cornerRadius: 20))
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
     }
 }
 
