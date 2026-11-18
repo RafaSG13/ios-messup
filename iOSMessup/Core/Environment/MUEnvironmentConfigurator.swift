@@ -48,4 +48,11 @@ final class MUEnvironmentConfigurator {
         case .local: BudgetService(store: .shared)
         }
     }
+
+    static var notificationService: NotificationServiceProtocol {
+        switch current {
+        case .mock: MockNotificationService()
+        case .local: NotificationService()
+        }
+    }
 }

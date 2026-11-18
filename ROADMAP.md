@@ -115,9 +115,9 @@ Goal: opening the app answers "how am I doing this month?".
 
 ## Phase 6 – Quick capture and reminders
 - [ ] **Move `LocalStore` to an App Group container** (migrate the existing store on first launch). Prerequisite for the widget/intent targets; needs the App Group entitlement in the signing setup (hand-edited pbxproj, like before).
-- [ ] **App Intent** `AddExpenseIntent` (amount, name, category) + `AppShortcutsProvider`: Siri, Shortcuts, Spotlight, Action button.
+- [x] **App Intent** `AddExpenseIntent` (amount, name, category, payment method) + `MessupShortcuts` (`AppShortcutsProvider`): Siri, Shortcuts, Spotlight, Action button. Runs in the app process with the shared `AppServices`, so no App Group was needed. Metadata is generated (verified in `Metadata.appintents`); a real Siri/Shortcuts run was not exercised (no way to drive it from the CLI), the record/validation logic is unit-tested.
 - [ ] **Widgets**: spent this month vs budget (small/medium), interactive quick-add, Lock Screen widget, Control Center control. Reload timelines after every write.
-- [ ] **Local notifications** (opt-in in Settings, permission requested in context): budget at 80 % and 100 %, weekly summary.
+- [x] **Local notifications** (opt-in in Settings, permission requested in context): budget at 80 % and 100 % (`BudgetAlert` + `BudgetAlertChecker`, unit-tested, fires from UI writes and from the intent), weekly summary (repeating Sunday 18:00, generic text). The permission prompt appearing on toggling was checked in the simulator; actual delivery on a device is a manual check.
 
 **Accept:** an expense added from Siri/Shortcuts or the widget shows up in the app; widget values match the app; notifications fire at the thresholds (unit-tested threshold logic, manual check of delivery).
 

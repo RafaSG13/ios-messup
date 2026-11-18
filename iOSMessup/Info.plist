@@ -4,5 +4,14 @@
 <dict>
 	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
 	<string>We need permissions to book</string>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>mintAccent</string>
+		<key>UIImageName</key>
+		<string>logoPNG</string>
+		<key>UIImageRespectsSafeAreaInsets</key>
+		<false/>
+	</dict>
 </dict>
 </plist>

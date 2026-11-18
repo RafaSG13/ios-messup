@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MUDesignSystem
 
 // MARK: - SettingsRoute
 
@@ -20,6 +21,9 @@ struct SettingsView: View {
     @Environment(\.incomeService) private var incomeService
     @Environment(\.savingsService) private var savingsService
     @Environment(\.budgetService) private var budgetService
+    @Environment(\.notificationService) private var notificationService
+    @AppStorage(NotificationPreferences.budgetAlertsKey) private var budgetAlertsEnabled = false
+    @AppStorage(NotificationPreferences.weeklySummaryKey) private var weeklySummaryEnabled = false
     @State private var isShowingBudget = false
     @AppStorage(AppCurrency.storageKey) private var currencyCode = AppCurrency.defaultCode
     @State private var exportURL: URL?
@@ -45,6 +49,20 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    VStack(spacing: MUSpacer.size02) {
+                        Image("logoPNG")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 88, height: 88)
+                            .accessibilityHidden(true)
+                        Text(verbatim: "Messup")
+                            .font(.title2.bold())
+                    }
+                    .frame(maxWidth: .infinity)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
                 Section("Preferences") {
                     NavigationLink(value: SettingsRoute.currency) {
                         LabeledContent("Currency", value: "\(AppCurrency.localizedName(for: currencyCode)) (\(currencyCode))")
@@ -62,6 +80,14 @@ struct SettingsView: View {
                         .contentShape(.rect)
                     }
                     .foregroundStyle(.primary)
+                }
+                Section {
+                    Toggle("Budget alerts", isOn: $budgetAlertsEnabled)
+                    Toggle("Weekly summary", isOn: $weeklySummaryEnabled)
+                } header: {
+                    Text("Notifications")
+                } footer: {
+                    Text("Budget alerts tell you when you reach 80 % of your monthly budget and when you go over it. The weekly summary arrives on Sundays.")
                 }
                 Section("Data") {
                     exportRow
@@ -81,9 +107,31 @@ struct SettingsView: View {
                 }
             }
             .task(id: csv) { writeExport(csv) }
+            .onChange(of: budgetAlertsEnabled) { _, isOn in
+                guard isOn else { return }
+                Task { if await authorize() == false { budgetAlertsEnabled = false } }
+            }
+            .onChange(of: weeklySummaryEnabled) { _, isOn in
+                Task {
+                    if isOn, await authorize() == false {
+                        weeklySummaryEnabled = false
+                        return
+                    }
+                    await notificationService.setWeeklySummary(enabled: isOn)
+                }
+            }
             .errorAlert($error)
             .sheet(isPresented: $isShowingBudget) { BudgetFormView() }
         }
+    }
+
+    // MARK: - Notifications
+
+    /// Asks for permission in context (when a switch is turned on); explains how to fix it when it was denied.
+    private func authorize() async -> Bool {
+        let granted = await notificationService.requestAuthorization()
+        if !granted { error = NotificationError.denied }
+        return granted
     }
 
     // MARK: - Export
