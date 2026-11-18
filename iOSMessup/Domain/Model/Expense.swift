@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MUDesignSystem
 
 struct Expense: Identifiable, Hashable, Equatable, Codable {
     var id: String = UUID().uuidString
@@ -45,7 +46,7 @@ extension Expense {
 
 // MARK: - PaymentMethods
 
-enum PaymentMethod: String, CaseIterable, Hashable, Codable {
+enum PaymentMethod: String, CaseIterable, Hashable, Codable, Sendable {
     case cash = "Cash"
     case creditCard = "Credit Card"
     case debitCard = "Debit Card"
@@ -75,7 +76,7 @@ enum PaymentMethod: String, CaseIterable, Hashable, Codable {
 
 // MARK: - Expense Categories
 
-enum Category: String, CaseIterable, Hashable, Codable {
+enum Category: String, CaseIterable, Hashable, Codable, Sendable {
     case entertainment = "Entertainment"
     case travel = "Travel"
     case food = "Food"
@@ -112,15 +113,15 @@ enum Category: String, CaseIterable, Hashable, Codable {
 
     var color: Color {
         switch self {
-        case .entertainment: return .purple
-        case .travel: return .blue
-        case .food: return .orange
+        case .entertainment: return Color.designSystem.bubblegum
+        case .travel: return Color.designSystem.deepBlue
+        case .food: return Color.designSystem.tangerine
         case .transportation: return .gray
         case .health: return .red
         case .home: return .green
         case .technology: return .teal
         case .fashion: return .pink
-        case .education: return .yellow
+        case .education: return Color.designSystem.sunYellow
         case .family: return .indigo
         case .finance: return .cyan
         case .taxes: return .brown

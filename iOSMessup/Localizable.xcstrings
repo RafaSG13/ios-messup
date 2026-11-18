@@ -58,6 +58,9 @@
     "About" : {
 
     },
+    "Add ${amount} for ${name}" : {
+
+    },
     "Add Expense" : {
 
     },
@@ -78,6 +81,16 @@
     },
     "Add your salary, gifts and other money coming in." : {
 
+    },
+    "Added %@ for %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Added %1$@ for %2$@."
+          }
+        }
+      }
     },
     "All transactions" : {
 
@@ -117,7 +130,22 @@
     "Budget" : {
 
     },
+    "Budget alerts" : {
+
+    },
+    "Budget alerts tell you when you reach 80 % of your monthly budget and when you go over it. The weekly summary arrives on Sundays." : {
+
+    },
+    "Budget almost used" : {
+
+    },
+    "Budget exceeded" : {
+
+    },
     "Cancel" : {
+
+    },
+    "Cash" : {
 
     },
     "Categories" : {
@@ -144,6 +172,9 @@
     "Create goal" : {
 
     },
+    "Credit Card" : {
+
+    },
     "Cumulative spending" : {
 
     },
@@ -159,6 +190,9 @@
     "Day" : {
 
     },
+    "Debit Card" : {
+
+    },
     "Delete" : {
 
     },
@@ -169,6 +203,9 @@
 
     },
     "Details" : {
+
+    },
+    "Donations and Charity" : {
 
     },
     "Done" : {
@@ -195,13 +232,37 @@
     "Edit saving goal" : {
 
     },
+    "Education and Learning" : {
+
+    },
+    "Entertainment" : {
+
+    },
     "Expenses" : {
 
     },
     "Export data" : {
 
     },
+    "Family and Pets" : {
+
+    },
+    "Fashion and Beauty" : {
+
+    },
+    "Finance and Insurance" : {
+
+    },
+    "Food" : {
+
+    },
     "Goal options" : {
+
+    },
+    "Health and Wellness" : {
+
+    },
+    "Home" : {
 
     },
     "Income" : {
@@ -214,6 +275,9 @@
 
     },
     "Limit %@" : {
+
+    },
+    "Miscellaneous" : {
 
     },
     "Month" : {
@@ -264,16 +328,31 @@
     "Note (optional)" : {
 
     },
+    "Notifications" : {
+
+    },
+    "Notifications are turned off for Messup. Enable them in the iOS Settings app." : {
+
+    },
     "OK" : {
 
     },
     "On pace for %@" : {
 
     },
+    "Open the app to see how your spending compares with last week." : {
+
+    },
     "Other" : {
 
     },
     "Payment Method" : {
+
+    },
+    "Payment method" : {
+
+    },
+    "Paypal" : {
 
     },
     "Period" : {
@@ -289,6 +368,9 @@
 
     },
     "Previous period %@" : {
+
+    },
+    "Record an expense in Messup." : {
 
     },
     "Remove budget" : {
@@ -348,7 +430,25 @@
     "Target date" : {
 
     },
+    "Taxes and Obligations" : {
+
+    },
+    "Technology and Communications" : {
+
+    },
+    "The amount must be greater than zero." : {
+
+    },
+    "The expense needs a name." : {
+
+    },
     "Transactions" : {
+
+    },
+    "Transportation" : {
+
+    },
+    "Travel" : {
 
     },
     "Version" : {
@@ -360,13 +460,39 @@
     "Week" : {
 
     },
+    "Weekly summary" : {
+
+    },
     "Year" : {
 
+    },
+    "You have spent %@ of your %@ monthly budget." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "You have spent %1$@ of your %2$@ monthly budget."
+          }
+        }
+      }
+    },
+    "You have spent %@, over your %@ monthly budget." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "You have spent %1$@, over your %2$@ monthly budget."
+          }
+        }
+      }
     },
     "You spend %@ per day on average" : {
 
     },
     "Your contributions are kept." : {
+
+    },
+    "Your week in Messup" : {
 
     },
     "left to spend" : {

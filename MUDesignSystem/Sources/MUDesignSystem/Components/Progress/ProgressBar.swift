@@ -14,7 +14,7 @@ public struct ProgressBar: View {
     var barHeight: CGFloat
 
     public init(progress: Double,
-                tint: Color = .green,
+                tint: Color = .accentColor,
                 barHeight: CGFloat = MUSpacer.size03) {
         self.progress = progress
         self.tint = tint
