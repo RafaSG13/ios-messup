@@ -10,7 +10,7 @@ import MUDesignSystem
 
 // MARK: - BalanceSummaryCard
 
-/// Balance of a period (income − expenses − contributions) with its three components.
+/// Balance of a period (income − expenses + net debts) with its three components.
 struct BalanceSummaryCard: View {
     @Environment(\.currencyCode) private var currencyCode
     let summary: PeriodSummary
@@ -27,13 +27,14 @@ struct BalanceSummaryCard: View {
                     MUMetricLabel("Expenses",
                                   systemImage: "creditcard.fill",
                                   value: "−" + summary.spent.formattedCompactMoney(code: currencyCode))
-                    MUMetricLabel("Saved",
-                                  systemImage: "banknote.fill",
-                                  value: "−" + summary.contributed.formattedCompactMoney(code: currencyCode))
+                    MUMetricLabel("Debts",
+                                  systemImage: "person.2.fill",
+                                  value: (summary.debtFlow >= 0 ? "+" : "−")
+                                      + abs(summary.debtFlow).formattedCompactMoney(code: currencyCode))
                 }
             }
             .accessibilityElement(children: .combine)
-            .accessibilityValue(Text("Balance is income minus expenses minus savings contributions."))
+            .accessibilityValue(Text("Balance is income minus expenses plus net money from debts."))
         }
     }
 }
@@ -69,7 +70,7 @@ private struct BalanceHeaderView: View {
     BalanceSummaryCard(summary: PeriodSummary(period: period,
                                               expenses: Expense.mockArray,
                                               incomes: Income.mockArray,
-                                              contributions: []))
+                                              debts: []))
         .padding()
         .background(Color(.systemGroupedBackground))
 }
@@ -79,7 +80,7 @@ private struct BalanceHeaderView: View {
     BalanceSummaryCard(summary: PeriodSummary(period: period,
                                               expenses: Expense.mockArray,
                                               incomes: [],
-                                              contributions: []))
+                                              debts: []))
         .padding()
         .background(Color(.systemGroupedBackground))
         .environment(\.dynamicTypeSize, .accessibility3)

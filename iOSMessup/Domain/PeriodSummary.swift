@@ -21,7 +21,7 @@ struct CumulativePoint: Identifiable, Equatable {
 // MARK: - PeriodSummary
 
 /// Everything the money screens show for one period, computed from plain arrays so it is easy to test.
-/// Balance follows the app rule: income − expenses − contributions.
+/// Balance follows the app rule: income − expenses + net cash from debts and repayments.
 struct PeriodSummary: Equatable {
     let period: Period
     let spent: Double
@@ -31,7 +31,9 @@ struct PeriodSummary: Equatable {
     /// period is still in progress.
     let previousSpentToDate: Double
     let income: Double
-    let contributed: Double
+    /// Net cash from debts and repayments dated in the period: lending or paying back is negative, borrowing or being
+    /// paid back is positive.
+    let debtFlow: Double
     /// Biggest category first.
     let categoryTotals: [CategoryTotal]
     /// One point per elapsed day (empty before the period starts, complete once it has ended).
@@ -44,7 +46,7 @@ struct PeriodSummary: Equatable {
     init(period: Period,
          expenses: [Expense],
          incomes: [Income],
-         contributions: [Contribution],
+         debts: [DebtEntry],
          now: Date = .now) {
         let previousPeriod = period.previous()
         let inPeriod = expenses.filter { period.contains($0.date) }
@@ -54,7 +56,7 @@ struct PeriodSummary: Equatable {
         self.spent = inPeriod.reduce(0) { $0 + $1.amount }
         self.previousSpent = inPrevious.reduce(0) { $0 + $1.amount }
         self.income = incomes.filter { period.contains($0.date) }.reduce(0) { $0 + $1.amount }
-        self.contributed = contributions.filter { period.contains($0.date) }.reduce(0) { $0 + $1.amount }
+        self.debtFlow = debts.filter { period.contains($0.date) }.reduce(0) { $0 + $1.cashFlow }
         self.categoryTotals = inPeriod.totalsByCategory()
         self.elapsedDays = period.elapsedDays(now: now)
         self.cumulativeSpend = Self.buildCumulative(of: inPeriod, in: period, throughDay: elapsedDays)
@@ -65,9 +67,9 @@ struct PeriodSummary: Equatable {
         self.previousSpentToDate = comparableDay > 0 ? previousCumulativeSpend[comparableDay - 1].amount : 0
     }
 
-    /// What is left to spend: income − expenses − contributions.
+    /// What is left to spend: income − expenses + net debt cash flow.
     var balance: Double {
-        income - spent - contributed
+        income - spent + debtFlow
     }
 
     /// Spent per elapsed day; 0 before the period starts.

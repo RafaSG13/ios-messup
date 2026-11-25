@@ -13,7 +13,9 @@ import Foundation
 enum CSVExporter {
     static let header = "type,date,name,amount,category,payment_method_or_source"
 
-    static func csv(expenses: [Expense], incomes: [Income], contributions: [Contribution]) -> String {
+    /// Debt rows carry the person's name and the entry kind (the note is not exported).
+    static func csv(expenses: [Expense], incomes: [Income], debts: [DebtEntry], people: [Person]) -> String {
+        let names = Dictionary(people.map { ($0.id, $0.name) }, uniquingKeysWith: { first, _ in first })
         var rows: [(date: Date, fields: [String])] = []
         rows += expenses.map {
             ($0.date, ["expense", format($0.date), $0.name, format($0.amount), $0.category.rawValue, $0.paymentMethod.rawValue])
@@ -21,8 +23,8 @@ enum CSVExporter {
         rows += incomes.map {
             ($0.date, ["income", format($0.date), $0.concept, format($0.amount), "", $0.source.rawValue])
         }
-        rows += contributions.map {
-            ($0.date, ["contribution", format($0.date), $0.note, format($0.amount), "", ""])
+        rows += debts.map {
+            ($0.date, ["debt", format($0.date), names[$0.personID] ?? "", format($0.amount), "", $0.kind.rawValue])
         }
         let lines = rows
             .sorted { $0.date < $1.date }

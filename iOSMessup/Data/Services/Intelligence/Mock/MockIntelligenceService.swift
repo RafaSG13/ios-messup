@@ -11,6 +11,7 @@ import Observation
 final class MockIntelligenceService: IntelligenceServiceProtocol {
     var availability: IntelligenceAvailability
     var canReadImages: Bool
+    let actionCenter = AssistantActionCenter()
     var draft: ExpenseDraft
     var suggestedCategory: Category
     var reply: String

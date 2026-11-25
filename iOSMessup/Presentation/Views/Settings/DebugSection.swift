@@ -12,7 +12,7 @@ struct DebugSection: View {
     @Environment(\.expenseService) private var expenseService
     @Environment(\.budgetService) private var budgetService
     @Environment(\.incomeService) private var incomeService
-    @Environment(\.savingsService) private var savingsService
+    @Environment(\.debtsService) private var debtsService
     @AppStorage(DebugSeeder.autoSeedKey) private var isAutoSeedOn = true
     @State private var isConfirmingDelete = false
     @State private var error: (any Error)?
@@ -48,8 +48,8 @@ struct DebugSection: View {
                 try change()
                 try await expenseService.loadExpenses()
                 try await incomeService.load()
-                try await savingsService.load()
                 try await budgetService.load()
+                try await debtsService.load()
             } catch {
                 self.error = error
             }

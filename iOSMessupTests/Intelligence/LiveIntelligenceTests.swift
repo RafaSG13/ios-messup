@@ -23,12 +23,28 @@ struct LiveIntelligenceTests {
     func draftsAnExpenseFromText() async throws {
         let service = IntelligenceService(expenseService: MockExpensesService(delay: 0),
                                           incomeService: MockIncomeService(delay: 0),
-                                          savingsService: MockSavingsService(delay: 0),
+                                          debtsService: MockDebtsService(delay: 0),
                                           budgetService: MockBudgetService(delay: 0))
 
         let draft = try await service.draftExpense(from: "Coffee 3.50 paid in cash yesterday")
 
         #expect(draft.amount == 3.5)
         #expect(draft.paymentMethod == .cash)
+    }
+
+    @Test(.enabled(if: LiveIntelligenceTests.canRunLiveModel), .timeLimit(.minutes(1)))
+    func assistantToolsAndInstructionsFitHalfTheContext() async throws {
+        let service = IntelligenceService(expenseService: MockExpensesService(delay: 0),
+                                          incomeService: MockIncomeService(delay: 0),
+                                          debtsService: MockDebtsService(delay: 0),
+                                          budgetService: MockBudgetService(delay: 0))
+        let model = SystemLanguageModel.default
+        let tools = service.assistantTools()
+        let instructions = Instructions(IntelligencePrompts.assistantInstructions(now: .now, currencyCode: "EUR"))
+
+        let used = try await model.tokenCount(for: tools) + model.tokenCount(for: instructions)
+
+        #expect(tools.count == 9)
+        #expect(used < model.contextSize / 2)
     }
 }

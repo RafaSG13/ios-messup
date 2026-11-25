@@ -45,13 +45,31 @@
     "%@ over" : {
 
     },
+    "%lld category limits" : {
+
+    },
+    "%lld debts and payments" : {
+
+    },
     "About" : {
+
+    },
+    "Add" : {
 
     },
     "Add ${amount} for ${name}" : {
 
     },
-    "Add contribution" : {
+    "Add a coffee for 3.50 yesterday" : {
+
+    },
+    "Add a debt or a payment to start the history." : {
+
+    },
+    "Add a person to track money you lend or borrow." : {
+
+    },
+    "Add entry" : {
 
     },
     "Add expense" : {
@@ -61,6 +79,9 @@
 
     },
     "Add income" : {
+
+    },
+    "Add person" : {
 
     },
     "Add your first expense to see it here." : {
@@ -82,7 +103,16 @@
         }
       }
     },
+    "Added person" : {
+
+    },
+    "all settled" : {
+
+    },
     "All transactions" : {
+
+    },
+    "Allow access to contacts" : {
 
     },
     "Amount" : {
@@ -106,10 +136,16 @@
     "Apple Intelligence isn't available right now." : {
 
     },
-    "Ask about your money" : {
+    "Ask about your money or tell me what to do" : {
 
     },
-    "Ask Messup" : {
+    "Ask or tell Messup…" : {
+
+    },
+    "Assistant" : {
+
+    },
+    "Assistant unavailable" : {
 
     },
     "At this pace you will spend %@ by the end of the period" : {
@@ -138,7 +174,19 @@
     "Balance" : {
 
     },
-    "Balance is income minus expenses minus savings contributions." : {
+    "Balance is income minus expenses plus net money from debts." : {
+
+    },
+    "Balance: owes you %@" : {
+
+    },
+    "Balance: settled" : {
+
+    },
+    "Balance: you owe %@" : {
+
+    },
+    "Borrowed" : {
 
     },
     "Budget" : {
@@ -174,16 +222,10 @@
     "Check the details before saving." : {
 
     },
-    "Close" : {
+    "Contacts" : {
 
     },
-    "Contribution" : {
-
-    },
-    "Contributions" : {
-
-    },
-    "Contributions you add count toward your saving goal." : {
+    "Contacts access is off. Allow it in Settings or type a name below." : {
 
     },
     "Couldn't find an expense in that text. Include an amount, like “Coffee 3.50”." : {
@@ -192,7 +234,13 @@
     "Couldn't read that image. Try a clearer photo of the receipt." : {
 
     },
-    "Create goal" : {
+    "Created debt" : {
+
+    },
+    "Created expense" : {
+
+    },
+    "Created income" : {
 
     },
     "Credit Card" : {
@@ -216,13 +264,49 @@
     "Debit Card" : {
 
     },
+    "Debts" : {
+
+    },
     "Delete" : {
 
     },
-    "Delete goal" : {
+    "Delete %@?" : {
 
     },
-    "Delete saving goal?" : {
+    "Delete budget?" : {
+
+    },
+    "Delete entry?" : {
+
+    },
+    "Delete expense?" : {
+
+    },
+    "Delete income?" : {
+
+    },
+    "Delete my last expense" : {
+
+    },
+    "Delete person" : {
+
+    },
+    "Delete person?" : {
+
+    },
+    "Deleted budget" : {
+
+    },
+    "Deleted debt" : {
+
+    },
+    "Deleted expense" : {
+
+    },
+    "Deleted income" : {
+
+    },
+    "Deleted person" : {
 
     },
     "Describe it, e.g. Coffee 3.50 by card yesterday" : {
@@ -231,34 +315,37 @@
     "Details" : {
 
     },
+    "Dictate" : {
+
+    },
+    "Dictation couldn't start. Try again." : {
+
+    },
+    "Dictation doesn't support this language yet." : {
+
+    },
     "Donations and Charity" : {
 
     },
     "Done" : {
 
     },
-    "Earned" : {
-
-    },
     "Edit budget" : {
 
     },
-    "Edit contribution" : {
+    "Edit entry" : {
 
     },
     "Edit Expense" : {
 
     },
-    "Edit goal" : {
-
-    },
     "Edit income" : {
 
     },
-    "Edit saving goal" : {
+    "Education and Learning" : {
 
     },
-    "Education and Learning" : {
+    "Enter a name." : {
 
     },
     "Entertainment" : {
@@ -291,19 +378,22 @@
     "Getting ready…" : {
 
     },
-    "Goal options" : {
-
-    },
     "Health and Wellness" : {
 
     },
     "Home" : {
 
     },
-    "How is my saving goal going?" : {
+    "How much did I spend this month?" : {
 
     },
-    "How much did I spend this month?" : {
+    "I borrowed money" : {
+
+    },
+    "I lent money" : {
+
+    },
+    "I paid them back" : {
 
     },
     "Income" : {
@@ -315,22 +405,31 @@
     "Language not supported" : {
 
     },
-    "Left" : {
+    "left to spend" : {
 
     },
-    "left to spend" : {
+    "Lent" : {
 
     },
     "Limit %@" : {
 
     },
-    "Messup uses the on-device model to fill in expenses from text or receipts, suggest categories, summarize your spending and answer questions. Your data stays on your device." : {
+    "Messup can show your contacts so you can pick who you lend to or borrow from. Contacts stay on your device." : {
+
+    },
+    "Messup uses the on-device model to fill in expenses from text or receipts, suggest categories, summarize your spending, answer questions and make changes you ask for in the Assistant tab. Your data stays on your device." : {
 
     },
     "Messup: %@" : {
 
     },
+    "Microphone access is off. Turn it on in Settings ▸ Messup." : {
+
+    },
     "Miscellaneous" : {
+
+    },
+    "Money you lend or pay back lowers your balance; money you borrow or get back raises it. If you already logged the full amount as an expense, log only your own share there." : {
 
     },
     "Month" : {
@@ -342,25 +441,37 @@
     "Monthly limit %@" : {
 
     },
+    "Monthly limit: %@" : {
+
+    },
     "Name" : {
+
+    },
+    "net owed to you" : {
+
+    },
+    "net you owe" : {
 
     },
     "New conversation" : {
 
     },
-    "New saving goal" : {
-
-    },
     "Next period" : {
 
     },
-    "No contributions" : {
+    "No activity" : {
+
+    },
+    "No debts" : {
 
     },
     "No expenses in this period" : {
 
     },
     "No expenses in this period." : {
+
+    },
+    "No history" : {
 
     },
     "No income" : {
@@ -372,10 +483,10 @@
     "No limit" : {
 
     },
-    "No saving goal" : {
+    "No transactions" : {
 
     },
-    "No transactions" : {
+    "Not in your contacts" : {
 
     },
     "Not set" : {
@@ -405,6 +516,9 @@
     "On pace for %@" : {
 
     },
+    "Open Settings" : {
+
+    },
     "Open the app to see how your spending compares with last week." : {
 
     },
@@ -414,16 +528,40 @@
     "over" : {
 
     },
+    "owes you" : {
+
+    },
+    "Owes you" : {
+
+    },
+    "Payment made" : {
+
+    },
     "Payment method" : {
 
     },
     "Payment Method" : {
 
     },
+    "Payment received" : {
+
+    },
+    "Payments" : {
+
+    },
     "Paypal" : {
 
     },
+    "People" : {
+
+    },
     "Period" : {
+
+    },
+    "Person not found" : {
+
+    },
+    "Person options" : {
 
     },
     "Photo" : {
@@ -450,19 +588,19 @@
     "Remove budget?" : {
 
     },
-    "Required" : {
+    "Rename" : {
+
+    },
+    "Renamed person" : {
 
     },
     "Save" : {
 
     },
-    "Saved" : {
-
-    },
-    "Savings" : {
-
-    },
     "Scan" : {
+
+    },
+    "Search contacts" : {
 
     },
     "Selected" : {
@@ -477,13 +615,16 @@
     "Set a budget" : {
 
     },
-    "Set a target amount to track your progress." : {
-
-    },
-    "Set a target date" : {
-
-    },
     "Settings" : {
+
+    },
+    "Settle up" : {
+
+    },
+    "Settled up" : {
+
+    },
+    "Social" : {
 
     },
     "Something went wrong" : {
@@ -504,22 +645,22 @@
     "Status" : {
 
     },
+    "Stop dictation" : {
+
+    },
     "Suggested by Apple Intelligence" : {
 
     },
     "Summarize" : {
 
     },
-    "Target amount" : {
-
-    },
-    "Target date" : {
-
-    },
     "Taxes and Obligations" : {
 
     },
     "Technology and Communications" : {
+
+    },
+    "That contact is already in your list." : {
 
     },
     "The amount must be greater than zero." : {
@@ -531,6 +672,18 @@
     "The expense needs a name." : {
 
     },
+    "Their %lld debts and payments are deleted too." : {
+
+    },
+    "They owe you" : {
+
+    },
+    "They paid me back" : {
+
+    },
+    "This person no longer exists." : {
+
+    },
     "Transactions" : {
 
     },
@@ -538,6 +691,21 @@
 
     },
     "Travel" : {
+
+    },
+    "Type" : {
+
+    },
+    "Updated budget" : {
+
+    },
+    "Updated debt" : {
+
+    },
+    "Updated expense" : {
+
+    },
+    "Updated income" : {
 
     },
     "Version" : {
@@ -552,7 +720,7 @@
     "Weekly summary" : {
 
     },
-    "What is my biggest category this month?" : {
+    "Who owes me money?" : {
 
     },
     "Year" : {
@@ -578,13 +746,16 @@
         }
       }
     },
+    "you owe" : {
+
+    },
+    "You owe" : {
+
+    },
     "You spend %@ per day on average" : {
 
     },
     "You: %@" : {
-
-    },
-    "Your contributions are kept." : {
 
     },
     "Your week in Messup" : {

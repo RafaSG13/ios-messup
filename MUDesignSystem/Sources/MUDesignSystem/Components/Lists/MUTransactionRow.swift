@@ -9,7 +9,7 @@ import SwiftUI
 
 // MARK: - MUTransactionRow
 
-/// Plain row content shared by expense, income and contribution cells; the enclosing `List` provides the surface.
+/// Plain row content shared by expense, income and debt cells; the enclosing `List` provides the surface.
 public struct MUTransactionRow: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric private var iconSize: CGFloat = 40
@@ -73,9 +73,9 @@ public struct MUTransactionRow: View {
                          subtitle: Text("Card"),
                          amount: Text("42,50 €"),
                          detail: Text("12 Nov"))
-        MUTransactionRow(systemImage: "target",
+        MUTransactionRow(systemImage: "person.fill",
                          tint: .accentColor,
-                         title: Text("Contribution"),
+                         title: Text("Loan to Alex"),
                          amount: Text("100,00 €"),
                          detail: Text("3 Nov 2026"))
     }

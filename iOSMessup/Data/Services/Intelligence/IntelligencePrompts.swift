@@ -34,9 +34,11 @@ enum IntelligencePrompts {
 
     static func assistantInstructions(now: Date, currencyCode: String, calendar: Calendar = .current) -> String {
         """
-        You are Messup's assistant. Answer questions about the user's own expenses, income, budget and saving goal \
+        You are Messup's assistant. Answer questions about the user's own expenses, income, budget and debts with other people \
         using the tools; never invent figures; if a tool returns no data, say so. Today is \(isoDay(now, calendar: calendar)). \
-        Amounts are in \(currencyCode). You cannot create, edit or delete data. \
+        Amounts are in \(currencyCode). You can create, edit and delete the user's expenses, income, budget, people and debts with the change tools. \
+        Before updating or deleting, find the record with a search tool and copy its #ref. Never invent amounts or dates: if something required is missing, ask the user. \
+        Do not ask the user to confirm a deletion yourself; the app asks. After a change, reply with one short sentence. \
         Reply in the language of the question, in at most 80 words.
         """
     }
@@ -85,7 +87,7 @@ enum IntelligencePrompts {
         }
 
         lines.append("Income: \(money(summary.income, currencyCode))")
-        lines.append("Saved to the goal: \(money(summary.contributed, currencyCode))")
+        lines.append("Net cash from debts and repayments: \(signedMoney(summary.debtFlow, currencyCode))")
         lines.append("Balance: \(money(summary.balance, currencyCode))")
         return lines.joined(separator: "\n")
     }
@@ -129,42 +131,106 @@ enum IntelligencePrompts {
         let noun = matches.count == 1 ? "expense" : "expenses"
         var lines = ["\(matches.count) \(noun), total \(money(total, currencyCode))"]
         lines += matches.prefix(maximumListedExpenses).map {
-            "\(isoDay($0.date, calendar: period.calendar)) · \($0.name) · \(money($0.amount, currencyCode)) · \($0.category.rawValue)"
+            "#\(ref(for: $0.id)) · \(isoDay($0.date, calendar: period.calendar)) · \($0.name) · \(money($0.amount, currencyCode)) · \($0.category.rawValue)"
         }
         return lines.joined(separator: "\n")
     }
 
-    static func savingsReport(goal: SavingGoal?,
-                              progress: SavingGoalProgress?,
-                              contributions: [Contribution],
-                              includeContributions: Bool,
-                              currencyCode: String,
-                              calendar: Calendar = .current) -> String {
-        guard let goal else { return "No saving goal set." }
-        var lines = ["Goal: \(goal.name)", "Target: \(money(goal.amount, currencyCode))"]
-        if let progress {
-            lines.append("Saved: \(money(progress.earned, currencyCode))")
-            lines.append("Remaining: \(money(progress.remaining, currencyCode))")
-        }
-        if let date = goal.completionDate.date {
-            lines.append("Target date: \(isoDay(date, calendar: calendar))")
-        }
-        if includeContributions {
-            let latest = contributions.sorted(by: >).prefix(5)
-            if latest.isEmpty {
-                lines.append("No contributions yet.")
-            } else {
-                lines.append("Latest contributions:")
-                lines += latest.map { "\(isoDay($0.date, calendar: calendar)) · \(money($0.amount, currencyCode))" }
-            }
+    static func incomeSearch(_ incomes: [Income],
+                             query: String?,
+                             period: Period,
+                             currencyCode: String) -> String {
+        let text = query?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let matches = incomes
+            .filter { period.contains($0.date) }
+            .filter { text.isEmpty || $0.concept.localizedStandardContains(text) }
+            .sorted(by: >)
+        guard !matches.isEmpty else { return "No matching income." }
+
+        let total = matches.reduce(0) { $0 + $1.amount }
+        var lines = ["\(matches.count) income, total \(money(total, currencyCode))"]
+        lines += matches.prefix(maximumListedExpenses).map {
+            "#\(ref(for: $0.id)) · \(isoDay($0.date, calendar: period.calendar)) · \($0.concept) · \(money($0.amount, currencyCode)) · \($0.source.rawValue)"
         }
         return lines.joined(separator: "\n")
+    }
+
+    /// `#ref` is what the change tools take to address one entry.
+    static func debtsReport(people: [Person],
+                            entries: [DebtEntry],
+                            personName: String?,
+                            currencyCode: String,
+                            calendar: Calendar = .current) -> String {
+        guard !people.isEmpty else { return "No people registered." }
+        let summary = DebtSummary(people: people, entries: entries)
+        let name = personName?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+        if name.isEmpty {
+            var lines = summary.balances.map { item in
+                switch item.state {
+                case .owesMe: "\(item.person.name): owes you \(money(item.balance, currencyCode))"
+                case .iOwe: "\(item.person.name): you owe \(money(-item.balance, currencyCode))"
+                case .settled: "\(item.person.name): settled"
+                }
+            }
+            lines.append("Total owed to you: \(money(summary.owedToMe, currencyCode))")
+            lines.append("Total you owe: \(money(summary.iOwe, currencyCode))")
+            return lines.joined(separator: "\n")
+        }
+
+        guard let item = summary.balances.first(where: { $0.person.name.localizedStandardContains(name) }) else {
+            return "No person matches that name."
+        }
+        var lines: [String] = []
+        switch item.state {
+        case .owesMe: lines.append("\(item.person.name) owes you \(money(item.balance, currencyCode))")
+        case .iOwe: lines.append("You owe \(item.person.name) \(money(-item.balance, currencyCode))")
+        case .settled: lines.append("\(item.person.name) is settled")
+        }
+        let latest = entries.filter { $0.personID == item.person.id }.sorted(by: >).prefix(5)
+        lines += latest.map {
+            "#\(ref(for: $0.id)) · \(isoDay($0.date, calendar: calendar)) · \($0.kind.rawValue) · \(money($0.amount, currencyCode)) · \($0.note)"
+        }
+        return lines.joined(separator: "\n")
+    }
+
+    // MARK: - References
+
+    /// Short, stable handle for a record: the first 8 characters of its UUID, lowercased.
+    static func ref(for id: String) -> String {
+        String(id.prefix(8)).lowercased()
+    }
+
+    enum RefMatch<Item> {
+        case found(Item)
+        case notFound
+        case ambiguous
+    }
+
+    /// Shortest reference accepted: fewer characters match too many records to be a reliable pointer.
+    static let minimumRefLength = 4
+
+    /// Finds the one record whose id starts with `ref` (with or without `#`, any case).
+    static func resolve<Item: Identifiable>(ref: String, in items: [Item]) -> RefMatch<Item> where Item.ID == String {
+        var prefix = ref.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        if prefix.hasPrefix("#") { prefix.removeFirst() }
+        guard prefix.count >= minimumRefLength else { return .notFound }
+        let matches = items.filter { $0.id.lowercased().hasPrefix(prefix) }
+        switch matches.count {
+        case 0: return .notFound
+        case 1: return .found(matches[0])
+        default: return .ambiguous
+        }
     }
 
     // MARK: - Formatting
 
     private static func money(_ amount: Double, _ currencyCode: String) -> String {
         amount.formattedMoney(code: currencyCode)
+    }
+
+    private static func signedMoney(_ amount: Double, _ currencyCode: String) -> String {
+        amount.formattedSignedMoney(code: currencyCode)
     }
 
     private static func isoDay(_ date: Date, calendar: Calendar) -> String {

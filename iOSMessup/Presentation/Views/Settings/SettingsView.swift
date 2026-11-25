@@ -145,22 +145,12 @@ private struct IntelligenceStatusSection: View {
     var body: some View {
         Section {
             LabeledContent("Status") {
-                Text(statusText(for: intelligenceService.availability))
+                Text(intelligenceService.availability.statusText)
             }
         } header: {
             Text("Apple Intelligence")
         } footer: {
-            Text("Messup uses the on-device model to fill in expenses from text or receipts, suggest categories, summarize your spending and answer questions. Your data stays on your device.")
-        }
-    }
-
-    private func statusText(for availability: IntelligenceAvailability) -> LocalizedStringKey {
-        switch availability {
-        case .available: "On"
-        case .appleIntelligenceNotEnabled: "Off. Turn it on in Settings ▸ Apple Intelligence & Siri"
-        case .deviceNotEligible: "Not supported on this device"
-        case .modelNotReady: "Getting ready…"
-        case .unsupportedLanguage: "Language not supported"
+            Text("Messup uses the on-device model to fill in expenses from text or receipts, suggest categories, summarize your spending, answer questions and make changes you ask for in the Assistant tab. Your data stays on your device.")
         }
     }
 }
@@ -171,17 +161,18 @@ private struct IntelligenceStatusSection: View {
 private struct ExportDataRow: View {
     @Environment(\.expenseService) private var expenseService
     @Environment(\.incomeService) private var incomeService
-    @Environment(\.savingsService) private var savingsService
+    @Environment(\.debtsService) private var debtsService
     @State private var exportURL: URL?
     @Binding var error: (any Error)?
 
     var body: some View {
         let hasData = !expenseService.expenses.isEmpty
             || !incomeService.incomes.isEmpty
-            || !savingsService.contributions.isEmpty
+            || !debtsService.entries.isEmpty
         let csv = CSVExporter.csv(expenses: expenseService.expenses,
                                   incomes: incomeService.incomes,
-                                  contributions: savingsService.contributions)
+                                  debts: debtsService.entries,
+                                  people: debtsService.people)
 
         Group {
             if hasData, let exportURL {

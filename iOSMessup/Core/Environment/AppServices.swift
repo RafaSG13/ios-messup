@@ -14,16 +14,18 @@ final class AppServices {
 
     let expenseService = MUEnvironmentConfigurator.expenseService
     let incomeService = MUEnvironmentConfigurator.incomeService
-    let savingsService = MUEnvironmentConfigurator.savingsService
+    let debtsService = MUEnvironmentConfigurator.debtsService
     let budgetService = MUEnvironmentConfigurator.budgetService
     let notificationService = MUEnvironmentConfigurator.notificationService
+    let contactsService = MUEnvironmentConfigurator.contactsService
+    let dictationService = MUEnvironmentConfigurator.dictationService
 
     let intelligenceService: IntelligenceServiceProtocol
 
     private init() {
         intelligenceService = MUEnvironmentConfigurator.intelligenceService(expenses: expenseService,
                                                                             incomes: incomeService,
-                                                                            savings: savingsService,
+                                                                            debts: debtsService,
                                                                             budget: budgetService)
     }
 }

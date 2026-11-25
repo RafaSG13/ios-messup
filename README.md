@@ -6,9 +6,10 @@ Local-only iOS expense and income tracker built with SwiftUI and Liquid Glass. i
 
 ## Features
 
-- Track expenses, income and savings-goal contributions.
+- Track expenses, income and money you lend to or borrow from people (Social tab, with optional Contacts access).
 - Week / month / year period picker with change vs the previous period **at the same day**, daily average, projection and category totals.
-- Balance = income − expenses − contributions.
+- Balance = income − expenses + net cash from debts and repayments.
+- Assistant tab: ask about your money or tell it to add, edit and delete expenses, income, budget, people and debts, by text or dictation. Runs on device with Apple Intelligence; deletions always ask first.
 - Monthly and per-category budgets (warning from 80 %, flagged when over the limit).
 - Up to 3 spending insights per period.
 - User-selectable currency.

@@ -14,7 +14,9 @@ struct iOSMessupApp: App {
     @AppStorage(AppCurrency.storageKey) private var currencyCode = AppCurrency.defaultCode
     @State private var expenseService: ExpensesServiceProtocol = AppServices.shared.expenseService
     @State private var incomeService: IncomeServiceProtocol = AppServices.shared.incomeService
-    @State private var savingsService: SavingsServiceProtocol = AppServices.shared.savingsService
+    @State private var debtsService: DebtsServiceProtocol = AppServices.shared.debtsService
+    @State private var contactsService: ContactsServiceProtocol = AppServices.shared.contactsService
+    @State private var dictationService: DictationServiceProtocol = AppServices.shared.dictationService
     @State private var budgetService: BudgetServiceProtocol = AppServices.shared.budgetService
     @State private var notificationService: NotificationServiceProtocol = AppServices.shared.notificationService
     @State private var intelligenceService: IntelligenceServiceProtocol = AppServices.shared.intelligenceService
@@ -36,7 +38,9 @@ struct iOSMessupApp: App {
                 .errorAlert(loadError)
                 .environment(\.expenseService, expenseService)
                 .environment(\.incomeService, incomeService)
-                .environment(\.savingsService, savingsService)
+                .environment(\.debtsService, debtsService)
+                .environment(\.contactsService, contactsService)
+                .environment(\.dictationService, dictationService)
                 .environment(\.budgetService, budgetService)
                 .environment(\.notificationService, notificationService)
                 .environment(\.intelligenceService, intelligenceService)
@@ -56,8 +60,8 @@ extension iOSMessupApp {
             status = .loading
             try await expenseService.loadExpenses()
             try await incomeService.load()
-            try await savingsService.load()
             try await budgetService.load()
+            try await debtsService.load()
             status = .idle
         } catch {
             status = .error(error)

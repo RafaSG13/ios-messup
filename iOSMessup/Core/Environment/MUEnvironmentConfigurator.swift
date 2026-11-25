@@ -35,10 +35,24 @@ final class MUEnvironmentConfigurator {
         }
     }
 
-    static var savingsService: SavingsServiceProtocol {
+    static var debtsService: DebtsServiceProtocol {
         switch current {
-        case .mock: MockSavingsService()
-        case .local: SavingsService(store: .shared)
+        case .mock: MockDebtsService()
+        case .local: DebtsService(store: .shared)
+        }
+    }
+
+    static var contactsService: ContactsServiceProtocol {
+        switch current {
+        case .mock: MockContactsService()
+        case .local: ContactsService()
+        }
+    }
+
+    static var dictationService: DictationServiceProtocol {
+        switch current {
+        case .mock: MockDictationService()
+        case .local: DictationService()
         }
     }
 
@@ -58,13 +72,13 @@ final class MUEnvironmentConfigurator {
 
     static func intelligenceService(expenses: ExpensesServiceProtocol,
                                     incomes: IncomeServiceProtocol,
-                                    savings: SavingsServiceProtocol,
+                                    debts: DebtsServiceProtocol,
                                     budget: BudgetServiceProtocol) -> IntelligenceServiceProtocol {
         switch current {
         case .mock: MockIntelligenceService()
         case .local: IntelligenceService(expenseService: expenses,
                                          incomeService: incomes,
-                                         savingsService: savings,
+                                         debtsService: debts,
                                          budgetService: budget)
         }
     }

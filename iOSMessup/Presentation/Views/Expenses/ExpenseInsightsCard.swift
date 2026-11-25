@@ -177,6 +177,6 @@ private extension ExpenseInsightsCard {
         PeriodSummary(period: Period(kind: kind, containing: .now),
                       expenses: Expense.mockArray,
                       incomes: [],
-                      contributions: [])
+                      debts: [])
     }
 }

@@ -30,7 +30,9 @@ struct SampleDataGeneratorTests {
         #expect(first.expenses.map(\.amount) == second.expenses.map(\.amount))
         #expect(first.expenses.map(\.date) == second.expenses.map(\.date))
         #expect(first.incomes.map(\.amount) == second.incomes.map(\.amount))
-        #expect(first.contributions.map(\.amount) == second.contributions.map(\.amount))
+        #expect(first.people.map(\.name) == second.people.map(\.name))
+        #expect(first.debts.map(\.amount) == second.debts.map(\.amount))
+        #expect(first.debts.map(\.date) == second.debts.map(\.date))
     }
 
     @Test func differentSeedsGiveDifferentSpending() {
@@ -45,7 +47,7 @@ struct SampleDataGeneratorTests {
 
         #expect(sample.expenses.allSatisfy { $0.date <= now })
         #expect(sample.incomes.allSatisfy { $0.date <= now })
-        #expect(sample.contributions.allSatisfy { $0.date <= now })
+        #expect(sample.debts.allSatisfy { $0.date <= now })
     }
 
     @Test func coversTheRequestedMonthsWithASalaryEach() {
@@ -58,13 +60,14 @@ struct SampleDataGeneratorTests {
         #expect(sample.expenses.allSatisfy { $0.amount > 0 })
     }
 
-    @Test func contributionsGiveAPartialGoalProgress() {
+    @Test func includesThreePeopleWithValidDebts() {
         let sample = SampleDataGenerator.make(now: now, calendar: calendar)
 
-        let total = sample.contributions.reduce(0) { $0 + $1.amount }
-        #expect(sample.contributions.count >= 4)
-        #expect(sample.contributions.allSatisfy { $0.amount > 0 })
-        #expect(total > 0 && total < sample.goal.amount)
+        let ids = Set(sample.people.map(\.id))
+        #expect(sample.people.count == 3)
+        #expect(!sample.debts.isEmpty)
+        #expect(sample.debts.allSatisfy { ids.contains($0.personID) })
+        #expect(sample.debts.allSatisfy { $0.amount > 0 })
     }
 
     @Test func includesABudgetWithCategoryLimits() {

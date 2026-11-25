@@ -28,7 +28,7 @@ struct ExpenseInsightsTests {
     /// November 2026 (30 days) viewed on `now`.
     private func november(now: Date, expenses: [Expense]) -> PeriodSummary {
         PeriodSummary(period: Period(kind: .month, containing: date(2026, 11, 17), calendar: calendar),
-                      expenses: expenses, incomes: [], contributions: [], now: now)
+                      expenses: expenses, incomes: [], debts: [], now: now)
     }
 
     @Test func noSpendingYieldsNoInsights() {

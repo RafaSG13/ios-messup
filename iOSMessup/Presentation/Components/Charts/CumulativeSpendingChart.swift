@@ -218,7 +218,7 @@ private extension CumulativeSpendingChart {
         PeriodSummary(period: Period(kind: kind, containing: .now),
                       expenses: Expense.mockArray,
                       incomes: [],
-                      contributions: [])
+                      debts: [])
     }
 }
 
@@ -241,7 +241,7 @@ private extension CumulativeSpendingChart {
         CumulativeSpendingChart(summary: PeriodSummary(period: Period(kind: .month, containing: .now),
                                                        expenses: [],
                                                        incomes: [],
-                                                       contributions: []))
+                                                       debts: []))
     }
     .padding()
 }

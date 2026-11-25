@@ -19,8 +19,8 @@ final class LocalStore: Sendable {
     let container: ModelContainer
 
     init(storage: Storage) {
-        let schema = Schema([ExpenseRecord.self, IncomeRecord.self, ContributionRecord.self, SavingGoalRecord.self,
-                             BudgetRecord.self])
+        let schema = Schema([ExpenseRecord.self, IncomeRecord.self, BudgetRecord.self, PersonRecord.self,
+                             DebtEntryRecord.self])
         let configuration: ModelConfiguration
         switch storage {
         case .file(let url):

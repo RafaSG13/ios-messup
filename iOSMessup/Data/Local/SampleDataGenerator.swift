@@ -30,14 +30,14 @@ nonisolated struct SeededGenerator: RandomNumberGenerator {
 // MARK: - SampleDataGenerator
 
 /// Builds several months of realistic, deterministic data relative to `now`, for Debug builds only.
-/// The current month stops at `now`; nothing is generated in the future. Each month adds a salary, expenses and a
-/// monthly contribution (plus occasional extra income/contribution), so the goal shows a partial progress.
+/// The current month stops at `now`; nothing is generated in the future. Each month adds a salary and expenses, with
+/// occasional extra income; a fixed set of people and debts is added on top.
 enum SampleDataGenerator {
     struct Output {
         var expenses: [Expense]
         var incomes: [Income]
-        var contributions: [Contribution]
-        var goal: SavingGoal
+        var people: [Person]
+        var debts: [DebtEntry]
         var budget: Budget
     }
 
@@ -62,11 +62,8 @@ enum SampleDataGenerator {
                      months: Int = 4,
                      seed: UInt64 = 42) -> Output {
         var rng = SeededGenerator(seed: seed)
-        // Separate stream so contributions do not shift the expense/income sequence.
-        var savingsRng = SeededGenerator(seed: seed &+ 1)
         var expenses: [Expense] = []
         var incomes: [Income] = []
-        var contributions: [Contribution] = []
         let currentMonthStart = calendar.dateInterval(of: .month, for: now)!.start
 
         for monthsAgo in (0..<months).reversed() {
@@ -101,14 +98,8 @@ enum SampleDataGenerator {
                 incomes.append(Income(concept: concept, amount: amount, date: date, source: source))
             }
 
-            func addContribution(_ amount: Double, day: Int, _ note: String) {
-                guard let date = moment(day: day, hour: 12) else { return }
-                contributions.append(Contribution(amount: amount, date: date, note: note))
-            }
-
             // Fixed monthly items.
             addIncome("Monthly Salary", 2100, day: 1, .salary)
-            addContribution(Double(Int.random(in: 300...450, using: &savingsRng)), day: 5, "Monthly saving")
             addExpense("Rent", 650, day: 1, hour: 10, .home, .debitCard)
             addExpense("Gym Membership", 45, day: 3, hour: 19, .health, .debitCard)
             addExpense("Electricity", Double.random(in: 40...70, using: &rng), day: 5, hour: 11, .home, .debitCard)
@@ -160,16 +151,38 @@ enum SampleDataGenerator {
             }
             if monthsAgo == 2 {
                 addIncome("Gift", 120, day: 20, .gifts)
-                addContribution(120, day: 21, "Gift saved")
             }
         }
 
-        let goal = SavingGoal(name: "New Car",
-                              completionDate: .fixed(calendar.date(byAdding: .month, value: 18, to: now)!),
-                              amount: 15_000,
-                              savingCategory: .assetPurchase)
         let budget = Budget(monthlyLimit: 1_900, categoryLimits: [.food: 500, .transportation: 150])
-        return Output(expenses: expenses, incomes: incomes, contributions: contributions, goal: goal, budget: budget)
+        let social = makeSocialData(now: now, calendar: calendar)
+        return Output(expenses: expenses, incomes: incomes, people: social.people, debts: social.debts, budget: budget)
+    }
+
+    /// The same people and amounts as `DebtEntry.mockArray`, dated relative to `now` and with fresh ids.
+    private static func makeSocialData(now: Date, calendar: Calendar) -> (people: [Person], debts: [DebtEntry]) {
+        let alex = Person(name: "Alex Rivera")
+        let sam = Person(name: "Sam Carter")
+        let jordan = Person(name: "Jordan Lee")
+
+        func entry(_ person: Person, _ kind: DebtEntryKind, _ amount: Double, daysAgo: Int, _ note: String = "") -> DebtEntry {
+            DebtEntry(personID: person.id,
+                      kind: kind,
+                      amount: amount,
+                      date: calendar.date(byAdding: .day, value: -daysAgo, to: now)!,
+                      note: note)
+        }
+
+        let debts = [
+            entry(alex, .lent, 60, daysAgo: 35, "Concert tickets"),
+            entry(alex, .lent, 25, daysAgo: 12, "Lunch"),
+            entry(alex, .receivedPayment, 40, daysAgo: 5),
+            entry(sam, .borrowed, 120, daysAgo: 50, "Rent shortfall"),
+            entry(sam, .madePayment, 70, daysAgo: 20),
+            entry(jordan, .lent, 30, daysAgo: 70, "Train ticket"),
+            entry(jordan, .receivedPayment, 30, daysAgo: 40)
+        ]
+        return ([alex, sam, jordan], debts)
     }
 }
 #endif

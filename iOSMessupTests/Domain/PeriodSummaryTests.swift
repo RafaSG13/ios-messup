@@ -26,9 +26,9 @@ struct PeriodSummaryTests {
     }
 
     private func november(now: Date, expenses: [Expense] = [], incomes: [Income] = [],
-                          contributions: [Contribution] = []) -> PeriodSummary {
+                          debts: [DebtEntry] = []) -> PeriodSummary {
         PeriodSummary(period: Period(kind: .month, containing: date(2026, 11, 17), calendar: calendar),
-                      expenses: expenses, incomes: incomes, contributions: contributions, now: now)
+                      expenses: expenses, incomes: incomes, debts: debts, now: now)
     }
 
     @Test func sumsOnlyItemsInsideThePeriodBoundariesIncluded() {
@@ -43,18 +43,19 @@ struct PeriodSummaryTests {
         #expect(summary.previousSpent == 10)
     }
 
-    @Test func balanceIsIncomeMinusExpensesMinusContributions() {
+    @Test func balanceAddsNetDebtCashFlow() {
+        let alex = "alex"
         let summary = november(
             now: date(2026, 11, 17),
-            expenses: [expense(1200, on: date(2026, 11, 3))],
-            incomes: [Income(concept: "Salary", amount: 2000, date: date(2026, 11, 1), source: .salary),
-                      Income(concept: "Old", amount: 999, date: date(2026, 10, 1), source: .salary)],
-            contributions: [Contribution(amount: 300, date: date(2026, 11, 5)),
-                            Contribution(amount: 50, date: date(2026, 12, 1))])
+            expenses: [expense(200, on: date(2026, 11, 3))],
+            incomes: [Income(concept: "Salary", amount: 1000, date: date(2026, 11, 1), source: .salary)],
+            debts: [DebtEntry(personID: alex, kind: .lent, amount: 100, date: date(2026, 11, 4)),
+                    DebtEntry(personID: alex, kind: .receivedPayment, amount: 40, date: date(2026, 11, 8)),
+                    DebtEntry(personID: alex, kind: .borrowed, amount: 50, date: date(2026, 11, 9)),
+                    DebtEntry(personID: alex, kind: .lent, amount: 999, date: date(2026, 12, 1))])
 
-        #expect(summary.income == 2000)
-        #expect(summary.contributed == 300)
-        #expect(summary.balance == 500)
+        #expect(summary.debtFlow == -10)
+        #expect(summary.balance == 790)
     }
 
     @Test func changeVersusPreviousIsRelativeAndNilWithoutHistory() {

@@ -13,18 +13,20 @@ import FoundationModels
 final class IntelligenceService: IntelligenceServiceProtocol {
     private let expenseService: ExpensesServiceProtocol
     private let incomeService: IncomeServiceProtocol
-    private let savingsService: SavingsServiceProtocol
+    private let debtsService: DebtsServiceProtocol
     private let budgetService: BudgetServiceProtocol
     private let model = SystemLanguageModel.default
     @ObservationIgnored private var assistantSession: LanguageModelSession?
+    /// Where the change tools announce what they did and ask before deleting; the chat observes it.
+    let actionCenter = AssistantActionCenter()
 
     init(expenseService: ExpensesServiceProtocol,
          incomeService: IncomeServiceProtocol,
-         savingsService: SavingsServiceProtocol,
+         debtsService: DebtsServiceProtocol,
          budgetService: BudgetServiceProtocol) {
         self.expenseService = expenseService
         self.incomeService = incomeService
-        self.savingsService = savingsService
+        self.debtsService = debtsService
         self.budgetService = budgetService
     }
 
@@ -128,6 +130,7 @@ final class IntelligenceService: IntelligenceServiceProtocol {
 
     func resetConversation() {
         assistantSession = nil
+        actionCenter.resolve(false)
     }
 
     private func stream(session: LanguageModelSession,
@@ -158,13 +161,20 @@ final class IntelligenceService: IntelligenceServiceProtocol {
     // MARK: - Assistant
 
     private func makeAssistantSession() -> LanguageModelSession {
+        LanguageModelSession(model: model,
+                             tools: assistantTools(),
+                             instructions: IntelligencePrompts.assistantInstructions(now: .now, currencyCode: currencyCode))
+    }
+
+    /// The nine tools of the assistant: four to read data, five to change it.
+    func assistantTools() -> [any Tool] {
         let spending = SpendingSummaryTool { [weak self] arguments in
             guard let self else { return "No data." }
             let period = self.period(arguments.period, arguments.periodsAgo)
             let summary = PeriodSummary(period: period,
                                         expenses: self.expenseService.expenses,
                                         incomes: self.incomeService.incomes,
-                                        contributions: self.savingsService.contributions)
+                                        debts: self.debtsService.entries)
             return IntelligencePrompts.spendingReport(summary, budget: self.budgetService.budget, currencyCode: self.currencyCode)
         }
         let search = ExpenseSearchTool { [weak self] arguments in
@@ -175,17 +185,37 @@ final class IntelligenceService: IntelligenceServiceProtocol {
                                                      period: self.period(arguments.period, arguments.periodsAgo),
                                                      currencyCode: self.currencyCode)
         }
-        let savings = SavingsGoalTool { [weak self] arguments in
+        let debts = DebtsTool { [weak self] arguments in
             guard let self else { return "No data." }
-            return IntelligencePrompts.savingsReport(goal: self.savingsService.savingGoal,
-                                                     progress: self.savingsService.progress(),
-                                                     contributions: self.savingsService.contributions,
-                                                     includeContributions: arguments.includeContributions,
-                                                     currencyCode: self.currencyCode)
+            return IntelligencePrompts.debtsReport(people: self.debtsService.people,
+                                                   entries: self.debtsService.entries,
+                                                   personName: arguments.personName,
+                                                   currencyCode: self.currencyCode)
         }
-        return LanguageModelSession(model: model,
-                                    tools: [spending, search, savings],
-                                    instructions: IntelligencePrompts.assistantInstructions(now: .now, currencyCode: currencyCode))
+        let incomeSearch = IncomeSearchTool { [weak self] arguments in
+            guard let self else { return "No data." }
+            return IntelligencePrompts.incomeSearch(self.incomeService.incomes,
+                                                    query: arguments.query,
+                                                    period: self.period(arguments.period, arguments.periodsAgo),
+                                                    currencyCode: self.currencyCode)
+        }
+
+        let center = actionCenter
+        let actions = AssistantActions(expenses: expenseService,
+                                       incomes: incomeService,
+                                       budget: budgetService,
+                                       debts: debtsService,
+                                       currencyCode: { [weak self] in self?.currencyCode ?? AppCurrency.defaultCode },
+                                       confirm: { await center.confirm($0) },
+                                       record: { center.record($0) })
+        let changeExpense = ExpenseChangeTool { await actions.changeExpense($0) }
+        let changeIncome = IncomeChangeTool { await actions.changeIncome($0) }
+        let changeBudget = BudgetChangeTool { await actions.changeBudget($0) }
+        let changePerson = PersonChangeTool { await actions.changePerson($0) }
+        let changeDebt = DebtChangeTool { await actions.changeDebt($0) }
+
+        return [spending, search, incomeSearch, debts,
+                changeExpense, changeIncome, changeBudget, changePerson, changeDebt]
     }
 
     private func period(_ kind: String, _ periodsAgo: Int) -> Period {

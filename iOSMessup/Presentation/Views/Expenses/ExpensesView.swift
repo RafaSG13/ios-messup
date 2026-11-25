@@ -14,12 +14,10 @@ import MUDesignSystem
 /// so presenting a sheet does not recompute the summary.
 struct ExpensesView: View {
     @Environment(\.expenseService) private var expenseService
-    @Environment(\.intelligenceService) private var intelligenceService
     @State private var kind = PeriodKind.month
     @State private var anchor = Date.now
     @State private var shouldPresentAddExpense = false
     @State private var isPresentingBudget = false
-    @State private var isPresentingAssistant = false
     @State private var selectedItem: Expense?
     @State private var error: (any Error)?
 
@@ -41,13 +39,6 @@ struct ExpensesView: View {
                         }
                         .buttonStyle(.glassProminent)
                     }
-                    if intelligenceService.availability == .available {
-                        ToolbarItem(placement: .topBarLeading) {
-                            Button("Ask Messup", systemImage: "sparkles") {
-                                isPresentingAssistant = true
-                            }
-                        }
-                    }
                 }
                 .errorAlert($error)
                 .addExpenseSheet(isPresented: $shouldPresentAddExpense,
@@ -56,9 +47,6 @@ struct ExpensesView: View {
                                   onSubmit: expenseService.updateExpense(with:))
                 .sheet(isPresented: $isPresentingBudget) {
                     BudgetFormView()
-                }
-                .sheet(isPresented: $isPresentingAssistant) {
-                    AssistantView()
                 }
         }
     }
@@ -69,7 +57,7 @@ struct ExpensesView: View {
 private struct ExpensesDashboard: View {
     @Environment(\.expenseService) private var expenseService
     @Environment(\.incomeService) private var incomeService
-    @Environment(\.savingsService) private var savingsService
+    @Environment(\.debtsService) private var debtsService
     @Environment(\.budgetService) private var budgetService
     @Binding var kind: PeriodKind
     @Binding var anchor: Date
@@ -83,7 +71,7 @@ private struct ExpensesDashboard: View {
         let summary = PeriodSummary(period: period,
                                     expenses: expenseService.expenses,
                                     incomes: incomeService.incomes,
-                                    contributions: savingsService.contributions)
+                                    debts: debtsService.entries)
         // The budget only applies to months.
         let monthlyLimit = kind == .month ? budgetService.budget?.monthlyLimit : nil
         let categoryLimits: [Category: BudgetProgress] = kind == .month

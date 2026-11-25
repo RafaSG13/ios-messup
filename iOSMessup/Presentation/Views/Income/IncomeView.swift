@@ -99,7 +99,7 @@ private struct IncomeList: View {
 private struct IncomeBalanceSection: View {
     @Environment(\.incomeService) private var incomeService
     @Environment(\.expenseService) private var expenseService
-    @Environment(\.savingsService) private var savingsService
+    @Environment(\.debtsService) private var debtsService
     let kind: PeriodKind
     let anchor: Date
 
@@ -107,7 +107,7 @@ private struct IncomeBalanceSection: View {
         let summary = PeriodSummary(period: Period(kind: kind, containing: anchor),
                                     expenses: expenseService.expenses,
                                     incomes: incomeService.incomes,
-                                    contributions: savingsService.contributions)
+                                    debts: debtsService.entries)
 
         Section {
             BalanceSummaryCard(summary: summary)

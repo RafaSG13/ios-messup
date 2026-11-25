@@ -8,8 +8,8 @@
 import SwiftUI
 import MUDesignSystem
 
-/// Money coming in (salary, freelance, gifts...). It is independent of saving goals: a goal is funded by
-/// explicit `Contribution`s, and the monthly balance is income − expenses − contributions.
+/// Money coming in (salary, freelance, gifts...). It counts toward the monthly balance, which is
+/// income − expenses + net cash from debts and repayments.
 struct Income: Identifiable, Hashable, Equatable {
     var id: String = UUID().uuidString
     var concept: String

@@ -119,7 +119,7 @@ private extension ExpensesSummaryCard {
         PeriodSummary(period: Period(kind: .month, containing: .now),
                       expenses: Expense.mockArray,
                       incomes: [],
-                      contributions: [])
+                      debts: [])
     }
 }
 

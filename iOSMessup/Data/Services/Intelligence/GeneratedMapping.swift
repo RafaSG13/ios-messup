@@ -38,18 +38,57 @@ extension PaymentMethod {
     }
 }
 
-extension ExpenseDraft {
-    /// An explicit `yyyy-MM-dd` date wins over `daysAgo`; a date that cannot be read falls back to `daysAgo`.
-    init(_ generated: GeneratedExpense, now: Date, calendar: Calendar) {
-        let name = generated.name.trimmingCharacters(in: .whitespacesAndNewlines)
-        let explicitDate = generated.date.flatMap {
+extension IncomeSource {
+    init(_ generated: GeneratedIncomeSource) {
+        switch generated {
+        case .salary: self = .salary
+        case .freelance: self = .freelance
+        case .investments: self = .investments
+        case .rentalIncome: self = .rentalIncome
+        case .businessProfits: self = .businessProfits
+        case .gifts: self = .gifts
+        case .inheritance: self = .inheritance
+        case .bonuses: self = .bonuses
+        case .taxRefund: self = .taxRefund
+        case .passiveIncome: self = .passiveIncome
+        case .sellingAssets: self = .sellingAssets
+        case .sideHustle: self = .sideHustle
+        case .governmentBenefits: self = .governmentBenefits
+        case .other: self = .other
+        }
+    }
+}
+
+extension DebtEntryKind {
+    init(_ generated: GeneratedDebtKind) {
+        switch generated {
+        case .lent: self = .lent
+        case .borrowed: self = .borrowed
+        case .receivedPayment: self = .receivedPayment
+        case .madePayment: self = .madePayment
+        }
+    }
+}
+
+extension Date {
+    /// An explicit `yyyy-MM-dd` date wins over `daysAgo`; a date that cannot be read falls back to `daysAgo`;
+    /// `nil` when neither is usable.
+    static func resolved(explicit: String?, daysAgo: Int?, now: Date, calendar: Calendar) -> Date? {
+        let explicitDate = explicit.flatMap {
             try? Date($0, strategy: Date.ISO8601FormatStyle(timeZone: calendar.timeZone).year().month().day())
         }
-        let relativeDate = generated.daysAgo.flatMap { calendar.date(byAdding: .day, value: -$0, to: now) }
+        let relativeDate = daysAgo.flatMap { calendar.date(byAdding: .day, value: -$0, to: now) }
+        return explicitDate ?? relativeDate
+    }
+}
+
+extension ExpenseDraft {
+    init(_ generated: GeneratedExpense, now: Date, calendar: Calendar) {
+        let name = generated.name.trimmingCharacters(in: .whitespacesAndNewlines)
 
         self.init(name: name.isEmpty ? nil : name,
                   amount: generated.amount.flatMap { $0 > 0 ? $0 : nil },
-                  date: explicitDate ?? relativeDate,
+                  date: Date.resolved(explicit: generated.date, daysAgo: generated.daysAgo, now: now, calendar: calendar),
                   paymentMethod: generated.paymentMethod.map(PaymentMethod.init),
                   category: generated.category.map(Category.init))
     }

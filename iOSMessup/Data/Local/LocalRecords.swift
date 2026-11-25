@@ -80,64 +80,6 @@ final class IncomeRecord {
     }
 }
 
-// MARK: - ContributionRecord
-
-@Model
-final class ContributionRecord {
-    @Attribute(.unique) var id: String
-    var amount: Double
-    var date: Date
-    var note: String
-
-    init(_ contribution: Contribution) {
-        self.id = contribution.id
-        self.amount = contribution.amount
-        self.date = contribution.date
-        self.note = contribution.note
-    }
-
-    var domain: Contribution {
-        Contribution(id: id, amount: amount, date: date, note: note)
-    }
-
-    func apply(_ contribution: Contribution) {
-        amount = contribution.amount
-        date = contribution.date
-        note = contribution.note
-    }
-}
-
-// MARK: - SavingGoalRecord
-
-@Model
-final class SavingGoalRecord {
-    @Attribute(.unique) var id: String
-    var name: String
-    var amount: Double
-    /// `nil` means `CompletionDate.undefined`.
-    var completionDate: Date?
-    var savingCategoryRaw: String
-
-    init(_ goal: SavingGoal) {
-        self.id = goal.id
-        self.name = goal.name
-        self.amount = goal.amount
-        switch goal.completionDate {
-        case .undefined: self.completionDate = nil
-        case .fixed(let date): self.completionDate = date
-        }
-        self.savingCategoryRaw = goal.savingCategory.rawValue
-    }
-
-    var domain: SavingGoal {
-        SavingGoal(id: id,
-                   name: name,
-                   completionDate: completionDate.map { .fixed($0) } ?? .undefined,
-                   amount: amount,
-                   savingCategory: SavingCategory(rawValue: savingCategoryRaw) ?? .liquidity)
-    }
-}
-
 // MARK: - BudgetRecord
 
 @Model
@@ -165,5 +107,69 @@ final class BudgetRecord {
     func apply(_ budget: Budget) {
         monthlyLimit = budget.monthlyLimit
         categoryLimitsRaw = Dictionary(uniqueKeysWithValues: budget.categoryLimits.map { ($0.key.rawValue, $0.value) })
+    }
+}
+
+// MARK: - PersonRecord
+
+@Model
+final class PersonRecord {
+    @Attribute(.unique) var id: String
+    var name: String
+    var contactIdentifier: String?
+
+    init(_ person: Person) {
+        self.id = person.id
+        self.name = person.name
+        self.contactIdentifier = person.contactIdentifier
+    }
+
+    var domain: Person {
+        Person(id: id, name: name, contactIdentifier: contactIdentifier)
+    }
+
+    func apply(_ person: Person) {
+        name = person.name
+        contactIdentifier = person.contactIdentifier
+    }
+}
+
+// MARK: - DebtEntryRecord
+
+/// Plain record (no SwiftData relationship to `PersonRecord`, like the rest of the store); `DebtsService` removes a
+/// person's entries when the person is deleted.
+@Model
+final class DebtEntryRecord {
+    @Attribute(.unique) var id: String
+    var personID: String
+    var kindRaw: String
+    var amount: Double
+    var date: Date
+    var note: String
+
+    init(_ entry: DebtEntry) {
+        self.id = entry.id
+        self.personID = entry.personID
+        self.kindRaw = entry.kind.rawValue
+        self.amount = entry.amount
+        self.date = entry.date
+        self.note = entry.note
+    }
+
+    var domain: DebtEntry {
+        DebtEntry(id: id,
+                  personID: personID,
+                  kind: DebtEntryKind(rawValue: kindRaw) ?? .lent,
+                  amount: amount,
+                  date: date,
+                  note: note)
+    }
+
+    func apply(_ entry: DebtEntry) {
+        personID = entry.personID
+        kindRaw = entry.kind.rawValue
+        amount = entry.amount
+        date = entry.date
+        note = entry.note
     }
 }
