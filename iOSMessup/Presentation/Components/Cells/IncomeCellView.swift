@@ -22,12 +22,7 @@ struct IncomeCellView: View {
             : AnyLayout(HStackLayout(spacing: MUSpacer.size03))
 
         layout {
-            Image(systemName: income.source.icon)
-                .symbolVariant(.fill)
-                .foregroundStyle(income.source.color)
-                .frame(width: iconSize, height: iconSize)
-                .background(income.source.color.opacity(0.15), in: .rect(cornerRadius: MURadius.small))
-                .accessibilityHidden(true)
+            MUIconTile(systemImage: income.source.icon, tint: income.source.color, size: iconSize)
 
             VStack(alignment: .leading) {
                 Text(income.concept)
@@ -39,9 +34,8 @@ struct IncomeCellView: View {
             .frame(maxWidth: isAccessibilitySize ? nil : .infinity, alignment: .leading)
 
             VStack(alignment: isAccessibilitySize ? .leading : .trailing) {
-                Text(income.amount.formattedMoney(code: currencyCode))
-                    .bold()
-                    .foregroundStyle(.green)
+                Text(income.amount.formattedSignedMoney(code: currencyCode))
+                    .font(MUTypography.rowAmount)
                 Text(income.date, format: .dateTime.day().month(.abbreviated).year())
                     .font(.caption)
                     .foregroundStyle(.secondary)

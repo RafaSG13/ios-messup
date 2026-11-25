@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "MUDesignSystem",
-    platforms: [.iOS(.v26)],
+    platforms: [.iOS("27.0")],
     products: [
         .library(
             name: "MUDesignSystem",

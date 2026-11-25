@@ -14,29 +14,17 @@ import MUDesignSystem
 struct ExpenseCellView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.currencyCode) private var currencyCode
+    @ScaledMetric private var iconSize: CGFloat = 40
     let expense: Expense
-
-    private enum ViewTraits {
-        static let imageSize: CGFloat = 40
-        static let imageInternalPadding: CGFloat = 5
-        static let spacing: CGFloat = 10
-        static let minHeight: CGFloat = 44
-    }
 
     var body: some View {
         let isAccessibilitySize = dynamicTypeSize.isAccessibilitySize
         let layout = isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: ViewTraits.spacing))
-            : AnyLayout(HStackLayout(spacing: ViewTraits.spacing))
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: MUSpacer.size03))
+            : AnyLayout(HStackLayout(spacing: MUSpacer.size03))
 
         layout {
-            Image(systemName: expense.category.icon)
-                .resizable()
-                .scaledToFit()
-                .frame(width: ViewTraits.imageSize, height: ViewTraits.imageSize)
-                .padding(ViewTraits.imageInternalPadding)
-                .background(expense.category.color, in: .rect(cornerRadius: MURadius.small))
-                .foregroundStyle(.background)
+            MUIconTile(systemImage: expense.category.icon, tint: expense.category.color, size: iconSize)
 
             VStack(alignment: .leading) {
                 Text(expense.name)
@@ -49,13 +37,13 @@ struct ExpenseCellView: View {
 
             VStack(alignment: isAccessibilitySize ? .leading : .trailing) {
                 Text(expense.amount.formattedMoney(code: currencyCode))
-                    .font(.headline)
+                    .font(MUTypography.rowAmount)
                 Text(expense.date, format: .dateTime.day().month().hour().minute())
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
         }
-        .frame(maxWidth: .infinity, minHeight: ViewTraits.minHeight, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: iconSize, alignment: .leading)
         .accessibilityElement(children: .combine)
     }
 }

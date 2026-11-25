@@ -67,12 +67,7 @@ private extension CategoryBreakdownView {
              barTint: Color,
              limitProgress: BudgetProgress?) -> some View {
         HStack(alignment: .top, spacing: MUSpacer.size03) {
-            Image(systemName: icon)
-                .symbolVariant(.fill)
-                .foregroundStyle(color)
-                .frame(width: iconTileSize, height: iconTileSize)
-                .background(color.opacity(0.15), in: RoundedRectangle(cornerRadius: MURadius.small))
-                .accessibilityHidden(true)
+            MUIconTile(systemImage: icon, tint: color, size: iconTileSize)
 
             VStack(alignment: .leading, spacing: MUSpacer.size02) {
                 headline(title: title, amount: amount, share: share)
@@ -117,8 +112,8 @@ private extension CategoryBreakdownView {
 
     func tint(for progress: BudgetProgress?, default color: Color) -> Color {
         switch progress?.state {
-        case .warning: .orange
-        case .over: .red
+        case .warning: Color.designSystem.warning
+        case .over: Color.designSystem.critical
         case .ok, nil: color
         }
     }

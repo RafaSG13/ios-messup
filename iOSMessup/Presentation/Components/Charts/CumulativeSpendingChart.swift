@@ -68,12 +68,12 @@ private extension CumulativeSpendingChart {
             }
             if let monthlyLimit {
                 RuleMark(y: .value("Monthly limit", monthlyLimit))
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(Color.designSystem.warning)
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: ViewTraits.limitDash))
                     .annotation(position: .top, alignment: .trailing, spacing: 2) {
                         Text("Limit \(monthlyLimit.formattedCompactMoney(code: currencyCode))")
                             .font(.caption2)
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(Color.designSystem.warning)
                     }
             }
             if let day = selection {

@@ -55,4 +55,17 @@ final class MUEnvironmentConfigurator {
         case .local: NotificationService()
         }
     }
+
+    static func intelligenceService(expenses: ExpensesServiceProtocol,
+                                    incomes: IncomeServiceProtocol,
+                                    savings: SavingsServiceProtocol,
+                                    budget: BudgetServiceProtocol) -> IntelligenceServiceProtocol {
+        switch current {
+        case .mock: MockIntelligenceService()
+        case .local: IntelligenceService(expenseService: expenses,
+                                         incomeService: incomes,
+                                         savingsService: savings,
+                                         budgetService: budget)
+        }
+    }
 }

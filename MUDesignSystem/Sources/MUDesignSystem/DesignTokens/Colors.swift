@@ -16,7 +16,10 @@ public enum MUDesignSystemColors {
     public static let sunYellow = Color(red: 0.976, green: 0.753, blue: 0.106)
     public static let bubblegum = Color(red: 0.910, green: 0.639, blue: 0.753)
     public static let deepBlue = Color(red: 0.082, green: 0.310, blue: 0.639)
-
+    /// Approaching a limit (budget from 80 %), spending more than the previous period.
+    public static let warning = Color.orange
+    /// Over a limit, negative balance.
+    public static let critical = Color.red
 }
 
 public extension Color {

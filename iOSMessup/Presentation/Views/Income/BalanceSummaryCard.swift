@@ -38,8 +38,10 @@ private extension BalanceSummaryCard {
     var balanceHeader: some View {
         VStack(alignment: .leading, spacing: MUSpacer.size01) {
             Text(summary.balance.formattedMoney(code: currencyCode))
-                .font(.largeTitle.bold())
-                .foregroundStyle(isOver ? .red : .green)
+                .font(MUTypography.heroAmount)
+                .foregroundStyle(isOver ? Color.designSystem.critical : Color.primary)
+                .contentTransition(.numericText(value: summary.balance))
+                .animation(.snappy, value: summary.balance)
                 .minimumScaleFactor(0.6)
             if isOver {
                 Text("over")
@@ -62,7 +64,7 @@ private extension BalanceSummaryCard {
                             systemImage: "arrow.down.circle.fill",
                             sign: "+",
                             amount: summary.income,
-                            tint: .green)
+                            tint: .primary)
             BalanceLineView(title: "Expenses",
                             systemImage: "creditcard.fill",
                             sign: "−",
@@ -100,7 +102,7 @@ private struct BalanceLineView: View {
                     .foregroundStyle(.secondary)
             }
             Text("\(sign)\(amount.formattedCompactMoney(code: currencyCode))")
-                .font(.subheadline.bold())
+                .font(MUTypography.compactAmount)
                 .foregroundStyle(tint)
                 .minimumScaleFactor(0.7)
                 .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)

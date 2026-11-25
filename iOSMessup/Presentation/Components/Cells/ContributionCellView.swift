@@ -22,11 +22,7 @@ struct ContributionCellView: View {
             : AnyLayout(HStackLayout(spacing: MUSpacer.size03))
 
         layout {
-            Image(systemName: "target")
-                .foregroundStyle(.green)
-                .frame(width: iconSize, height: iconSize)
-                .background(Color.green.opacity(0.15), in: .rect(cornerRadius: MURadius.small))
-                .accessibilityHidden(true)
+            MUIconTile(systemImage: "target", tint: .accentColor, size: iconSize)
 
             VStack(alignment: .leading) {
                 if contribution.note.isEmpty {
@@ -41,8 +37,7 @@ struct ContributionCellView: View {
 
             VStack(alignment: isAccessibilitySize ? .leading : .trailing) {
                 Text(contribution.amount.formattedMoney(code: currencyCode))
-                    .bold()
-                    .foregroundStyle(.green)
+                    .font(MUTypography.rowAmount)
                 Text(contribution.date, format: .dateTime.day().month(.abbreviated).year())
                     .font(.caption)
                     .foregroundStyle(.secondary)

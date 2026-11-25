@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MUDesignSystem
 
 // MARK: - AllExpensesView
 
@@ -26,15 +27,11 @@ struct AllExpensesView: View {
             ForEach(sections) { section in
                 Section {
                     ForEach(section.items) { expense in
-                        Button {
-                            selectedItem = expense
-                        } label: {
-                            ExpenseCellView(expense: expense)
-                        }
-                        .buttonStyle(.plain)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button("Delete", role: .destructive) { delete(expense) }
-                        }
+                        ExpenseCellView(expense: expense)
+                            .selectableCell { selectedItem = expense }
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button("Delete", role: .destructive) { delete(expense) }
+                            }
                     }
                 } header: {
                     Text(section.day, format: .dateTime.weekday(.wide).day().month(.wide))
@@ -42,6 +39,7 @@ struct AllExpensesView: View {
             }
         }
         .listStyle(.insetGrouped)
+        .listSectionSpacing(MUSpacer.size04)
         .searchable(text: $searchText, placement: .toolbar)
         .searchToolbarBehavior(.minimize)
         .navigationTitle("All transactions")

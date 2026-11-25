@@ -65,10 +65,10 @@ enum PaymentMethod: String, CaseIterable, Hashable, Codable, Sendable {
 
     var color: Color {
         switch self {
-        case .cash: return .green
+        case .cash: return .orange
         case .creditCard: return .blue
         case .debitCard: return .purple
-        case .paypal: return .teal
+        case .paypal: return .indigo
         case .other: return .gray
         }
     }
@@ -113,19 +113,19 @@ enum Category: String, CaseIterable, Hashable, Codable, Sendable {
 
     var color: Color {
         switch self {
-        case .entertainment: return Color.designSystem.bubblegum
+        case .entertainment: return .purple
         case .travel: return Color.designSystem.deepBlue
         case .food: return Color.designSystem.tangerine
         case .transportation: return .gray
         case .health: return .red
-        case .home: return .green
-        case .technology: return .teal
+        case .home: return .brown
+        case .technology: return .indigo
         case .fashion: return .pink
         case .education: return Color.designSystem.sunYellow
-        case .family: return .indigo
-        case .finance: return .cyan
-        case .taxes: return .brown
-        case .charity: return .mint
+        case .family: return Color.designSystem.bubblegum
+        case .finance: return .blue
+        case .taxes: return .gray
+        case .charity: return Color.designSystem.bubblegum
         case .miscellaneous: return .secondary
         }
     }

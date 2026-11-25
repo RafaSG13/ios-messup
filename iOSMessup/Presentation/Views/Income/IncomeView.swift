@@ -71,6 +71,7 @@ struct IncomeView: View {
                 }
             }
             .listStyle(.insetGrouped)
+            .listSectionSpacing(MUSpacer.size04)
             .overlay {
                 if !hasIncomes {
                     ContentUnavailableView {

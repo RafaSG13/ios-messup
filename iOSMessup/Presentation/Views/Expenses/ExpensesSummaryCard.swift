@@ -25,12 +25,18 @@ struct ExpensesSummaryCard: View {
         MUCard("Spent") {
             VStack(alignment: .leading, spacing: MUSpacer.size03) {
                 Text(summary.spent.formattedMoney(code: currencyCode))
-                    .font(.largeTitle.bold())
+                    .font(MUTypography.heroAmount)
+                    .contentTransition(.numericText(value: summary.spent))
+                    .animation(.snappy, value: summary.spent)
 
                 if let change = summary.changeVersusPrevious {
-                    summary.period.kind.changeText(change)
-                        .font(.subheadline)
-                        .foregroundStyle(change < 0 ? Color.green : Color.orange)
+                    Label {
+                        summary.period.kind.changeText(change)
+                    } icon: {
+                        Image(systemName: change < 0 ? "arrow.down.right" : "arrow.up.right")
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(change < 0 ? AnyShapeStyle(.secondary) : AnyShapeStyle(Color.designSystem.warning))
                 }
                 if let projected = summary.projectedSpent {
                     Text("On pace for \(projected.formattedMoney(code: currencyCode))")
@@ -83,9 +89,9 @@ private extension ExpensesSummaryCard {
 
     func tint(for state: BudgetProgress.State) -> Color {
         switch state {
-        case .ok: .green
-        case .warning: .orange
-        case .over: .red
+        case .ok: Color.accentColor
+        case .warning: Color.designSystem.warning
+        case .over: Color.designSystem.critical
         }
     }
 }

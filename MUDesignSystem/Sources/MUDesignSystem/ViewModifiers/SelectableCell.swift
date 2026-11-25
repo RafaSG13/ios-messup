@@ -22,6 +22,7 @@ public struct SelectableCell: ViewModifier {
         } label: {
             content
         }
+        .foregroundStyle(.primary)
     }
 }
 

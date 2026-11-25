@@ -18,6 +18,11 @@ extension Double {
         formatted(.currency(code: code).notation(.compactName))
     }
 
+    /// `2100` → "+$2,100.00" (explicit sign, for money coming in).
+    func formattedSignedMoney(code: String) -> String {
+        formatted(.currency(code: code).sign(strategy: .always()))
+    }
+
     func formatToPercentageString() -> String {
         let percentage = Int((self * 100).rounded())
         return "\(percentage)%"

@@ -4,7 +4,9 @@
 //
 //  Created by Rafael Serrano Gamarra on 23/1/25.
 //
+
 import SwiftUI
+import MUDesignSystem
 
 struct SavingGoal: Identifiable, Hashable {
     var id: String = UUID().uuidString
@@ -107,12 +109,12 @@ enum SavingCategory: String, CaseIterable {
     var color: Color {
         switch self {
         case .vacation: return .yellow
-        case .assetPurchase: return .teal
+        case .assetPurchase: return Color.designSystem.deepBlue
         case .emergencyFund: return .red
-        case .liquidity: return .cyan
+        case .liquidity: return .blue
         case .education: return .purple
         case .retirement: return .orange
-        case .debtRepayment: return .green
+        case .debtRepayment: return .gray
         case .familySupport: return .blue
         case .homeRenovation: return .brown
         case .healthCare: return .pink

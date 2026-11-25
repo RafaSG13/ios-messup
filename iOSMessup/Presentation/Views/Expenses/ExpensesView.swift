@@ -15,10 +15,12 @@ struct ExpensesView: View {
     @Environment(\.incomeService) private var incomeService
     @Environment(\.savingsService) private var savingsService
     @Environment(\.budgetService) private var budgetService
+    @Environment(\.intelligenceService) private var intelligenceService
     @State private var kind = PeriodKind.month
     @State private var anchor = Date.now
     @State private var shouldPresentAddExpense = false
     @State private var isPresentingBudget = false
+    @State private var isPresentingAssistant = false
     @State private var selectedItem: Expense?
     @State private var error: (any Error)?
 
@@ -46,8 +48,9 @@ struct ExpensesView: View {
                 }
             }
             .listStyle(.insetGrouped)
+            .listSectionSpacing(MUSpacer.size04)
             .navigationTitle("Expenses")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
             .navigationDestination(for: Route.self) { $0.destination }
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
@@ -55,6 +58,13 @@ struct ExpensesView: View {
                         shouldPresentAddExpense = true
                     }
                     .buttonStyle(.glassProminent)
+                }
+                if intelligenceService.availability == .available {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("Ask Messup", systemImage: "sparkles") {
+                            isPresentingAssistant = true
+                        }
+                    }
                 }
             }
             .errorAlert($error)
@@ -64,6 +74,9 @@ struct ExpensesView: View {
                               onSubmit: expenseService.updateExpense(with:))
             .sheet(isPresented: $isPresentingBudget) {
                 BudgetFormView()
+            }
+            .sheet(isPresented: $isPresentingAssistant) {
+                AssistantView()
             }
         }
     }
@@ -97,7 +110,9 @@ private extension ExpensesView {
                                 budgetProgress: kind == .month ? budgetService.progress(spent: summary.spent) : nil,
                                 onEditBudget: { isPresentingBudget = true })
                 .cardRow()
+        }
 
+        Section {
             MUCard("Spending") {
                 CumulativeSpendingChart(summary: summary, monthlyLimit: monthlyLimit)
             }
@@ -110,7 +125,7 @@ private extension ExpensesView {
         let insights = Insight.make(from: summary, monthlyLimit: monthlyLimit)
         if !insights.isEmpty {
             Section {
-                ExpenseInsightsCard(insights: insights, kind: kind)
+                ExpenseInsightsCard(insights: insights, summary: summary, monthlyLimit: monthlyLimit)
                     .cardRow()
             }
         }
@@ -142,15 +157,11 @@ private extension ExpensesView {
                     .foregroundStyle(.secondary)
             }
             ForEach(recent) { expense in
-                Button {
-                    selectedItem = expense
-                } label: {
-                    ExpenseCellView(expense: expense)
-                }
-                .buttonStyle(.plain)
-                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                    Button("Delete", role: .destructive) { delete(expense) }
-                }
+                ExpenseCellView(expense: expense)
+                    .selectableCell { selectedItem = expense }
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        Button("Delete", role: .destructive) { delete(expense) }
+                    }
             }
         } header: {
             ListSectionHeaderView(sectionTitle: "Transactions",

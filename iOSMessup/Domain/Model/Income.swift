@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MUDesignSystem
 
 /// Money coming in (salary, freelance, gifts...). It is independent of saving goals: a goal is funded by
 /// explicit `Contribution`s, and the monthly balance is income − expenses − contributions.
@@ -82,16 +83,16 @@ enum IncomeSource: String, CaseIterable, Hashable, Equatable {
 
     var color: Color {
         switch self {
-        case .salary: return .green
-        case .freelance: return .blue
+        case .salary: return .blue
+        case .freelance: return .indigo
         case .investments: return .purple
-        case .rentalIncome: return .teal
+        case .rentalIncome: return .brown
         case .businessProfits: return .orange
         case .gifts: return .pink
-        case .inheritance: return .brown
-        case .bonuses: return .mint
-        case .taxRefund: return .indigo
-        case .passiveIncome: return .cyan
+        case .inheritance: return .gray
+        case .bonuses: return .yellow
+        case .taxRefund: return Color.designSystem.deepBlue
+        case .passiveIncome: return Color.designSystem.bubblegum
         case .sellingAssets: return .red
         case .sideHustle: return .gray
         case .governmentBenefits: return .primary

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MUDesignSystem
 
 // MARK: - PeriodPicker
 
@@ -27,7 +28,7 @@ struct PeriodPicker: View {
     }
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: MUSpacer.size03) {
             Picker("Period", selection: $kind) {
                 Text("Week").tag(PeriodKind.week)
                 Text("Month").tag(PeriodKind.month)
@@ -41,6 +42,8 @@ struct PeriodPicker: View {
                 }
                 .labelStyle(.iconOnly)
                 .buttonStyle(.borderless)
+                .frame(minWidth: 44, minHeight: 44)
+                .contentShape(.rect)
                 Spacer()
                 Text(label)
                     .font(.headline)
@@ -51,6 +54,8 @@ struct PeriodPicker: View {
                 }
                 .labelStyle(.iconOnly)
                 .buttonStyle(.borderless)
+                .frame(minWidth: 44, minHeight: 44)
+                .contentShape(.rect)
                 .disabled(isCurrent)
             }
         }

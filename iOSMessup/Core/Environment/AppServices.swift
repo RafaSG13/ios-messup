@@ -18,5 +18,12 @@ final class AppServices {
     let budgetService = MUEnvironmentConfigurator.budgetService
     let notificationService = MUEnvironmentConfigurator.notificationService
 
-    private init() {}
+    let intelligenceService: IntelligenceServiceProtocol
+
+    private init() {
+        intelligenceService = MUEnvironmentConfigurator.intelligenceService(expenses: expenseService,
+                                                                            incomes: incomeService,
+                                                                            savings: savingsService,
+                                                                            budget: budgetService)
+    }
 }

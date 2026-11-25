@@ -17,6 +17,7 @@ struct iOSMessupApp: App {
     @State private var savingsService: SavingsServiceProtocol = AppServices.shared.savingsService
     @State private var budgetService: BudgetServiceProtocol = AppServices.shared.budgetService
     @State private var notificationService: NotificationServiceProtocol = AppServices.shared.notificationService
+    @State private var intelligenceService: IntelligenceServiceProtocol = AppServices.shared.intelligenceService
 
     init() {
         UNUserNotificationCenter.current().delegate = NotificationPresenter.shared
@@ -38,6 +39,7 @@ struct iOSMessupApp: App {
                 .environment(\.savingsService, savingsService)
                 .environment(\.budgetService, budgetService)
                 .environment(\.notificationService, notificationService)
+                .environment(\.intelligenceService, intelligenceService)
                 .environment(\.currencyCode, currencyCode)
         }
     }

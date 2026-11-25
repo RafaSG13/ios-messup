@@ -22,6 +22,7 @@ struct SettingsView: View {
     @Environment(\.savingsService) private var savingsService
     @Environment(\.budgetService) private var budgetService
     @Environment(\.notificationService) private var notificationService
+    @Environment(\.intelligenceService) private var intelligenceService
     @AppStorage(NotificationPreferences.budgetAlertsKey) private var budgetAlertsEnabled = false
     @AppStorage(NotificationPreferences.weeklySummaryKey) private var weeklySummaryEnabled = false
     @State private var isShowingBudget = false
@@ -89,6 +90,15 @@ struct SettingsView: View {
                 } footer: {
                     Text("Budget alerts tell you when you reach 80 % of your monthly budget and when you go over it. The weekly summary arrives on Sundays.")
                 }
+                Section {
+                    LabeledContent("Status") {
+                        Text(statusText(for: intelligenceService.availability))
+                    }
+                } header: {
+                    Text("Apple Intelligence")
+                } footer: {
+                    Text("Messup uses the on-device model to fill in expenses from text or receipts, suggest categories, summarize your spending and answer questions. Your data stays on your device.")
+                }
                 Section("Data") {
                     exportRow
                 }
@@ -122,6 +132,18 @@ struct SettingsView: View {
             }
             .errorAlert($error)
             .sheet(isPresented: $isShowingBudget) { BudgetFormView() }
+        }
+    }
+
+    // MARK: - Apple Intelligence
+
+    private func statusText(for availability: IntelligenceAvailability) -> LocalizedStringKey {
+        switch availability {
+        case .available: "On"
+        case .appleIntelligenceNotEnabled: "Off. Turn it on in Settings ▸ Apple Intelligence & Siri"
+        case .deviceNotEligible: "Not supported on this device"
+        case .modelNotReady: "Getting ready…"
+        case .unsupportedLanguage: "Language not supported"
         }
     }
 

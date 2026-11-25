@@ -23,8 +23,9 @@ struct SavingsView: View {
                 contributionsSection
             }
             .listStyle(.insetGrouped)
+            .listSectionSpacing(MUSpacer.size04)
             .navigationTitle("Savings")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 if let goal = savingsService.savingGoal {
                     ToolbarItem(placement: .primaryAction) {
@@ -181,12 +182,7 @@ private struct SavingGoalCardView: View {
             : AnyLayout(HStackLayout(spacing: MUSpacer.size04))
 
         return layout {
-            Image(systemName: goal.savingCategory.icon)
-                .font(.title2)
-                .foregroundStyle(goal.savingCategory.color)
-                .frame(width: iconSize, height: iconSize)
-                .background(goal.savingCategory.color.opacity(0.15), in: .rect(cornerRadius: MURadius.medium))
-                .accessibilityHidden(true)
+            MUIconTile(systemImage: goal.savingCategory.icon, tint: goal.savingCategory.color, size: iconSize)
             VStack(alignment: .leading) {
                 Text(goal.name)
                     .font(.title3.bold())
@@ -215,8 +211,8 @@ private struct SavingGoalCardView: View {
     private var progressArea: some View {
         VStack(alignment: .leading, spacing: MUSpacer.size03) {
             Text(progress.fraction, format: .percent.precision(.fractionLength(0)))
-                .font(.largeTitle.bold())
-                .foregroundStyle(.green)
+                .font(MUTypography.heroAmount)
+                .foregroundStyle(.tint)
                 .accessibilityHidden(true)
             ProgressBar(progress: progress.fraction)
         }
@@ -245,7 +241,7 @@ private struct StatTileView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(amount.formattedCompactMoney(code: currencyCode))
-                .font(.headline)
+                .font(MUTypography.rowAmount)
                 .minimumScaleFactor(0.7)
                 .lineLimit(1)
             Text(title)
