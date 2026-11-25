@@ -1,0 +1,104 @@
+AGENTS.md
+  h_e81853c41416fb 4,6,29,73,90,98
+MUDesignSystem/Package.swift
+  h_e81853c41416fb 7
+MUDesignSystem/Sources/MUDesignSystem/Components/Icons/MUIconTile.swift
+  h_e81853c41416fb 1-38
+MUDesignSystem/Sources/MUDesignSystem/DesignTokens/Colors.swift
+  h_e81853c41416fb 19-22
+MUDesignSystem/Sources/MUDesignSystem/DesignTokens/MUTypography.swift
+  h_e81853c41416fb 1-15
+MUDesignSystem/Sources/MUDesignSystem/ViewModifiers/SelectableCell.swift
+  h_e81853c41416fb 25
+iOSMessup.xcodeproj/project.pbxproj
+  h_e81853c41416fb 323,382,421,466,489,512,534,554
+iOSMessup/Core/Environment/AppServices.swift
+  h_e81853c41416fb 21-28
+iOSMessup/Core/Environment/MUEnvironmentConfigurator.swift
+  h_e81853c41416fb 58-70
+iOSMessup/Data/Services/Intelligence/GeneratedMapping.swift
+  h_e81853c41416fb 1-56
+iOSMessup/Data/Services/Intelligence/GeneratedTypes.swift
+  h_e81853c41416fb 1-73
+iOSMessup/Data/Services/Intelligence/IntelligenceError.swift
+  h_e81853c41416fb 1-48
+iOSMessup/Data/Services/Intelligence/IntelligencePrompts.swift
+  h_e81853c41416fb 1-173
+iOSMessup/Data/Services/Intelligence/IntelligenceService.swift
+  h_e81853c41416fb 1-197
+iOSMessup/Data/Services/Intelligence/IntelligenceServiceProtocol.swift
+  h_e81853c41416fb 1-36
+iOSMessup/Data/Services/Intelligence/Mock/MockIntelligenceService.swift
+  h_e81853c41416fb 1-90
+iOSMessup/Data/Services/Intelligence/ReceiptImageLoader.swift
+  h_e81853c41416fb 1-22
+iOSMessup/Data/Services/Intelligence/Tools.swift
+  h_e81853c41416fb 1-40
+iOSMessup/Domain/ExpenseDraft.swift
+  h_e81853c41416fb 1-16
+iOSMessup/Domain/Model/Expense.swift
+  h_e81853c41416fb 68,71,116,121-122,125-128
+iOSMessup/Domain/Model/Income.swift
+  h_e81853c41416fb 9,86-87,89,92-95
+iOSMessup/Domain/Model/SavingGoal.swift
+  h_e81853c41416fb 7,9,112,114,117
+iOSMessup/Extensions/Double+Utils.swift
+  h_e81853c41416fb 21-25
+iOSMessup/Info.plist
+  h_e81853c41416fb 5-6
+iOSMessup/Localizable.xcstrings
+  h_e81853c41416fb 69-71,100-123,184-187,198-203,237-239,258-260,288-290,297-302,312-317,324-326,330-332,336-341,357-359,393-395,405-407,411-413,424,429-431,438-440,474-476,480-482,513-521,537-539,564-566,594,597,600
+iOSMessup/Presentation/Components/Cells/ContributionCellView.swift
+  h_e81853c41416fb 25,40
+iOSMessup/Presentation/Components/Cells/ExpenseCellView.swift
+  h_e81853c41416fb 17,23-24,27,40,46
+iOSMessup/Presentation/Components/Cells/IncomeCellView.swift
+  h_e81853c41416fb 25,37-38
+iOSMessup/Presentation/Components/Charts/CategoryBreakdownView.swift
+  h_e81853c41416fb 70,115-116
+iOSMessup/Presentation/Components/Charts/CumulativeSpendingChart.swift
+  h_e81853c41416fb 71,76
+iOSMessup/Presentation/Components/DocumentScannerView.swift
+  h_e81853c41416fb 1-70
+iOSMessup/Presentation/Components/PeriodPicker.swift
+  h_e81853c41416fb 9,31,45-46,57-58
+iOSMessup/Presentation/Views/Assistant/AssistantView.swift
+  h_e81853c41416fb 1-204
+iOSMessup/Presentation/Views/Expenses/AllExpensesView.swift
+  h_e81853c41416fb 9,30-34,42
+iOSMessup/Presentation/Views/Expenses/ExpenseFormView.swift
+  h_e81853c41416fb 8,10,15-16,23-29,32,38,40-43,59,66,73-76,101-102,115-120,141-256,302-306
+iOSMessup/Presentation/Views/Expenses/ExpenseInsightsCard.swift
+  h_e81853c41416fb 16-19,22-26,34-37,41-89,143-151,153,161-162,167-175
+iOSMessup/Presentation/Views/Expenses/ExpensesSummaryCard.swift
+  h_e81853c41416fb 28-30,33-39,92-94
+iOSMessup/Presentation/Views/Expenses/ExpensesView.swift
+  h_e81853c41416fb 18,23,51,53,62-68,78-80,113,115,128,160-164
+iOSMessup/Presentation/Views/Income/BalanceSummaryCard.swift
+  h_e81853c41416fb 41-44,67,105
+iOSMessup/Presentation/Views/Income/IncomeView.swift
+  h_e81853c41416fb 74
+iOSMessup/Presentation/Views/Savings/SavingsView.swift
+  h_e81853c41416fb 26,28,185,214-215,244
+iOSMessup/Presentation/Views/Settings/SettingsView.swift
+  h_e81853c41416fb 25,93-101,138-149
+iOSMessup/iOSMessupApp.swift
+  h_e81853c41416fb 20,42
+iOSMessupTests/Intelligence/ExpenseDraftMappingTests.swift
+  h_e81853c41416fb 1-65
+iOSMessupTests/Intelligence/IntelligencePromptsTests.swift
+  h_e81853c41416fb 1-107
+iOSMessupTests/Intelligence/LiveIntelligenceTests.swift
+  h_e81853c41416fb 1-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "0b375497f4141526d49fcaf79d1754df3bae932e",
+  "prompts": {},
+  "humans": {
+    "h_e81853c41416fb": {
+      "author": "RafaSG13 <rafasrrg13@gmail.com>"
+    }
+  }
+}
