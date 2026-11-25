@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 350" width="960" height="350" role="img">
+<title>A write, end to end</title>
+<desc>A sheet form submits to an async throwing service method, which writes through LocalStore.context, saves, reloads its observable array sorted by date and re-renders the views. Errors surface through errorAlert and keep the sheet open.</desc>
+<style>
+text{font-family:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.t{fill:#1C1C1E}.m{fill:#6E6E73}
+.h{font-size:18px;font-weight:700}.l{font-size:14px;font-weight:600}.p{font-size:13px;font-weight:700}.c{font-size:12px;font-weight:400}
+.node{fill:#FFFFFF;stroke:#D8D6E3;stroke-width:1.5}
+.ext{stroke-dasharray:5 4}
+.panel{fill:#F3F2F9}
+.acc{fill:#008D85}.mk{fill:#008D85}.on-acc{fill:#FFFFFF}
+.warn{fill:#FF9500}.crit{fill:#FF3B30}
+.tangerine{fill:#F98619}.sun{fill:#F9C01B}.bubble{fill:#E8A3C0}.blue{fill:#154FA3}
+.ln{fill:none;stroke:#008D85;stroke-width:2}
+.lncrit{fill:none;stroke:#FF3B30;stroke-width:2}
+.mkc{fill:#FF3B30}
+.dash{stroke-dasharray:6 4}
+.on-dark{fill:#FFFFFF}.on-light{fill:#1C1C1E}
+@media (prefers-color-scheme:dark){
+.t{fill:#F2F2F7}.m{fill:#A1A1A6}
+.node{fill:#1C1C1E;stroke:#3A3A3C}
+.panel{fill:#2C2C2E}
+.acc,.mk{fill:#60D6C8}.on-acc{fill:#00332F}
+.warn{fill:#FF9F0A}.crit,.mkc{fill:#FF453A}
+.ln{stroke:#60D6C8}.lncrit{stroke:#FF453A}
+}
+</style>
+<defs>
+<marker id="ar" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path class="mk" d="M0,0 L10,5 L0,10 z"/></marker>
+<marker id="arc" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path class="mkc" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<text x="20" y="32" class="h t">A write, end to end</text>
+
+<rect class="node" x="30" y="130" width="180" height="56" rx="12"/>
+<text class="l t" x="120" y="154" text-anchor="middle">View</text>
+<text class="c m" x="120" y="172" text-anchor="middle">sheet form</text>
+
+<rect class="node" x="380" y="130" width="180" height="56" rx="12"/>
+<text class="l t" x="470" y="154" text-anchor="middle">Service method</text>
+<text class="c m" x="470" y="172" text-anchor="middle">async throws</text>
+
+<rect class="node" x="730" y="130" width="180" height="56" rx="12"/>
+<text class="l t" x="820" y="154" text-anchor="middle">LocalStore.context</text>
+<text class="c m" x="820" y="172" text-anchor="middle">SwiftData records</text>
+
+<rect class="node" x="730" y="250" width="180" height="56" rx="12"/>
+<text class="l t" x="820" y="274" text-anchor="middle">reload()</text>
+<text class="c m" x="820" y="292" text-anchor="middle">sorted by date</text>
+
+<rect class="node" x="380" y="250" width="180" height="56" rx="12"/>
+<text class="l t" x="470" y="274" text-anchor="middle">Views re-render</text>
+<text class="c m" x="470" y="292" text-anchor="middle">they read the service</text>
+
+<rect class="node" x="380" y="46" width="180" height="44" rx="12"/>
+<text class="l crit" x="470" y="73" text-anchor="middle">errorAlert</text>
+
+<path class="ln" d="M210 158 H378" marker-end="url(#ar)"/>
+<text class="c m" x="294" y="150" text-anchor="middle">onSubmit</text>
+<path class="ln" d="M560 158 H728" marker-end="url(#ar)"/>
+<text class="c m" x="644" y="150" text-anchor="middle">insert / update / delete</text>
+<path class="ln" d="M820 186 V248" marker-end="url(#ar)"/>
+<text class="c m" x="828" y="222">save()</text>
+<path class="ln" d="M730 278 H562" marker-end="url(#ar)"/>
+<text class="c m" x="646" y="270" text-anchor="middle">@Observable array</text>
+<path class="ln dash" d="M380 278 H120 V188" marker-end="url(#ar)"/>
+<text class="c m" x="250" y="270" text-anchor="middle">next interaction</text>
+<path class="lncrit dash" d="M470 130 V92" marker-end="url(#arc)"/>
+<text class="c crit" x="480" y="116">throws → sheet stays open</text>
+
+<text class="c m" x="20" y="340">Success dismisses the sheet; the service is the single source of truth.</text>
+</svg>

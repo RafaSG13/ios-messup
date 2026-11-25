@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 776" width="960" height="776" role="img">
+<title>Architecture</title>
+<desc>Layered architecture of Messup: entry points, core wiring, SwiftUI presentation, observable services, SwiftData persistence, plus the Domain and MUDesignSystem packages.</desc>
+<style>
+text{font-family:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.t{fill:#1C1C1E}.m{fill:#6E6E73}
+.h{font-size:18px;font-weight:700}.l{font-size:14px;font-weight:600}.p{font-size:13px;font-weight:700}.c{font-size:12px;font-weight:400}
+.node{fill:#FFFFFF;stroke:#D8D6E3;stroke-width:1.5}
+.ext{stroke-dasharray:5 4}
+.panel{fill:#F3F2F9}
+.acc{fill:#008D85}.mk{fill:#008D85}.on-acc{fill:#FFFFFF}
+.warn{fill:#FF9500}.crit{fill:#FF3B30}
+.tangerine{fill:#F98619}.sun{fill:#F9C01B}.bubble{fill:#E8A3C0}.blue{fill:#154FA3}
+.ln{fill:none;stroke:#008D85;stroke-width:2}
+.lncrit{fill:none;stroke:#FF3B30;stroke-width:2}
+.mkc{fill:#FF3B30}
+.dash{stroke-dasharray:6 4}
+.on-dark{fill:#FFFFFF}.on-light{fill:#1C1C1E}
+@media (prefers-color-scheme:dark){
+.t{fill:#F2F2F7}.m{fill:#A1A1A6}
+.node{fill:#1C1C1E;stroke:#3A3A3C}
+.panel{fill:#2C2C2E}
+.acc,.mk{fill:#60D6C8}.on-acc{fill:#00332F}
+.warn{fill:#FF9F0A}.crit,.mkc{fill:#FF453A}
+.ln{stroke:#60D6C8}.lncrit{stroke:#FF453A}
+}
+</style>
+<defs>
+<marker id="ar" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path class="mk" d="M0,0 L10,5 L0,10 z"/></marker>
+<marker id="arc" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path class="mkc" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<text x="20" y="32" class="h t">Architecture</text>
+
+<!-- Entry points -->
+<rect class="panel" x="20" y="52" width="700" height="70" rx="20"/>
+<rect class="acc" x="36" y="73" width="120" height="28" rx="14"/>
+<text class="p on-acc" x="96" y="91.5" text-anchor="middle">Entry points</text>
+<rect class="node" x="170" y="65" width="232" height="44" rx="12"/>
+<text class="l t" x="286" y="92" text-anchor="middle">iOSMessupApp (@main)</text>
+<rect class="node" x="450" y="65" width="254" height="44" rx="12"/>
+<text class="l t" x="577" y="84" text-anchor="middle">AddExpenseIntent</text>
+<text class="c m" x="577" y="100" text-anchor="middle">Siri / Shortcuts</text>
+
+<!-- Core -->
+<rect class="panel" x="20" y="162" width="700" height="92" rx="20"/>
+<rect class="acc" x="36" y="182" width="120" height="28" rx="14"/>
+<text class="p on-acc" x="96" y="200.5" text-anchor="middle">Core</text>
+<rect class="node" x="170" y="176" width="232" height="40" rx="12"/>
+<text class="l t" x="286" y="201" text-anchor="middle">MUEnvironmentConfigurator</text>
+<rect class="node" x="450" y="176" width="254" height="40" rx="12"/>
+<text class="l t" x="577" y="201" text-anchor="middle">AppServices.shared</text>
+<text class="c m" x="170" y="238">local → SwiftData · mock → in-memory</text>
+
+<!-- Presentation -->
+<rect class="panel" x="20" y="294" width="700" height="138" rx="20"/>
+<rect class="acc" x="36" y="308" width="120" height="28" rx="14"/>
+<text class="p on-acc" x="96" y="326.5" text-anchor="middle">Presentation</text>
+<rect class="node" x="170" y="308" width="98" height="36" rx="12"/>
+<text class="l t" x="219" y="331" text-anchor="middle" style="font-size:13px">Expenses</text>
+<rect class="node" x="279" y="308" width="98" height="36" rx="12"/>
+<text class="l t" x="328" y="331" text-anchor="middle" style="font-size:13px">Income</text>
+<rect class="node" x="388" y="308" width="98" height="36" rx="12"/>
+<text class="l t" x="437" y="331" text-anchor="middle" style="font-size:13px">Assistant</text>
+<rect class="node" x="497" y="308" width="98" height="36" rx="12"/>
+<text class="l t" x="546" y="331" text-anchor="middle" style="font-size:13px">Social</text>
+<rect class="node" x="606" y="308" width="98" height="36" rx="12"/>
+<text class="l t" x="655" y="331" text-anchor="middle" style="font-size:13px">Settings</text>
+<rect class="node" x="170" y="356" width="261" height="36" rx="12"/>
+<text class="l t" x="300.5" y="379" text-anchor="middle">Forms &amp; sheets</text>
+<rect class="node" x="443" y="356" width="261" height="36" rx="12"/>
+<text class="l t" x="573.5" y="379" text-anchor="middle">Scanner · dictation · contacts</text>
+<text class="c m" x="170" y="416">SwiftUI · Liquid Glass · no ViewModels</text>
+
+<!-- Services -->
+<rect class="panel" x="20" y="472" width="700" height="150" rx="20"/>
+<rect class="acc" x="36" y="486" width="120" height="28" rx="14"/>
+<text class="p on-acc" x="96" y="504.5" text-anchor="middle">Services</text>
+<text class="c m" x="96" y="534" text-anchor="middle">@Observable</text>
+<text class="c m" x="96" y="550" text-anchor="middle">protocol + mock</text>
+<rect class="node" x="170" y="486" width="170" height="34" rx="12"/>
+<text class="l t" x="255" y="508" text-anchor="middle">ExpensesService</text>
+<rect class="node" x="352" y="486" width="170" height="34" rx="12"/>
+<text class="l t" x="437" y="508" text-anchor="middle">IncomeService</text>
+<rect class="node" x="534" y="486" width="170" height="34" rx="12"/>
+<text class="l t" x="619" y="508" text-anchor="middle">DebtsService</text>
+<rect class="node" x="170" y="530" width="170" height="34" rx="12"/>
+<text class="l t" x="255" y="552" text-anchor="middle">BudgetService</text>
+<rect class="node" x="352" y="530" width="170" height="34" rx="12"/>
+<text class="l t" x="437" y="552" text-anchor="middle">ContactsService</text>
+<rect class="node" x="534" y="530" width="170" height="34" rx="12"/>
+<text class="l t" x="619" y="552" text-anchor="middle">NotificationService</text>
+<rect class="node" x="170" y="574" width="170" height="34" rx="12"/>
+<text class="l t" x="255" y="596" text-anchor="middle">DictationService</text>
+<rect class="node" x="534" y="574" width="170" height="34" rx="12"/>
+<text class="l t" x="619" y="596" text-anchor="middle">IntelligenceService</text>
+
+<!-- Persistence -->
+<rect class="panel" x="20" y="662" width="700" height="92" rx="20"/>
+<rect class="acc" x="36" y="676" width="120" height="28" rx="14"/>
+<text class="p on-acc" x="96" y="694.5" text-anchor="middle">Persistence</text>
+<rect class="node" x="170" y="676" width="261" height="36" rx="12"/>
+<text class="l t" x="300.5" y="699" text-anchor="middle">LocalStore (SwiftData)</text>
+<rect class="node ext" x="443" y="676" width="261" height="36" rx="12"/>
+<text class="l t" x="573.5" y="699" text-anchor="middle">Apple Foundation Models</text>
+<text class="c m" x="170" y="738">ExpenseRecord · IncomeRecord · BudgetRecord · PersonRecord · DebtEntryRecord</text>
+
+<!-- Side panels -->
+<rect class="panel" x="780" y="294" width="160" height="138" rx="20"/>
+<rect class="acc" x="792" y="308" width="136" height="28" rx="14"/>
+<text class="p on-acc" x="860" y="326.5" text-anchor="middle">MUDesignSystem</text>
+<text class="c m" x="860" y="364" text-anchor="middle">SPM package:</text>
+<text class="c m" x="860" y="380" text-anchor="middle">tokens + components</text>
+<rect class="panel" x="780" y="472" width="160" height="282" rx="20"/>
+<rect class="acc" x="792" y="486" width="136" height="28" rx="14"/>
+<text class="p on-acc" x="860" y="504.5" text-anchor="middle">Domain</text>
+<text class="c m" x="860" y="540" text-anchor="middle">pure structs:</text>
+<text class="c m" x="860" y="556" text-anchor="middle">Period,</text>
+<text class="c m" x="860" y="572" text-anchor="middle">PeriodSummary,</text>
+<text class="c m" x="860" y="588" text-anchor="middle">Budget, Insight,</text>
+<text class="c m" x="860" y="604" text-anchor="middle">DebtSummary</text>
+
+<!-- Edges -->
+<path class="ln" d="M286 109 V142 H560 V176" marker-end="url(#ar)"/>
+<text class="c m" x="423" y="137" text-anchor="middle">same instances</text>
+<path class="ln" d="M660 109 V176" marker-end="url(#ar)"/>
+<path class="ln" d="M402 196 H448" marker-end="url(#ar)"/>
+<text class="c m" x="425" y="189" text-anchor="middle">builds</text>
+<path class="ln" d="M610 216 V292" marker-end="url(#ar)"/>
+<text class="c m" x="602" y="278" text-anchor="end">@Entry environment</text>
+<path class="ln" d="M300 432 V470" marker-end="url(#ar)"/>
+<text class="c m" x="308" y="456">async throws</text>
+<path class="ln dash" d="M560 472 V434" marker-end="url(#ar)"/>
+<text class="c m" x="568" y="456">observed state</text>
+<path class="ln" d="M260 622 V676" marker-end="url(#ar)"/>
+<text class="c m" x="268" y="644">insert · save · fetch</text>
+<path class="ln" d="M620 608 V676" marker-end="url(#ar)"/>
+<text class="c m" x="628" y="644">on device</text>
+<path class="ln" d="M720 363 H778" marker-end="url(#ar)"/>
+<text class="c m" x="749" y="356" text-anchor="middle">import</text>
+</svg>

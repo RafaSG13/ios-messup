@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 392" width="960" height="392" role="img">
+<title>Theme</title>
+<desc>Messup palette: mint accent in light and dark, four icon colors, warning orange and critical red; semantic color rules; SF Rounded with monospaced digits; corner radii 8, 12 and 20.</desc>
+<style>
+text{font-family:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.t{fill:#1C1C1E}.m{fill:#6E6E73}
+.h{font-size:18px;font-weight:700}.l{font-size:14px;font-weight:600}.p{font-size:13px;font-weight:700}.c{font-size:12px;font-weight:400}
+.node{fill:#FFFFFF;stroke:#D8D6E3;stroke-width:1.5}
+.ext{stroke-dasharray:5 4}
+.panel{fill:#F3F2F9}
+.acc{fill:#008D85}.mk{fill:#008D85}.on-acc{fill:#FFFFFF}
+.warn{fill:#FF9500}.crit{fill:#FF3B30}
+.tangerine{fill:#F98619}.sun{fill:#F9C01B}.bubble{fill:#E8A3C0}.blue{fill:#154FA3}
+.ln{fill:none;stroke:#008D85;stroke-width:2}
+.lncrit{fill:none;stroke:#FF3B30;stroke-width:2}
+.mkc{fill:#FF3B30}
+.dash{stroke-dasharray:6 4}
+.on-dark{fill:#FFFFFF}.on-light{fill:#1C1C1E}
+@media (prefers-color-scheme:dark){
+.t{fill:#F2F2F7}.m{fill:#A1A1A6}
+.node{fill:#1C1C1E;stroke:#3A3A3C}
+.panel{fill:#2C2C2E}
+.acc,.mk{fill:#60D6C8}.on-acc{fill:#00332F}
+.warn{fill:#FF9F0A}.crit,.mkc{fill:#FF453A}
+.ln{stroke:#60D6C8}.lncrit{stroke:#FF453A}
+}
+</style>
+<defs>
+<marker id="ar" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path class="mk" d="M0,0 L10,5 L0,10 z"/></marker>
+<marker id="arc" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path class="mkc" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+
+<text x="20" y="32" class="h t">Theme</text>
+<rect fill="#008D85" x="41.5" y="52" width="72" height="72" rx="20"/>
+<text class="l t" x="77.5" y="146" text-anchor="middle" style="font-size:13px">Accent light</text>
+<text class="c m" x="77.5" y="163" text-anchor="middle">#008D85</text>
+<rect fill="#60D6C8" x="156.5" y="52" width="72" height="72" rx="20"/>
+<text class="l t" x="192.5" y="146" text-anchor="middle" style="font-size:13px">Accent dark</text>
+<text class="c m" x="192.5" y="163" text-anchor="middle">#60D6C8</text>
+<rect class="tangerine" x="271.5" y="52" width="72" height="72" rx="20"/>
+<text class="l t" x="307.5" y="146" text-anchor="middle" style="font-size:13px">Tangerine</text>
+<text class="c m" x="307.5" y="163" text-anchor="middle">#F98619</text>
+<rect class="sun" x="386.5" y="52" width="72" height="72" rx="20"/>
+<text class="l t" x="422.5" y="146" text-anchor="middle" style="font-size:13px">Sun yellow</text>
+<text class="c m" x="422.5" y="163" text-anchor="middle">#F9C01B</text>
+<rect class="bubble" x="501.5" y="52" width="72" height="72" rx="20"/>
+<text class="l t" x="537.5" y="146" text-anchor="middle" style="font-size:13px">Bubblegum</text>
+<text class="c m" x="537.5" y="163" text-anchor="middle">#E8A3C0</text>
+<rect class="blue" x="616.5" y="52" width="72" height="72" rx="20"/>
+<text class="l t" x="652.5" y="146" text-anchor="middle" style="font-size:13px">Deep blue</text>
+<text class="c m" x="652.5" y="163" text-anchor="middle">#154FA3</text>
+<rect class="warn" x="731.5" y="52" width="72" height="72" rx="20"/>
+<text class="l t" x="767.5" y="146" text-anchor="middle" style="font-size:13px">Warning (orange)</text>
+<text class="c m" x="767.5" y="163" text-anchor="middle">#FF9500</text>
+<rect class="crit" x="846.5" y="52" width="72" height="72" rx="20"/>
+<text class="l t" x="882.5" y="146" text-anchor="middle" style="font-size:13px">Critical (red)</text>
+<text class="c m" x="882.5" y="163" text-anchor="middle">#FF3B30</text>
+<rect class="node" x="20" y="190" width="280" height="64" rx="12"/>
+<circle class="acc" cx="44" cy="222" r="8"/>
+<text class="l t" x="64" y="217" style="font-size:13px">Accent = progress &amp; ok</text>
+<text class="c m" x="64" y="237">progress, ok states, tinted controls</text>
+<rect class="node" x="340" y="190" width="280" height="64" rx="12"/>
+<circle class="warn" cx="364" cy="222" r="8"/>
+<text class="l t" x="384" y="217" style="font-size:13px">Orange = approaching a limit</text>
+<text class="c m" x="384" y="237">budget from 80 %, spending above last period</text>
+<rect class="node" x="660" y="190" width="280" height="64" rx="12"/>
+<circle class="crit" cx="684" cy="222" r="8"/>
+<text class="l t" x="704" y="217" style="font-size:13px">Red = over a limit</text>
+<text class="c m" x="704" y="237">over budget, negative balance</text>
+<text x="20" y="338" style="font-family:ui-rounded,'SF Pro Rounded',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:40px;font-weight:700;font-variant-numeric:tabular-nums" class="t">$1,234.56</text>
+<text class="c m" x="20" y="366">SF Rounded · monospaced digits (MUTypography)</text>
+<rect class="node" x="560" y="284" width="64" height="64" rx="8"/>
+<text class="l t" x="592" y="321" text-anchor="middle">8</text>
+<rect class="node" x="650" y="284" width="64" height="64" rx="12"/>
+<text class="l t" x="682" y="321" text-anchor="middle">12</text>
+<rect class="node" x="740" y="284" width="64" height="64" rx="20"/>
+<text class="l t" x="772" y="321" text-anchor="middle">20</text>
+<text class="c m" x="560" y="366">8 · 12 · 20 (MURadius)</text>
+</svg>

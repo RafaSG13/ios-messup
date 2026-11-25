@@ -28,3 +28,7 @@ fastlane/test_output/
 # Personal Xcode Settings
 iOSMessup.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
 iOSMessup.xcodeproj/xcuserdata/rafael.serrano.xcuserdatad/xcdebugger/
+
+# Local tooling
+.claude/settings.local.json
+.DS_Store

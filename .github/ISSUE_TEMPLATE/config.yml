@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Roadmap
+    url: https://github.com/RafaSG13/ios-messup/blob/main/ROADMAP.md
+    about: Check whether the idea is already planned.

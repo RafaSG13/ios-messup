@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 566" width="960" height="566" role="img">
+<title>Apple Intelligence, on device</title>
+<desc>All AI controls are gated by availability == .available. Typed text, photos and scanned receipts go through draftExpense into a pre-filled expense form, and suggestCategory fills the category. A computed PeriodSummary goes through summarize into a streamed insights card. The Assistant chat calls ask and uses nine tools (four read, five change data) that run on the main actor; only deletions ask for confirmation.</desc>
+<style>
+text{font-family:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.t{fill:#1C1C1E}.m{fill:#6E6E73}
+.h{font-size:18px;font-weight:700}.l{font-size:14px;font-weight:600}.p{font-size:13px;font-weight:700}.c{font-size:12px;font-weight:400}
+.node{fill:#FFFFFF;stroke:#D8D6E3;stroke-width:1.5}
+.ext{stroke-dasharray:5 4}
+.panel{fill:#F3F2F9}
+.acc{fill:#008D85}.mk{fill:#008D85}.on-acc{fill:#FFFFFF}
+.warn{fill:#FF9500}.crit{fill:#FF3B30}
+.tangerine{fill:#F98619}.sun{fill:#F9C01B}.bubble{fill:#E8A3C0}.blue{fill:#154FA3}
+.ln{fill:none;stroke:#008D85;stroke-width:2}
+.lncrit{fill:none;stroke:#FF3B30;stroke-width:2}
+.mkc{fill:#FF3B30}
+.dash{stroke-dasharray:6 4}
+.on-dark{fill:#FFFFFF}.on-light{fill:#1C1C1E}
+@media (prefers-color-scheme:dark){
+.t{fill:#F2F2F7}.m{fill:#A1A1A6}
+.node{fill:#1C1C1E;stroke:#3A3A3C}
+.panel{fill:#2C2C2E}
+.acc,.mk{fill:#60D6C8}.on-acc{fill:#00332F}
+.warn{fill:#FF9F0A}.crit,.mkc{fill:#FF453A}
+.ln{stroke:#60D6C8}.lncrit{stroke:#FF453A}
+}
+</style>
+<defs>
+<marker id="ar" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path class="mk" d="M0,0 L10,5 L0,10 z"/></marker>
+<marker id="arc" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path class="mkc" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<defs>
+<marker id="ar2" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto-start-reverse"><path class="mk" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<text x="20" y="32" class="h t">Apple Intelligence, on device</text>
+
+<rect class="node" x="20" y="46" width="330" height="36" rx="12"/>
+<text class="l t" x="185" y="69" text-anchor="middle">availability == .available</text>
+<text class="c m" x="366" y="69">otherwise every AI control is hidden</text>
+
+<!-- Lane A -->
+<rect class="panel" x="20" y="100" width="920" height="144" rx="20"/>
+<text class="l t" x="36" y="122">Draft an expense · suggest a category</text>
+<rect class="node" x="36" y="134" width="130" height="28" rx="12"/>
+<text class="c t" style="font-weight:600" x="101" y="152" text-anchor="middle">Typed text</text>
+<rect class="node" x="36" y="170" width="130" height="28" rx="12"/>
+<text class="c t" style="font-weight:600" x="101" y="188" text-anchor="middle">Photo</text>
+<rect class="node" x="36" y="206" width="130" height="28" rx="12"/>
+<text class="c t" style="font-weight:600" x="101" y="224" text-anchor="middle">Scanned receipt</text>
+<rect class="acc" x="202" y="168" width="110" height="32" rx="12"/>
+<text class="l on-acc" x="257" y="189" text-anchor="middle">draftExpense</text>
+<rect class="node" x="340" y="160" width="250" height="48" rx="12"/>
+<text class="l t" x="465" y="189" text-anchor="middle">Expense form (pre-filled)</text>
+<rect class="acc" x="620" y="168" width="150" height="32" rx="12"/>
+<text class="l on-acc" x="695" y="189" text-anchor="middle">suggestCategory</text>
+<rect class="node" x="790" y="168" width="130" height="32" rx="12"/>
+<text class="l t" x="855" y="189" text-anchor="middle">Expense name</text>
+<path class="ln" d="M166 148 C182 148 182 184 200 184" marker-end="url(#ar)"/>
+<path class="ln" d="M166 184 H200" marker-end="url(#ar)"/>
+<path class="ln" d="M166 220 C182 220 182 184 200 184" marker-end="url(#ar)"/>
+<path class="ln" d="M312 184 H338" marker-end="url(#ar)"/>
+<path class="ln" d="M618 184 H592" marker-end="url(#ar)"/>
+<path class="ln" d="M788 184 H772" marker-end="url(#ar)"/>
+
+<!-- Lane B -->
+<rect class="panel" x="20" y="262" width="920" height="80" rx="20"/>
+<text class="l t" x="36" y="284">Summarize a period</text>
+<rect class="node" x="36" y="296" width="300" height="32" rx="12"/>
+<text class="l t" x="186" y="317" text-anchor="middle">PeriodSummary (computed figures)</text>
+<rect class="acc" x="402" y="296" width="140" height="32" rx="12"/>
+<text class="l on-acc" x="472" y="317" text-anchor="middle">summarize</text>
+<rect class="node" x="606" y="296" width="250" height="32" rx="12"/>
+<text class="l t" x="731" y="317" text-anchor="middle">Insights card (streamed)</text>
+<path class="ln" d="M336 312 H400" marker-end="url(#ar)"/>
+<path class="ln" d="M542 312 H604" marker-end="url(#ar)"/>
+
+<!-- Lane C -->
+<rect class="panel" x="20" y="360" width="920" height="160" rx="20"/>
+<text class="l t" x="36" y="382">Assistant tab</text>
+<rect class="node" x="36" y="430" width="170" height="32" rx="12"/>
+<text class="l t" x="121" y="451" text-anchor="middle">Assistant chat</text>
+<rect class="acc" x="250" y="430" width="80" height="32" rx="12"/>
+<text class="l on-acc" x="290" y="451" text-anchor="middle">ask</text>
+<rect class="node" x="390" y="394" width="310" height="52" rx="12"/>
+<text class="c t" style="font-weight:600" x="545" y="414" text-anchor="middle">4 read tools</text>
+<text class="c m" x="545" y="432" text-anchor="middle" style="font-size:10px">getSpendingSummary · searchExpenses · searchIncome · getDebts</text>
+<rect class="node" x="390" y="458" width="310" height="52" rx="12"/>
+<text class="c t" style="font-weight:600" x="545" y="478" text-anchor="middle">5 change tools</text>
+<text class="c m" x="545" y="496" text-anchor="middle" style="font-size:10px">changeExpense · Income · Budget · Person · Debt</text>
+<rect class="node" x="800" y="430" width="120" height="32" rx="12"/>
+<text class="l t" x="860" y="451" text-anchor="middle">Services</text>
+<path class="ln" d="M206 446 H248" marker-end="url(#ar)"/>
+<path class="ln" d="M330 446 H364" marker-start="url(#ar2)"/>
+<path class="ln" d="M364 446 V420 H388" marker-end="url(#ar)"/>
+<path class="ln" d="M364 446 V484 H388" marker-end="url(#ar)"/>
+<path class="ln" d="M700 420 H730 V484 H700"/>
+<path class="ln" d="M730 446 H798" marker-end="url(#ar)"/>
+<text class="c m" x="764" y="438" text-anchor="middle">MainActor</text>
+<text class="c m" x="36" y="505">only deletions ask: confirm card</text>
+
+<text class="c m" x="20" y="548">Foundation Models · nothing leaves the device · the model never does the maths</text>
+</svg>
