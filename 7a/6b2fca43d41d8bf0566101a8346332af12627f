@@ -1,0 +1,84 @@
+AGENTS.md
+  h_e81853c41416fb 68
+MUDesignSystem/Sources/MUDesignSystem/Components/Amounts/MUHeroAmount.swift
+  h_e81853c41416fb 1-43
+MUDesignSystem/Sources/MUDesignSystem/Components/Amounts/MUMetricLabel.swift
+  h_e81853c41416fb 1-55
+MUDesignSystem/Sources/MUDesignSystem/Components/Amounts/MUStatTile.swift
+  h_e81853c41416fb 1-48
+MUDesignSystem/Sources/MUDesignSystem/Components/Containers/MUCard.swift
+  h_e81853c41416fb 31
+MUDesignSystem/Sources/MUDesignSystem/Components/Icons/MUTintedLabel.swift
+  h_e81853c41416fb 1-42
+MUDesignSystem/Sources/MUDesignSystem/Components/Layout/MUAdaptiveStack.swift
+  h_e81853c41416fb 1-54
+MUDesignSystem/Sources/MUDesignSystem/Components/Lists/MUTransactionRow.swift
+  h_e81853c41416fb 1-96
+MUDesignSystem/Sources/MUDesignSystem/Components/States/MUEmptyState.swift
+  h_e81853c41416fb 1-51
+MUDesignSystem/Sources/MUDesignSystem/ViewModifiers/ClearListRow.swift
+  h_e81853c41416fb 1-43
+iOSMessup/Domain/ExpenseInsights.swift
+  h_e81853c41416fb 13
+iOSMessup/Extensions/BudgetProgress+Tint.swift
+  h_e81853c41416fb 1-20
+iOSMessup/Extensions/UIApplication+Keyboard.swift
+  h_e81853c41416fb 10,12
+iOSMessup/Presentation/Components/Cells/ContributionCellView.swift
+  h_e81853c41416fb 11-12,19-23
+iOSMessup/Presentation/Components/Cells/ExpenseCellView.swift
+  h_e81853c41416fb 19-24
+iOSMessup/Presentation/Components/Cells/ExpenseListRow.swift
+  h_e81853c41416fb 1-46
+iOSMessup/Presentation/Components/Cells/IncomeCellView.swift
+  h_e81853c41416fb 11-12,19-24
+iOSMessup/Presentation/Components/Charts/CategoryBreakdownView.swift
+  h_e81853c41416fb 19-20,29-38,41-48,55-69,74,78-80,86-96,98,101,126-130
+iOSMessup/Presentation/Components/Charts/CumulativeSpendingChart.swift
+  h_e81853c41416fb 27,32,34-48,50-80,118-120,125,131-133,141,156-157,160,164-165,168-171,174,186-213
+iOSMessup/Presentation/Components/FormToolbar.swift
+  h_e81853c41416fb 1-46
+iOSMessup/Presentation/Components/IntelligenceDisclaimer.swift
+  h_e81853c41416fb 1-24
+iOSMessup/Presentation/Navigation/Route.swift
+  h_e81853c41416fb 12-14,16-20,25-32
+iOSMessup/Presentation/Views/Assistant/AssistantView.swift
+  h_e81853c41416fb 11,46,49,51,60,77,80-95,97-99,101,105-117,119-120,124,136-181,187-188,200-202,204
+iOSMessup/Presentation/Views/Budget/BudgetFormView.swift
+  h_e81853c41416fb 9,31,46-48,106-123
+iOSMessup/Presentation/Views/Expenses/AllExpensesView.swift
+  h_e81853c41416fb 25,30,59,61-65,68-72,78
+iOSMessup/Presentation/Views/Expenses/ExpenseFormView.swift
+  h_e81853c41416fb 24,69,71-73,78-80,88,96-170,194-205,209,214,223,228,238,241,243,245-249,251-256,261,263-275,278,280-304
+iOSMessup/Presentation/Views/Expenses/ExpenseInsightsCard.swift
+  h_e81853c41416fb 25-26,30,38,40-43,45,47,50,57,66,86-143
+iOSMessup/Presentation/Views/Expenses/ExpensesSummaryCard.swift
+  h_e81853c41416fb 14,22,27,44,53,55-66,72-80,82,90-93,130,138,147
+iOSMessup/Presentation/Views/Expenses/ExpensesView.swift
+  h_e81853c41416fb 13-14,26-63,65-79,87-93,95-115,117-118,120-165,167-182,185-197,200-201,206,208-215,217-220,222-227,233-242,244-270,273-274,276-278,280-284,292,295,298-312,314,320
+iOSMessup/Presentation/Views/Income/BalanceSummaryCard.swift
+  h_e81853c41416fb 21,23-33,41-45,47,49-52
+iOSMessup/Presentation/Views/Income/IncomeFormView.swift
+  h_e81853c41416fb 9,59-60,69-71
+iOSMessup/Presentation/Views/Income/IncomeView.swift
+  h_e81853c41416fb 11-14,26-39,41,44-46,48-49,51-79,81-90,93-142,144-152,158-172,174
+iOSMessup/Presentation/Views/Savings/ContributionFormView.swift
+  h_e81853c41416fb 55-57
+iOSMessup/Presentation/Views/Savings/SavingGoalFormView.swift
+  h_e81853c41416fb 9,69-70,86-88
+iOSMessup/Presentation/Views/Savings/SavingsView.swift
+  h_e81853c41416fb 11-12,24-27,70,73-99,104-108,112-115,117-119,121-127,132-136,138,146-148,159,161-171,175,178,189,195,197-209,213,215,217-222,234-236,238-241
+iOSMessup/Presentation/Views/Settings/SettingsView.swift
+  h_e81853c41416fb 26-29,31,33,45-63,65-90,93,95,98-100,102-155,166,168,170-176,178-184,186-191,193,196,199,215-231,248-249,255,270-294
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "7a6b2fca43d41d8bf0566101a8346332af12627f",
+  "prompts": {},
+  "humans": {
+    "h_e81853c41416fb": {
+      "author": "RafaSG13 <rafasrrg13@gmail.com>"
+    }
+  }
+}
