@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Messup · Local-first expense tracker for iOS</title>
+<meta name="description" content="Local-first iOS expense, income and savings tracker. SwiftUI + Liquid Glass, SwiftData, on-device Apple Intelligence. No backend, no account.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Messup · Local-first expense tracker for iOS">
+<meta property="og:description" content="Local-first iOS expense, income and savings tracker. SwiftUI + Liquid Glass, SwiftData, on-device Apple Intelligence. No backend, no account.">
+<meta property="og:image" content="https://rafasg13.github.io/ios-messup/messup-git-header.jpeg">
+<meta property="og:type" content="website">
+<link rel="icon" href="icon.png">
+<style>
+:root{
+  --fg:#1C1C1E;--muted:#6E6E73;--surface:#FFFFFF;--panel:#F3F2F9;--border:#D8D6E3;
+  --accent:#008D85;--on-accent:#FFFFFF;--bg:#F3F2F9;
+  --tangerine:#F98619;--sun:#F9C01B;--bubble:#E8A3C0;--blue:#154FA3;
+  --font:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--fg:#F2F2F7;--muted:#A1A1A6;--surface:#1C1C1E;--panel:#2C2C2E;--border:#3A3A3C;--accent:#60D6C8;--on-accent:#00332F;--bg:#000000}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+img{max-width:100%;height:auto}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+nav .wrap{display:flex;align-items:center;gap:18px;height:56px;overflow-x:auto;white-space:nowrap}
+nav .brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--fg);text-decoration:none;margin-right:8px}
+nav .brand img{width:28px;height:28px;border-radius:8px}
+nav a.link{color:var(--muted);text-decoration:none;font-size:14px;font-weight:600}
+nav a.link:hover{color:var(--accent)}
+nav a.gh{margin-left:auto;background:var(--accent);color:var(--on-accent);padding:6px 14px;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none}
+.hero{padding:40px 0 24px;text-align:center}
+.hero img.banner{width:100%;border-radius:20px}
+.hero h1{font-size:clamp(24px,4vw,34px);margin:28px 0 8px;line-height:1.2}
+.hero p{max-width:680px;margin:0 auto 24px;color:var(--muted);font-size:17px}
+.btn{display:inline-block;padding:12px 22px;border-radius:12px;font-weight:700;text-decoration:none;margin:4px 6px;border:2px solid var(--accent)}
+.btn.fill{background:var(--accent);color:var(--on-accent)}
+.btn.line{color:var(--accent)}
+section{padding:36px 0}
+h2{font-size:26px;margin:0 0 20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
+.feature{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:20px 22px;border-left:8px solid var(--c,var(--accent))}
+.feature h3{margin:0 0 6px;font-size:18px}
+.feature p{margin:0;color:var(--muted);font-size:15px}
+.shots{display:flex;gap:20px;overflow-x:auto;padding:4px 4px 16px;scroll-snap-type:x proximity}
+.shot{flex:0 0 220px;margin:0;text-align:center;scroll-snap-align:start}
+.shot img{width:220px;border-radius:28px;border:1px solid var(--border);display:block}
+.shot figcaption{margin-top:10px;color:var(--muted);font-size:14px;font-weight:600}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:20px}
+.card img{width:100%;display:block}
+.card p{margin:14px 4px 2px;color:var(--muted);font-size:15px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:16px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+th{color:var(--muted);font-size:13px}
+code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.92em;background:var(--panel);padding:1px 6px;border-radius:6px}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;overflow-x:auto;margin:12px 0}
+pre code{background:none;padding:0}
+ul.req{padding-left:20px}
+footer{border-top:1px solid var(--border);padding:28px 0 48px;color:var(--muted);font-size:14px;text-align:center}
+footer a{margin:0 8px;font-weight:600}
+</style>
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="icon.png" alt="Messup app icon">Messup</a>
+    <a class="link" href="#features">Features</a>
+    <a class="link" href="#screens">Screens</a>
+    <a class="link" href="#how-it-works">How it works</a>
+    <a class="link" href="#architecture">Architecture</a>
+    <a class="link" href="#intelligence">Intelligence</a>
+    <a class="link" href="#theme">Theme</a>
+    <a class="link" href="#get-started">Get started</a>
+    <a class="gh" href="https://github.com/RafaSG13/ios-messup">GitHub</a>
+  </div>
+</nav>
+
+<main class="wrap" id="top">
+  <header class="hero">
+    <img class="banner" src="messup-header.png" alt="Messup">
+    <h1>Expense &amp; payment tracking for the beautifully absent-minded.</h1>
+    <p>Messup is a local-first iOS tracker for expenses, income and savings. SwiftUI with Liquid Glass, SwiftData on the device, on-device Apple Intelligence. No backend, no account, no third-party dependencies.</p>
+    <a class="btn fill" href="https://github.com/RafaSG13/ios-messup">View on GitHub</a>
+    <a class="btn line" href="#get-started">Get started</a>
+  </header>
+
+  <section id="features">
+    <h2>Features</h2>
+    <div class="grid">
+      <div class="feature" style="--c:var(--accent)">
+        <h3>Money picture</h3>
+        <p>Week, month or year: spent, change vs the previous period at the same day, daily average, end-of-period projection, cumulative chart, category breakdown and up to 3 insights. Balance is income − expenses − contributions; one savings goal is funded by explicit contributions.</p>
+      </div>
+      <div class="feature" style="--c:var(--tangerine)">
+        <h3>Budgets &amp; alerts</h3>
+        <p>A monthly limit plus optional per-category limits. Warning from 80 %, over above 100 %. Opt-in local notifications (once per level per month) and a weekly Sunday reminder.</p>
+      </div>
+      <div class="feature" style="--c:var(--blue)">
+        <h3>Apple Intelligence</h3>
+        <p>On device: quick add from text, photo or scanned receipt; category suggestion; streamed period summary; an “Ask Messup” chat that answers with tools over your data. Hidden when the model is unavailable.</p>
+      </div>
+      <div class="feature" style="--c:var(--bubble)">
+        <h3>Quick capture with Siri &amp; Shortcuts</h3>
+        <p>“Add an expense in Messup”: an App Intent with amount, name, category and payment method that shares the running app's services.</p>
+      </div>
+      <div class="feature" style="--c:var(--sun)">
+        <h3>Private by design</h3>
+        <p>SwiftData store on the device, no account, no backend, no analytics, no network calls.</p>
+      </div>
+      <div class="feature" style="--c:var(--accent)">
+        <h3>Yours</h3>
+        <p>Any ISO currency, CSV export, light and dark mode, Dynamic Type up to accessibility sizes.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="screens">
+    <h2>Screens</h2>
+    <div class="shots">
+      <figure class="shot"><picture><source srcset="screenshots/dark/expenses.png" media="(prefers-color-scheme: dark)"><img src="screenshots/light/expenses.png" alt="Expenses screen" loading="lazy"></picture><figcaption>Expenses</figcaption></figure>
+      <figure class="shot"><picture><source srcset="screenshots/dark/income.png" media="(prefers-color-scheme: dark)"><img src="screenshots/light/income.png" alt="Income screen" loading="lazy"></picture><figcaption>Income</figcaption></figure>
+      <figure class="shot"><picture><source srcset="screenshots/dark/savings.png" media="(prefers-color-scheme: dark)"><img src="screenshots/light/savings.png" alt="Savings screen" loading="lazy"></picture><figcaption>Savings</figcaption></figure>
+      <figure class="shot"><picture><source srcset="screenshots/dark/settings.png" media="(prefers-color-scheme: dark)"><img src="screenshots/light/settings.png" alt="Settings screen" loading="lazy"></picture><figcaption>Settings</figcaption></figure>
+      <figure class="shot"><picture><source srcset="screenshots/dark/assistant.png" media="(prefers-color-scheme: dark)"><img src="screenshots/light/assistant.png" alt="Ask Messup assistant screen" loading="lazy"></picture><figcaption>Ask Messup</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="how-it-works">
+    <h2>How it works</h2>
+    <div class="card">
+      <img src="diagrams/money-model.svg" alt="Money model: income, expenses and contributions flow into the balance; contributions fund the saving goal; the monthly budget has ok, warning and over states.">
+      <p>Income is money in. The saving goal is funded only by explicit contributions, so goal progress is the sum of contributions and the balance is income − expenses − contributions. The monthly budget is ok below 80 %, warning from 80 % and over above 100 %; each level alerts once per month.</p>
+    </div>
+    <div class="card">
+      <img src="diagrams/data-flow.svg" alt="A write, end to end: a sheet form calls an async throwing service method, which writes through LocalStore, saves, reloads its observable array and re-renders the views.">
+      <p>A sheet form awaits an <code>async throws</code> service method. The service writes records through <code>LocalStore.context</code>, saves, then reloads its observable array sorted by date, so every view re-renders. If the call throws, <code>errorAlert</code> shows the error and the sheet stays open.</p>
+    </div>
+  </section>
+
+  <section id="architecture">
+    <h2>Architecture</h2>
+    <div class="card">
+      <img src="diagrams/architecture.svg" alt="Layered architecture: entry points, core wiring, presentation, observable services and SwiftData persistence, plus the Domain and MUDesignSystem packages.">
+      <p>Model-View, no ViewModels. Protocol-typed <code>@Observable</code> services are injected with <code>@Entry</code> and shared with App Intents through <code>AppServices.shared</code>; the <code>local</code> and <code>mock</code> environments swap the implementations.</p>
+      <table>
+        <thead><tr><th>Layer</th><th>Path</th><th>Contents</th></tr></thead>
+        <tbody>
+          <tr><td>Domain</td><td><code>iOSMessup/Domain</code></td><td>Structs and pure logic: <code>Expense</code>, <code>Income</code>, <code>Contribution</code>, <code>SavingGoal</code>, <code>Period</code>, <code>PeriodSummary</code>, <code>Budget</code>, <code>Insight</code></td></tr>
+          <tr><td>Data</td><td><code>iOSMessup/Data</code></td><td>SwiftData records and <code>LocalStore</code>, services + mocks, CSV export, Intelligence</td></tr>
+          <tr><td>Presentation</td><td><code>iOSMessup/Presentation</code></td><td>Screens, forms, charts, view modifiers, navigation</td></tr>
+          <tr><td>Core</td><td><code>iOSMessup/Core</code></td><td><code>AppServices</code>, <code>MUEnvironmentConfigurator</code>, currency, App Intents</td></tr>
+          <tr><td>Design system</td><td><code>MUDesignSystem/</code></td><td>Local SPM package: tokens (<code>MUSpacer</code>, <code>MURadius</code>, <code>MUTypography</code>, <code>Color.designSystem</code>) and components (<code>MUCard</code>, <code>MUIconTile</code>, <code>MUTransactionRow</code>, …)</td></tr>
+          <tr><td>Tests</td><td><code>iOSMessupTests/</code></td><td>Swift Testing suites (130 tests)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="intelligence">
+    <h2>Apple Intelligence</h2>
+    <div class="card">
+      <img src="diagrams/intelligence.svg" alt="Apple Intelligence on device: draftExpense and suggestCategory fill the expense form, summarize streams an insights card, and the Ask Messup chat calls tools that read the services.">
+      <p>Everything runs on the Foundation Models framework, on the device. The model is given computed figures and never asked to calculate, and every AI control is hidden unless <code>availability == .available</code>.</p>
+    </div>
+  </section>
+
+  <section id="theme">
+    <h2>Theme</h2>
+    <div class="card">
+      <img src="diagrams/design-system.svg" alt="Messup theme: mint accent, icon palette, warning and critical colors, SF Rounded amounts and corner radii.">
+      <p>The mint accent is the only brand color and nothing in the UI is green: progress and “ok” use the accent, orange means approaching a limit, red means over a limit. Liquid Glass is used only on bars and controls, never on content cells.</p>
+    </div>
+  </section>
+
+  <section id="get-started">
+    <h2>Get started</h2>
+    <ul class="req">
+      <li>Xcode 27 or later (iOS 27 SDK)</li>
+      <li>iOS 27.0+ device or simulator</li>
+      <li>Apple Intelligence features need an eligible device with Apple Intelligence on; otherwise they are hidden</li>
+    </ul>
+<pre><code>git clone https://github.com/RafaSG13/ios-messup.git
+cd ios-messup
+open iOSMessup.xcodeproj
+
+# build (get simulator ids from: xcrun simctl list devices available)
+xcodebuild -project iOSMessup.xcodeproj -scheme iOSMessup -destination 'id=&lt;simulator-id&gt;' build
+
+# test
+xcodebuild -project iOSMessup.xcodeproj -scheme iOSMessupTests -destination 'id=&lt;simulator-id&gt;' test</code></pre>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>
+      <a href="https://github.com/RafaSG13/ios-messup/blob/main/README.md">README</a>
+      <a href="https://github.com/RafaSG13/ios-messup/blob/main/AGENTS.md">AGENTS.md</a>
+      <a href="https://github.com/RafaSG13/ios-messup/blob/main/ROADMAP.md">ROADMAP.md</a>
+      <a href="https://github.com/RafaSG13/ios-messup/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>
+      <a href="https://github.com/RafaSG13/ios-messup/blob/main/LICENSE">LICENSE</a>
+    </p>
+    <p>MIT License · © 2025 Rafael Serrano Gamarra</p>
+  </div>
+</footer>
+</body>
+</html>
