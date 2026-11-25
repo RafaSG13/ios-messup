@@ -1,0 +1,50 @@
+name: Bug report
+description: Something does not work as expected
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What went wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open ...
+        2. Tap ...
+        3. See ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+  - type: input
+    id: ios-version
+    attributes:
+      label: iOS version
+      placeholder: "27.0"
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device or simulator
+      placeholder: iPhone 17 simulator
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: Value of `messup_environment` (default is `local`)
+      options:
+        - local
+        - mock
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Drag images here (light and dark if the issue is visual).
