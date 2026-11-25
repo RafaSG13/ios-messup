@@ -1,0 +1,140 @@
+AGENTS.md
+  h_e81853c41416fb 15-16,18,21-24,30-31,43,72-73,76,78,100
+MUDesignSystem/Sources/MUDesignSystem/Components/Lists/MUTransactionRow.swift
+  h_e81853c41416fb 12,76,78
+README.md
+  h_e81853c41416fb 9,11-12
+iOSMessup/Core/Environment/AppServices.swift
+  h_e81853c41416fb 17,20-21,28
+iOSMessup/Core/Environment/MUEnvironmentConfigurator.swift
+  h_e81853c41416fb 38,40-55,75,81
+iOSMessup/Data/Export/CSVExporter.swift
+  h_e81853c41416fb 16-18,26-27
+iOSMessup/Data/Local/DebugSeeder.swift
+  h_e81853c41416fb 38-39,48-49,58-59
+iOSMessup/Data/Local/LocalRecords.swift
+  h_e81853c41416fb 83,86,88-90,92-95,98-104,107-109,113,116,119-124,127-133,137,139-140,142,144-148,150-156,159-165,168-173
+iOSMessup/Data/Local/LocalStore.swift
+  h_e81853c41416fb 22-23
+iOSMessup/Data/Local/SampleDataGenerator.swift
+  h_e81853c41416fb 33-34,39-40,158-185
+iOSMessup/Data/Services/Contacts/ContactsService.swift
+  h_e81853c41416fb 1-75
+iOSMessup/Data/Services/Contacts/ContactsServiceProtocol.swift
+  h_e81853c41416fb 2,5,11-23,25-33,37
+iOSMessup/Data/Services/Contacts/Mock/MockContactsService.swift
+  h_e81853c41416fb 1-43
+iOSMessup/Data/Services/Intelligence/Actions/AssistantActionCenter.swift
+  h_e81853c41416fb 1-79
+iOSMessup/Data/Services/Intelligence/Actions/AssistantActions.swift
+  h_e81853c41416fb 1-431
+iOSMessup/Data/Services/Intelligence/GeneratedMapping.swift
+  h_e81853c41416fb 41-84,91
+iOSMessup/Data/Services/Intelligence/GeneratedTypes.swift
+  h_e81853c41416fb 70-217
+iOSMessup/Data/Services/Intelligence/IntelligencePrompts.swift
+  h_e81853c41416fb 37,39-41,90,134,139-153,155-174,176-192,197-225,232-235
+iOSMessup/Data/Services/Intelligence/IntelligenceService.swift
+  h_e81853c41416fb 16,20-21,25,29,133,164-170,177,188,190-193,195-218
+iOSMessup/Data/Services/Intelligence/IntelligenceServiceProtocol.swift
+  h_e81853c41416fb 18-30,36-37
+iOSMessup/Data/Services/Intelligence/Mock/MockIntelligenceService.swift
+  h_e81853c41416fb 14
+iOSMessup/Data/Services/Intelligence/Tools.swift
+  h_e81853c41416fb 14,32-35,37,41-102
+iOSMessup/Data/Services/Social/DebtsService.swift
+  h_e81853c41416fb 2,5,14-16,25-26,29-36,39-50,53,55-59,61-62,65-66,68,70,73-74,77,82,85,87-88,91,96-97,100-102,107-108,111-112,115-116
+iOSMessup/Data/Services/Social/DebtsServiceProtocol.swift
+  h_e81853c41416fb 1-73
+iOSMessup/Data/Services/Social/Mock/MockDebtsService.swift
+  h_e81853c41416fb 2,5,13-15,19-20,23-24,40,42-46,49,51-56,59,61-62,65,67-69,72,74-77,80,82,85-86,89-90,93-94
+iOSMessup/Data/Services/Speech/DictationService.swift
+  h_e81853c41416fb 1-144
+iOSMessup/Data/Services/Speech/DictationServiceProtocol.swift
+  h_e81853c41416fb 1-37
+iOSMessup/Data/Services/Speech/Mock/MockDictationService.swift
+  h_e81853c41416fb 1-45
+iOSMessup/Domain/DebtSummary.swift
+  h_e81853c41416fb 1-65
+iOSMessup/Domain/Model/DebtEntry.swift
+  h_e81853c41416fb 2,5,9,11,13-19,21,23,25-26,30-31,34-40,45-47,51,53-54,58-103
+iOSMessup/Domain/Model/Income.swift
+  h_e81853c41416fb 11-12
+iOSMessup/Domain/Model/Person.swift
+  h_e81853c41416fb 2,5,10-12,14-15,20-22,28-29,31-34
+iOSMessup/Domain/PeriodSummary.swift
+  h_e81853c41416fb 24,34-36,49,59,70,72
+iOSMessup/Info.plist
+  h_e81853c41416fb 5-6,9-10
+iOSMessup/Localizable.xcstrings
+  h_e81853c41416fb 47-52,56-58,63-72,83-85,105-110,114-116,139,142-148,177-189,225,228,231,234,237,240,243,266-268,273-276,279-309,318,321,324,327,330,333,336,339,342,347-349,387,390-396,408,411,417-420,425-427,431-433,443-445,450,453-456,462-465,473-475,486,489,518-520,530-538,545-550,554-556,560-565,591,594,597,600,603,618,621,624-627,648,651,654,662-664,674-685,695-709,723,749,752,755-758
+iOSMessup/Presentation/Components/Cells/DebtEntryCellView.swift
+  h_e81853c41416fb 2,5,11,14,16,19-24,31-32,38-39
+iOSMessup/Presentation/Components/Cells/PersonCellView.swift
+  h_e81853c41416fb 1-59
+iOSMessup/Presentation/Components/Charts/CumulativeSpendingChart.swift
+  h_e81853c41416fb 221,244
+iOSMessup/Presentation/ViewModifiers/DebtSheetViewModifier.swift
+  h_e81853c41416fb 2,5,10,12-14,19,25-27,31,33-38,42-48,52-54,57-63,65,70-74
+iOSMessup/Presentation/Views/Assistant/AssistantView.swift
+  h_e81853c41416fb 12,15-16,26-27,31,44-45,47-56,59,62-66,70-72,91,102,112-171,205-229,238-240,245,260-305,308-309,311,314,316-318,324,328-336,347-348,354,358-381,392-397,403-421
+iOSMessup/Presentation/Views/Expenses/ExpenseInsightsCard.swift
+  h_e81853c41416fb 180
+iOSMessup/Presentation/Views/Expenses/ExpensesSummaryCard.swift
+  h_e81853c41416fb 122
+iOSMessup/Presentation/Views/Expenses/ExpensesView.swift
+  h_e81853c41416fb 60,74
+iOSMessup/Presentation/Views/Income/BalanceSummaryCard.swift
+  h_e81853c41416fb 13,30-33,37,73,83
+iOSMessup/Presentation/Views/Income/IncomeView.swift
+  h_e81853c41416fb 102,110
+iOSMessup/Presentation/Views/MainTabBarView.swift
+  h_e81853c41416fb 13-14,29-33
+iOSMessup/Presentation/Views/Settings/DebugSection.swift
+  h_e81853c41416fb 15,52
+iOSMessup/Presentation/Views/Settings/SettingsView.swift
+  h_e81853c41416fb 148,153,164,171,174-175
+iOSMessup/Presentation/Views/Social/AddPersonView.swift
+  h_e81853c41416fb 2,5,8,11,13-15,17-21,24-28,34-40,42,44-46,49-51,54-60,67-68,71,78-86,89,91-93,96-111,114-173,176-188,190-206,208-210
+iOSMessup/Presentation/Views/Social/DebtEntryFormView.swift
+  h_e81853c41416fb 2,5,10-20,25,33,35,39-41,44-48,55-64,69-72,89,92-93,97-98,100-103,109,112,125-129,133,138,141
+iOSMessup/Presentation/Views/Social/PersonDetailView.swift
+  h_e81853c41416fb 2,5,11-22,26-36,38-41,43-44,49-50,55-61,64-66,72-75,78,85-88,90,95,97-100,103-104,106-143,145,151,153-156,160-167,169-175,177-178,184,186-189,193-194,203,211,213-215,219-221,223,226-228,232-236,239-242
+iOSMessup/Presentation/Views/Social/SocialView.swift
+  h_e81853c41416fb 1-159
+iOSMessup/iOSMessupApp.swift
+  h_e81853c41416fb 17-19,41-43,64
+iOSMessupTests/Domain/DebtSummaryTests.swift
+  h_e81853c41416fb 1-83
+iOSMessupTests/Domain/ExpenseInsightsTests.swift
+  h_e81853c41416fb 31
+iOSMessupTests/Domain/PeriodSummaryTests.swift
+  h_e81853c41416fb 29,31,46-47,50-55,57-58
+iOSMessupTests/Export/CSVExporterTests.swift
+  h_e81853c41416fb 22,29,38,43-46,48,53
+iOSMessupTests/Intelligence/AssistantActionCenterTests.swift
+  h_e81853c41416fb 2,10-34,36-51,54-64,66,69-70,72-74,77-81,83
+iOSMessupTests/Intelligence/AssistantActionsTests.swift
+  h_e81853c41416fb 1-323
+iOSMessupTests/Intelligence/IntelligencePromptsTests.swift
+  h_e81853c41416fb 49,78,100,102-188
+iOSMessupTests/Intelligence/LiveIntelligenceTests.swift
+  h_e81853c41416fb 26,34-49
+iOSMessupTests/Local/DebtsServiceLocalTests.swift
+  h_e81853c41416fb 2-3,5,12-14,16-18,21-34,37,39-67,69,71,73-74,77-81,83,85-86,89-90,92-94,96-98,100-102,105-112,115-116,118-121,124-128,130-131,133-134,137-152,154
+iOSMessupTests/Local/DebugSeederTests.swift
+  h_e81853c41416fb 32,35,38-39,54,57,63-64
+iOSMessupTests/Local/SampleDataGeneratorTests.swift
+  h_e81853c41416fb 33-35,50,63,66-70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "0d822301752971e7c8e7925cb8d518f1e5552c78",
+  "prompts": {},
+  "humans": {
+    "h_e81853c41416fb": {
+      "author": "RafaSG13 <rafasrrg13@gmail.com>"
+    }
+  }
+}
