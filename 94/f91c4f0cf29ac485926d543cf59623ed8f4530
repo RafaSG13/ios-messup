@@ -1,0 +1,42 @@
+.github/ISSUE_TEMPLATE/bug_report.yml
+  h_e81853c41416fb 1-50
+.github/ISSUE_TEMPLATE/config.yml
+  h_e81853c41416fb 1-5
+.github/ISSUE_TEMPLATE/feature_request.yml
+  h_e81853c41416fb 1-21
+.github/instructions/project.instructions.md
+  h_e81853c41416fb 7-8
+.github/pull_request_template.md
+  h_e81853c41416fb 1-15
+.gitignore
+  h_e81853c41416fb 31-34
+CONTRIBUTING.md
+  h_e81853c41416fb 1-38
+LICENSE
+  h_e81853c41416fb 1-21
+README.md
+  h_e81853c41416fb 1-43,45,47-54,56-93,95-106,110-112,122,125,128,132-134,136,138,141,144,146,148-173,175
+docs/diagrams/architecture.svg
+  h_e81853c41416fb 1-140
+docs/diagrams/data-flow.svg
+  h_e81853c41416fb 1-71
+docs/diagrams/design-system.svg
+  h_e81853c41416fb 1-79
+docs/diagrams/intelligence.svg
+  h_e81853c41416fb 1-102
+docs/diagrams/money-model.svg
+  h_e81853c41416fb 1-70
+docs/index.html
+  h_e81853c41416fb 1-213
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "94f91c4f0cf29ac485926d543cf59623ed8f4530",
+  "prompts": {},
+  "humans": {
+    "h_e81853c41416fb": {
+      "author": "RafaSG13 <rafasrrg13@gmail.com>"
+    }
+  }
+}
