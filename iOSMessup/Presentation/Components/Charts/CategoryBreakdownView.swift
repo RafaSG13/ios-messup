@@ -13,15 +13,11 @@ import MUDesignSystem
 /// The biggest categories of a period as rows (icon, name, amount, share, bar proportional to the largest) plus an
 /// "Other" row for the rest. Meant to live inside a card.
 struct CategoryBreakdownView: View {
-    @Environment(\.currencyCode) private var currencyCode
-    @ScaledMetric private var iconTileSize: CGFloat = 36
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
     /// Every category of the period, biggest first (`PeriodSummary.categoryTotals`).
     let totals: [CategoryTotal]
     var limit = 5
-    /// Progress of the category's monthly limit, `nil` when it has none (or outside a month with a budget).
-    var limitProgress: (Category) -> BudgetProgress? = { _ in nil }
+    /// Monthly-limit progress per category; absent when it has no limit or the period is not a month with a budget.
+    var limitProgress: [Category: BudgetProgress] = [:]
 
     var body: some View {
         let split = CategoryTotal.topCategories(totals, limit: limit)
@@ -30,61 +26,79 @@ struct CategoryBreakdownView: View {
 
         VStack(alignment: .leading, spacing: MUSpacer.size04) {
             ForEach(split.top) { item in
-                let progress = limitProgress(item.category)
-                row(icon: item.category.icon,
-                    color: item.category.color,
-                    title: Text(item.category.rawValue),
-                    amount: item.amount,
-                    share: share(of: item.amount, in: total),
-                    barFraction: fraction(of: item.amount, in: largest),
-                    barTint: tint(for: progress, default: item.category.color),
-                    limitProgress: progress)
+                let progress = limitProgress[item.category]
+                CategoryBreakdownRow(icon: item.category.icon,
+                                     color: item.category.color,
+                                     title: Text(item.category.rawValue),
+                                     amount: item.amount,
+                                     share: total > 0 ? item.amount / total : 0,
+                                     barFraction: largest > 0 ? item.amount / largest : 0,
+                                     barTint: progress.map { $0.state == .ok ? item.category.color : $0.state.tint }
+                                         ?? item.category.color,
+                                     limitProgress: progress)
             }
             if split.other > 0 {
-                row(icon: "ellipsis",
-                    color: .gray,
-                    title: Text("Other"),
-                    amount: split.other,
-                    share: share(of: split.other, in: total),
-                    barFraction: fraction(of: split.other, in: largest),
-                    barTint: .gray,
-                    limitProgress: nil)
+                CategoryBreakdownRow(icon: "ellipsis",
+                                     color: .gray,
+                                     title: Text("Other"),
+                                     amount: split.other,
+                                     share: total > 0 ? split.other / total : 0,
+                                     barFraction: largest > 0 ? split.other / largest : 0,
+                                     barTint: .gray,
+                                     limitProgress: nil)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
-// MARK: - Rows
+// MARK: - CategoryBreakdownRow
 
-private extension CategoryBreakdownView {
-    func row(icon: String,
-             color: Color,
-             title: Text,
-             amount: Double,
-             share: Double,
-             barFraction: Double,
-             barTint: Color,
-             limitProgress: BudgetProgress?) -> some View {
+private struct CategoryBreakdownRow: View {
+    @Environment(\.currencyCode) private var currencyCode
+    @ScaledMetric private var iconTileSize: CGFloat = 36
+    let icon: String
+    let color: Color
+    let title: Text
+    let amount: Double
+    let share: Double
+    let barFraction: Double
+    let barTint: Color
+    let limitProgress: BudgetProgress?
+
+    var body: some View {
         HStack(alignment: .top, spacing: MUSpacer.size03) {
             MUIconTile(systemImage: icon, tint: color, size: iconTileSize)
 
             VStack(alignment: .leading, spacing: MUSpacer.size02) {
-                headline(title: title, amount: amount, share: share)
+                CategoryHeadline(title: title, amount: amount, share: share)
                 ProgressBar(progress: barFraction, tint: barTint)
                     .accessibilityHidden(true)
                 if let limitProgress {
-                    limitCaption(limitProgress)
+                    Text("\(limitProgress.spent.formattedMoney(code: currencyCode)) of \(limitProgress.limit.formattedMoney(code: currencyCode))")
+                        .font(.caption)
+                        .foregroundStyle(limitProgress.state == .ok ? Color.secondary : limitProgress.state.tint)
                 }
             }
         }
         .accessibilityElement(children: .combine)
     }
+}
 
-    @ViewBuilder
-    func headline(title: Text, amount: Double, share: Double) -> some View {
+// MARK: - CategoryHeadline
+
+/// Not an `MUAdaptiveStack`: the `Spacer` of the regular layout must not expand vertically.
+private struct CategoryHeadline: View {
+    @Environment(\.currencyCode) private var currencyCode
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    let title: Text
+    let amount: Double
+    let share: Double
+
+    var body: some View {
         let amountText = Text(amount.formattedMoney(code: currencyCode))
         let shareText = Text(share, format: .percent.precision(.fractionLength(0)))
+
         if dynamicTypeSize.isAccessibilitySize {
             VStack(alignment: .leading, spacing: MUSpacer.size01) {
                 title.font(.subheadline)
@@ -103,37 +117,17 @@ private extension CategoryBreakdownView {
             }
         }
     }
-
-    func limitCaption(_ progress: BudgetProgress) -> some View {
-        Text("\(progress.spent.formattedMoney(code: currencyCode)) of \(progress.limit.formattedMoney(code: currencyCode))")
-            .font(.caption)
-            .foregroundStyle(progress.state == .ok ? Color.secondary : tint(for: progress, default: .secondary))
-    }
-
-    func tint(for progress: BudgetProgress?, default color: Color) -> Color {
-        switch progress?.state {
-        case .warning: Color.designSystem.warning
-        case .over: Color.designSystem.critical
-        case .ok, nil: color
-        }
-    }
-
-    func share(of amount: Double, in total: Double) -> Double {
-        total > 0 ? amount / total : 0
-    }
-
-    func fraction(of amount: Double, in largest: Double) -> Double {
-        largest > 0 ? amount / largest : 0
-    }
 }
 
 // MARK: - Previews
 
 #Preview("Mock data") {
     MUCard("Categories") {
-        CategoryBreakdownView(totals: Expense.mockArray.totalsByCategory(), limit: 3) { category in
-            Budget.mock.categoryLimits[category].map { BudgetProgress(spent: 450, limit: $0) }
-        }
+        CategoryBreakdownView(totals: Expense.mockArray.totalsByCategory(),
+                              limit: 3,
+                              limitProgress: Dictionary(uniqueKeysWithValues: Budget.mock.categoryLimits.map {
+                                  ($0.key, BudgetProgress(spent: 450, limit: $0.value))
+                              }))
     }
     .padding()
 }

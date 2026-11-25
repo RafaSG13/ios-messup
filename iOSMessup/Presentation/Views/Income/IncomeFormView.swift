@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MUDesignSystem
 
 struct IncomeFormView: View {
     enum Mode {
@@ -55,7 +56,8 @@ struct IncomeFormView: View {
                 Section("Source") {
                     Picker("Source", selection: $source) {
                         ForEach(IncomeSource.allCases, id: \.self) { source in
-                            IncomeSourcePickerView(source: source)
+                            MUTintedLabel(source.rawValue, systemImage: source.icon, tint: source.color)
+                                .tag(source)
                         }
                     }
                     .pickerStyle(.navigationLink)
@@ -64,19 +66,9 @@ struct IncomeFormView: View {
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", role: .cancel) { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save", role: .confirm, action: save)
-                        .disabled(isSaving || concept.isEmpty || amount <= 0)
-                }
-                ToolbarItem(placement: .keyboard) {
-                    HStack {
-                        Spacer()
-                        Button("Done") { hideKeyboard() }
-                    }
-                }
+                FormToolbar(isSaveDisabled: isSaving || concept.isEmpty || amount <= 0,
+                            onCancel: { dismiss() },
+                            onSave: save)
             }
             .errorAlert($error)
         }
@@ -115,23 +107,6 @@ private extension IncomeFormView {
                 isSaving = false
             }
         }
-    }
-}
-
-// MARK: - Income Source Picker View
-
-private struct IncomeSourcePickerView: View {
-    let source: IncomeSource
-
-    var body: some View {
-        Label {
-            Text(source.rawValue)
-        } icon: {
-            Image(systemName: source.icon)
-                .foregroundStyle(source.color)
-                .symbolVariant(.fill)
-        }
-        .tag(source)
     }
 }
 

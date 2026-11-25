@@ -10,7 +10,7 @@ import Foundation
 // MARK: - Insight
 
 /// One short observation about the spending of a period. The view turns each case into a sentence.
-enum Insight: Equatable {
+enum Insight: Hashable {
     /// The biggest category and its share of the period's spending (`0.4` = 40 %).
     case topCategory(Category, share: Double)
     /// Relative change versus the previous period (`0.1` = 10 % more).

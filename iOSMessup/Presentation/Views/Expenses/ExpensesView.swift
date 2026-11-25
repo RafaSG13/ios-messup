@@ -10,11 +10,10 @@ import MUDesignSystem
 
 // MARK: - ExpensesView
 
+/// Owns the screen state (period, sheets, selection). Every data read lives in `ExpensesDashboard`,
+/// so presenting a sheet does not recompute the summary.
 struct ExpensesView: View {
     @Environment(\.expenseService) private var expenseService
-    @Environment(\.incomeService) private var incomeService
-    @Environment(\.savingsService) private var savingsService
-    @Environment(\.budgetService) private var budgetService
     @Environment(\.intelligenceService) private var intelligenceService
     @State private var kind = PeriodKind.month
     @State private var anchor = Date.now
@@ -24,10 +23,60 @@ struct ExpensesView: View {
     @State private var selectedItem: Expense?
     @State private var error: (any Error)?
 
-    private enum Constants {
-        static let maximumNumberOfExpenses = 6
-        static let maximumNumberOfCategories = 5
+    var body: some View {
+        NavigationStack {
+            ExpensesDashboard(kind: $kind,
+                              anchor: $anchor,
+                              isPresentingAddExpense: $shouldPresentAddExpense,
+                              isPresentingBudget: $isPresentingBudget,
+                              selectedItem: $selectedItem,
+                              error: $error)
+                .navigationTitle("Expenses")
+                .navigationBarTitleDisplayMode(.large)
+                .navigationDestination(for: Route.self) { RouteDestinationView(route: $0) }
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button("Add expense", systemImage: "plus") {
+                            shouldPresentAddExpense = true
+                        }
+                        .buttonStyle(.glassProminent)
+                    }
+                    if intelligenceService.availability == .available {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button("Ask Messup", systemImage: "sparkles") {
+                                isPresentingAssistant = true
+                            }
+                        }
+                    }
+                }
+                .errorAlert($error)
+                .addExpenseSheet(isPresented: $shouldPresentAddExpense,
+                                 onSubmit: expenseService.addExpense)
+                .editExpenseSheet(item: $selectedItem,
+                                  onSubmit: expenseService.updateExpense(with:))
+                .sheet(isPresented: $isPresentingBudget) {
+                    BudgetFormView()
+                }
+                .sheet(isPresented: $isPresentingAssistant) {
+                    AssistantView()
+                }
+        }
     }
+}
+
+// MARK: - ExpensesDashboard
+
+private struct ExpensesDashboard: View {
+    @Environment(\.expenseService) private var expenseService
+    @Environment(\.incomeService) private var incomeService
+    @Environment(\.savingsService) private var savingsService
+    @Environment(\.budgetService) private var budgetService
+    @Binding var kind: PeriodKind
+    @Binding var anchor: Date
+    @Binding var isPresentingAddExpense: Bool
+    @Binding var isPresentingBudget: Bool
+    @Binding var selectedItem: Expense?
+    @Binding var error: (any Error)?
 
     var body: some View {
         let period = Period(kind: kind, containing: anchor)
@@ -35,103 +84,204 @@ struct ExpensesView: View {
                                     expenses: expenseService.expenses,
                                     incomes: incomeService.incomes,
                                     contributions: savingsService.contributions)
+        // The budget only applies to months.
+        let monthlyLimit = kind == .month ? budgetService.budget?.monthlyLimit : nil
+        let categoryLimits: [Category: BudgetProgress] = kind == .month
+            ? Dictionary(uniqueKeysWithValues: summary.categoryTotals.compactMap { item in
+                budgetService.progress(for: item.category, spent: item.amount).map { (item.category, $0) }
+            })
+            : [:]
 
-        NavigationStack {
-            List {
-                if expenseService.expenses.isEmpty {
-                    emptyState
-                } else {
-                    summarySection(summary)
-                    insightsSection(summary)
-                    categoriesSection(summary)
-                    recentSection(period)
+        List {
+            if expenseService.expenses.isEmpty {
+                MUEmptyState("No transactions",
+                             systemImage: "creditcard",
+                             description: "Add your first expense to see your spending here.",
+                             actionTitle: "Add expense") {
+                    isPresentingAddExpense = true
+                }
+                .clearListRow()
+            } else {
+                Section {
+                    PeriodPicker(kind: $kind, anchor: $anchor)
+                }
+
+                Section {
+                    ExpensesCarousel(summary: summary,
+                                     monthlyLimit: monthlyLimit,
+                                     showsBudget: kind == .month,
+                                     budgetProgress: kind == .month ? budgetService.progress(spent: summary.spent) : nil,
+                                     isPresentingBudget: $isPresentingBudget)
+                        .clearListRow(insets: EdgeInsets())
+                }
+                ExpensesCategoriesSection(summary: summary, categoryLimits: categoryLimits)
+                RecentExpensesSection(kind: kind, anchor: anchor, selectedItem: $selectedItem, error: $error)
+            }
+        }
+        .listStyle(.insetGrouped)
+        .listSectionSpacing(MUSpacer.size04)
+    }
+}
+
+// MARK: - ExpensesCarousel
+
+private enum CarouselPageKind {
+    case spent
+    case spending
+    case insights
+}
+
+/// Spent, Spending and Insights as one horizontally paged, endlessly looping card with page dots.
+/// The pages are repeated and the scroll position is moved back to the middle band when it gets near an end.
+private struct ExpensesCarousel: View {
+    let summary: PeriodSummary
+    let monthlyLimit: Double?
+    let showsBudget: Bool
+    let budgetProgress: BudgetProgress?
+    @Binding var isPresentingBudget: Bool
+    @State private var position: Int?
+
+    private enum ViewTraits {
+        static let repeats = 21
+        static let recenterDistance = 5
+    }
+
+    var body: some View {
+        let insights = Insight.make(from: summary, monthlyLimit: monthlyLimit)
+        let kinds: [CarouselPageKind] = insights.isEmpty ? [.spent, .spending] : [.spent, .spending, .insights]
+        let count = kinds.count
+        let start = (ViewTraits.repeats / 2) * count
+
+        VStack(spacing: MUSpacer.size03) {
+            // Invisible copy of every page: gives the carousel the height of the tallest one.
+            ZStack(alignment: .top) {
+                ForEach(kinds.indices, id: \.self) { index in
+                    CarouselPage(kind: kinds[index],
+                                 summary: summary,
+                                 monthlyLimit: monthlyLimit,
+                                 showsBudget: showsBudget,
+                                 budgetProgress: budgetProgress,
+                                 insights: insights,
+                                 isPresentingBudget: $isPresentingBudget)
                 }
             }
-            .listStyle(.insetGrouped)
-            .listSectionSpacing(MUSpacer.size04)
-            .navigationTitle("Expenses")
-            .navigationBarTitleDisplayMode(.large)
-            .navigationDestination(for: Route.self) { $0.destination }
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button("Add expense", systemImage: "plus") {
-                        shouldPresentAddExpense = true
-                    }
-                    .buttonStyle(.glassProminent)
-                }
-                if intelligenceService.availability == .available {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button("Ask Messup", systemImage: "sparkles") {
-                            isPresentingAssistant = true
+            .hidden()
+            .accessibilityHidden(true)
+            .overlay {
+                ScrollView(.horizontal) {
+                    LazyHStack(alignment: .top, spacing: 0) {
+                        ForEach(0..<(count * ViewTraits.repeats), id: \.self) { index in
+                            CarouselPage(kind: kinds[index % count],
+                                         summary: summary,
+                                         monthlyLimit: monthlyLimit,
+                                         showsBudget: showsBudget,
+                                         budgetProgress: budgetProgress,
+                                         insights: insights,
+                                         isPresentingBudget: $isPresentingBudget)
+                                .containerRelativeFrame(.horizontal)
+                                .modifier(CarouselPageTransition())
                         }
                     }
+                    .scrollTargetLayout()
+                }
+                .scrollIndicators(.hidden)
+                .scrollTargetBehavior(.paging)
+                .scrollPosition(id: $position)
+                .onAppear { position = start }
+                .onChange(of: count) { position = start }
+                .onChange(of: position) { _, new in
+                    let limit = count * ViewTraits.recenterDistance
+                    guard let new, new < start - limit || new >= start + limit else { return }
+                    var transaction = Transaction()
+                    transaction.disablesAnimations = true
+                    withTransaction(transaction) { position = start + new % count }
                 }
             }
-            .errorAlert($error)
-            .addExpenseSheet(isPresented: $shouldPresentAddExpense,
-                             onSubmit: expenseService.addExpense)
-            .editExpenseSheet(item: $selectedItem,
-                              onSubmit: expenseService.updateExpense(with:))
-            .sheet(isPresented: $isPresentingBudget) {
-                BudgetFormView()
-            }
-            .sheet(isPresented: $isPresentingAssistant) {
-                AssistantView()
+
+            CarouselDots(count: count, selected: (position ?? 0) % count)
+        }
+    }
+}
+
+// MARK: - CarouselPage
+
+private struct CarouselPage: View {
+    let kind: CarouselPageKind
+    let summary: PeriodSummary
+    let monthlyLimit: Double?
+    let showsBudget: Bool
+    let budgetProgress: BudgetProgress?
+    let insights: [Insight]
+    @Binding var isPresentingBudget: Bool
+
+    var body: some View {
+        // identity change intended: each page is a different card with its own state
+        switch kind {
+        case .spent:
+            ExpensesSummaryCard(summary: summary,
+                                showsBudget: showsBudget,
+                                budgetProgress: budgetProgress,
+                                isPresentingBudget: $isPresentingBudget)
+        case .insights:
+            ExpenseInsightsCard(insights: insights, summary: summary, monthlyLimit: monthlyLimit)
+        case .spending:
+            MUCard("Spending") {
+                CumulativeSpendingChart(summary: summary, monthlyLimit: monthlyLimit)
             }
         }
     }
 }
 
-// MARK: - View Components
+// MARK: - CarouselPageTransition
 
-private extension ExpensesView {
-    var emptyState: some View {
-        ContentUnavailableView {
-            Label("No transactions", systemImage: "creditcard")
-        } description: {
-            Text("Add your first expense to see your spending here.")
-        } actions: {
-            Button("Add expense") { shouldPresentAddExpense = true }
-                .buttonStyle(.borderedProminent)
-        }
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
+/// Fades and shrinks a page as it leaves the center, so a partial drag blends the two cards.
+private struct CarouselPageTransition: ViewModifier {
+    private enum ViewTraits {
+        static let minimumOpacity = 0.35
+        static let minimumScale = 0.92
     }
 
-    @ViewBuilder
-    func summarySection(_ summary: PeriodSummary) -> some View {
-        Section {
-            PeriodPicker(kind: $kind, anchor: $anchor)
-        }
-
-        Section {
-            ExpensesSummaryCard(summary: summary,
-                                showsBudget: kind == .month,
-                                budgetProgress: kind == .month ? budgetService.progress(spent: summary.spent) : nil,
-                                onEditBudget: { isPresentingBudget = true })
-                .cardRow()
-        }
-
-        Section {
-            MUCard("Spending") {
-                CumulativeSpendingChart(summary: summary, monthlyLimit: monthlyLimit)
-            }
-            .cardRow()
+    func body(content: Content) -> some View {
+        content.scrollTransition(axis: .horizontal) { view, phase in
+            let distance = abs(phase.value)
+            return view
+                .opacity(1 - distance * (1 - ViewTraits.minimumOpacity))
+                .scaleEffect(1 - distance * (1 - ViewTraits.minimumScale))
         }
     }
+}
 
-    @ViewBuilder
-    func insightsSection(_ summary: PeriodSummary) -> some View {
-        let insights = Insight.make(from: summary, monthlyLimit: monthlyLimit)
-        if !insights.isEmpty {
-            Section {
-                ExpenseInsightsCard(insights: insights, summary: summary, monthlyLimit: monthlyLimit)
-                    .cardRow()
+// MARK: - CarouselDots
+
+private struct CarouselDots: View {
+    let count: Int
+    let selected: Int
+
+    private enum ViewTraits {
+        static let dotSize: CGFloat = 8
+        static let inactiveOpacity = 0.3
+    }
+
+    var body: some View {
+        HStack(spacing: MUSpacer.size02) {
+            ForEach(0..<count, id: \.self) { page in
+                Circle()
+                    .fill(page == selected ? Color.primary : Color.secondary.opacity(ViewTraits.inactiveOpacity))
+                    .frame(width: ViewTraits.dotSize, height: ViewTraits.dotSize)
             }
         }
+        .animation(.snappy, value: selected)
+        .accessibilityHidden(true)
     }
+}
 
-    func categoriesSection(_ summary: PeriodSummary) -> some View {
+// MARK: - ExpensesCategoriesSection
+
+private struct ExpensesCategoriesSection: View {
+    let summary: PeriodSummary
+    let categoryLimits: [Category: BudgetProgress]
+
+    var body: some View {
         Section {
             MUCard("Categories") {
                 if summary.categoryTotals.isEmpty {
@@ -139,75 +289,41 @@ private extension ExpensesView {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 } else {
-                    CategoryBreakdownView(totals: summary.categoryTotals,
-                                          limit: Constants.maximumNumberOfCategories) { category in
-                        categoryLimitProgress(for: category, in: summary)
-                    }
+                    CategoryBreakdownView(totals: summary.categoryTotals, limit: 5, limitProgress: categoryLimits)
                 }
             }
-            .cardRow()
+            .clearListRow(insets: EdgeInsets())
         }
     }
+}
 
-    func recentSection(_ period: Period) -> some View {
-        let recent = recentExpenses(in: period)
-        return Section {
+// MARK: - RecentExpensesSection
+
+/// The newest expenses of the period, most recent first.
+private struct RecentExpensesSection: View {
+    @Environment(\.expenseService) private var expenseService
+    let kind: PeriodKind
+    let anchor: Date
+    @Binding var selectedItem: Expense?
+    @Binding var error: (any Error)?
+
+    var body: some View {
+        let period = Period(kind: kind, containing: anchor)
+        let recent = Array(expenseService.expenses.filter { period.contains($0.date) }.sorted().suffix(6).reversed())
+
+        Section {
             if recent.isEmpty {
                 Text("No expenses in this period")
                     .foregroundStyle(.secondary)
             }
             ForEach(recent) { expense in
-                ExpenseCellView(expense: expense)
-                    .selectableCell { selectedItem = expense }
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        Button("Delete", role: .destructive) { delete(expense) }
-                    }
+                ExpenseListRow(expense: expense, selectedItem: $selectedItem, error: $error)
             }
         } header: {
             ListSectionHeaderView(sectionTitle: "Transactions",
                                   actionTitle: "View all",
                                   value: Route.transactionList)
             .textCase(nil)
-        }
-    }
-}
-
-private extension View {
-    /// Full-width card on the grouped list background.
-    func cardRow() -> some View {
-        listRowBackground(Color.clear)
-            .listRowInsets(EdgeInsets())
-            .listRowSeparator(.hidden)
-    }
-}
-
-// MARK: - Data
-
-private extension ExpensesView {
-    /// The overall limit, only meaningful for months.
-    var monthlyLimit: Double? {
-        kind == .month ? budgetService.budget?.monthlyLimit : nil
-    }
-
-    func categoryLimitProgress(for category: Category, in summary: PeriodSummary) -> BudgetProgress? {
-        guard kind == .month,
-              let spent = summary.categoryTotals.first(where: { $0.category == category })?.amount else { return nil }
-        return budgetService.progress(for: category, spent: spent)
-    }
-
-    /// The newest expenses of the period, most recent first.
-    func recentExpenses(in period: Period) -> [Expense] {
-        let inPeriod = expenseService.expenses.filter { period.contains($0.date) }
-        return Array(inPeriod.sorted().suffix(Constants.maximumNumberOfExpenses).reversed())
-    }
-
-    func delete(_ expense: Expense) {
-        Task {
-            do {
-                try await expenseService.delete(expense)
-            } catch {
-                self.error = error
-            }
         }
     }
 }

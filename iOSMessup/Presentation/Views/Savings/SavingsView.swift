@@ -8,6 +8,8 @@
 import SwiftUI
 import MUDesignSystem
 
+// MARK: - SavingsView
+
 struct SavingsView: View {
     @Environment(\.savingsService) private var savingsService
     @State private var selectedContribution: Contribution?
@@ -19,8 +21,10 @@ struct SavingsView: View {
     var body: some View {
         NavigationStack {
             List {
-                goalSection
-                contributionsSection
+                SavingGoalSection(goalFormMode: $goalFormMode)
+                ContributionsSection(selectedContribution: $selectedContribution,
+                                     isAddingContribution: $isAddingContribution,
+                                     error: $error)
             }
             .listStyle(.insetGrouped)
             .listSectionSpacing(MUSpacer.size04)
@@ -63,80 +67,9 @@ struct SavingsView: View {
     }
 }
 
-// MARK: - Sections
-
-private extension SavingsView {
-    var goalSection: some View {
-        Section {
-            if let goal = savingsService.savingGoal, let progress = savingsService.progress() {
-                SavingGoalCardView(goal: goal, progress: progress)
-            } else {
-                ContentUnavailableView {
-                    Label("No saving goal", systemImage: "flag.checkered")
-                } description: {
-                    Text("Set a target amount to track your progress.")
-                } actions: {
-                    Button("Create goal") { goalFormMode = .create }
-                        .buttonStyle(.borderedProminent)
-                }
-            }
-        }
-        .listRowBackground(Color.clear)
-        .listRowInsets(EdgeInsets(top: MUSpacer.size03, leading: MUSpacer.size04, bottom: MUSpacer.size03, trailing: MUSpacer.size04))
-        .listRowSeparator(.hidden)
-    }
-
-    @ViewBuilder
-    var contributionsSection: some View {
-        if savingsService.savingGoal != nil {
-            let contributions = savingsService.contributions.sorted().reversed()
-            if contributions.isEmpty {
-                Section {
-                    ContentUnavailableView {
-                        Label("No contributions", systemImage: "banknote")
-                    } description: {
-                        Text("Contributions you add count toward your saving goal.")
-                    } actions: {
-                        Button("Add contribution") { isAddingContribution = true }
-                            .buttonStyle(.borderedProminent)
-                    }
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                } header: {
-                    Text("Contributions")
-                        .textCase(nil)
-                }
-            } else {
-                Section {
-                    ForEach(contributions) { contribution in
-                        ContributionCellView(contribution: contribution)
-                            .selectableCell { selectedContribution = contribution }
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button("Delete", role: .destructive) { delete(contribution) }
-                            }
-                    }
-                } header: {
-                    Text("Contributions")
-                        .textCase(nil)
-                }
-            }
-        }
-    }
-}
-
 // MARK: - Actions
 
 private extension SavingsView {
-    func delete(_ contribution: Contribution) {
-        Task {
-            do {
-                try await savingsService.deleteContribution(contribution)
-            } catch {
-                self.error = error
-            }
-        }
-    }
-
     func deleteGoal() {
         Task {
             do {
@@ -157,31 +90,136 @@ private extension SavingsView {
     }
 }
 
+// MARK: - SavingGoalSection
+
+private struct SavingGoalSection: View {
+    @Environment(\.savingsService) private var savingsService
+    @Binding var goalFormMode: SavingGoalFormView.Mode?
+
+    var body: some View {
+        Section {
+            if let goal = savingsService.savingGoal, let progress = savingsService.progress() {
+                SavingGoalCardView(goal: goal, progress: progress)
+            } else {
+                MUEmptyState("No saving goal",
+                             systemImage: "flag.checkered",
+                             description: "Set a target amount to track your progress.",
+                             actionTitle: "Create goal") {
+                    goalFormMode = .create
+                }
+            }
+        }
+        .clearListRow(insets: EdgeInsets(top: MUSpacer.size03,
+                                         leading: MUSpacer.size04,
+                                         bottom: MUSpacer.size03,
+                                         trailing: MUSpacer.size04))
+    }
+}
+
+// MARK: - ContributionsSection
+
+private struct ContributionsSection: View {
+    @Environment(\.savingsService) private var savingsService
+    @Binding var selectedContribution: Contribution?
+    @Binding var isAddingContribution: Bool
+    @Binding var error: (any Error)?
+
+    var body: some View {
+        if savingsService.savingGoal != nil {
+            let contributions = savingsService.contributions.sorted().reversed()
+            if contributions.isEmpty {
+                Section {
+                    MUEmptyState("No contributions",
+                                 systemImage: "banknote",
+                                 description: "Contributions you add count toward your saving goal.",
+                                 actionTitle: "Add contribution") {
+                        isAddingContribution = true
+                    }
+                    .clearListRow()
+                } header: {
+                    Text("Contributions")
+                        .textCase(nil)
+                }
+            } else {
+                Section {
+                    ForEach(contributions) { contribution in
+                        ContributionListRow(contribution: contribution,
+                                            selectedContribution: $selectedContribution,
+                                            error: $error)
+                    }
+                } header: {
+                    Text("Contributions")
+                        .textCase(nil)
+                }
+            }
+        }
+    }
+}
+
+// MARK: - ContributionListRow
+
+private struct ContributionListRow: View {
+    @Environment(\.savingsService) private var savingsService
+    let contribution: Contribution
+    @Binding var selectedContribution: Contribution?
+    @Binding var error: (any Error)?
+
+    var body: some View {
+        ContributionCellView(contribution: contribution)
+            .selectableCell { selectedContribution = contribution }
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                Button("Delete", role: .destructive, action: delete)
+            }
+    }
+
+    private func delete() {
+        Task {
+            do {
+                try await savingsService.deleteContribution(contribution)
+            } catch {
+                self.error = error
+            }
+        }
+    }
+}
+
 // MARK: - SavingGoalCardView
 
 private struct SavingGoalCardView: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @ScaledMetric private var iconSize: CGFloat = 48
+    @Environment(\.currencyCode) private var currencyCode
     let goal: SavingGoal
     let progress: SavingGoalProgress
 
     var body: some View {
         MUCard {
-            header
+            SavingGoalHeaderView(goal: goal)
             if let date = goal.completionDate.date {
-                targetDate(date)
+                SavingGoalTargetDateView(date: date)
             }
-            progressArea
-            stats
+            VStack(alignment: .leading, spacing: MUSpacer.size03) {
+                MUHeroAmount(progress.fraction.formatted(.percent.precision(.fractionLength(0))),
+                             value: progress.fraction,
+                             tint: .accentColor)
+                    .accessibilityHidden(true)
+                ProgressBar(progress: progress.fraction)
+            }
+            MUAdaptiveStack {
+                MUStatTile("Earned", value: progress.earned.formattedCompactMoney(code: currencyCode))
+                MUStatTile("Left", value: progress.remaining.formattedCompactMoney(code: currencyCode))
+                MUStatTile("Required", value: progress.target.formattedCompactMoney(code: currencyCode))
+            }
         }
     }
+}
 
-    private var header: some View {
-        let layout = dynamicTypeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: MUSpacer.size03))
-            : AnyLayout(HStackLayout(spacing: MUSpacer.size04))
+// MARK: - SavingGoalHeaderView
 
-        return layout {
+private struct SavingGoalHeaderView: View {
+    @ScaledMetric private var iconSize: CGFloat = 48
+    let goal: SavingGoal
+
+    var body: some View {
+        MUAdaptiveStack(spacing: MUSpacer.size04) {
             MUIconTile(systemImage: goal.savingCategory.icon, tint: goal.savingCategory.color, size: iconSize)
             VStack(alignment: .leading) {
                 Text(goal.name)
@@ -193,8 +231,14 @@ private struct SavingGoalCardView: View {
         }
         .accessibilityElement(children: .combine)
     }
+}
 
-    private func targetDate(_ date: Date) -> some View {
+// MARK: - SavingGoalTargetDateView
+
+private struct SavingGoalTargetDateView: View {
+    let date: Date
+
+    var body: some View {
         VStack(alignment: .leading) {
             Text("Target date")
                 .font(.caption)
@@ -205,52 +249,6 @@ private struct SavingGoalCardView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .accessibilityElement(children: .combine)
-    }
-
-    private var progressArea: some View {
-        VStack(alignment: .leading, spacing: MUSpacer.size03) {
-            Text(progress.fraction, format: .percent.precision(.fractionLength(0)))
-                .font(MUTypography.heroAmount)
-                .foregroundStyle(.tint)
-                .accessibilityHidden(true)
-            ProgressBar(progress: progress.fraction)
-        }
-    }
-
-    private var stats: some View {
-        let layout = dynamicTypeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: MUSpacer.size03))
-            : AnyLayout(HStackLayout(spacing: MUSpacer.size03))
-
-        return layout {
-            StatTileView(title: "Earned", amount: progress.earned)
-            StatTileView(title: "Left", amount: progress.remaining)
-            StatTileView(title: "Required", amount: progress.target)
-        }
-    }
-}
-
-// MARK: - StatTileView
-
-private struct StatTileView: View {
-    @Environment(\.currencyCode) private var currencyCode
-    let title: LocalizedStringKey
-    let amount: Double
-
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text(amount.formattedCompactMoney(code: currencyCode))
-                .font(MUTypography.rowAmount)
-                .minimumScaleFactor(0.7)
-                .lineLimit(1)
-            Text(title)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .padding(MUSpacer.size03)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.tertiarySystemGroupedBackground), in: .rect(cornerRadius: MURadius.small))
         .accessibilityElement(children: .combine)
     }
 }

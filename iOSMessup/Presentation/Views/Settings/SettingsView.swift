@@ -17,94 +17,20 @@ private enum SettingsRoute: Hashable {
 // MARK: - SettingsView
 
 struct SettingsView: View {
-    @Environment(\.expenseService) private var expenseService
-    @Environment(\.incomeService) private var incomeService
-    @Environment(\.savingsService) private var savingsService
-    @Environment(\.budgetService) private var budgetService
-    @Environment(\.notificationService) private var notificationService
-    @Environment(\.intelligenceService) private var intelligenceService
-    @AppStorage(NotificationPreferences.budgetAlertsKey) private var budgetAlertsEnabled = false
-    @AppStorage(NotificationPreferences.weeklySummaryKey) private var weeklySummaryEnabled = false
     @State private var isShowingBudget = false
-    @AppStorage(AppCurrency.storageKey) private var currencyCode = AppCurrency.defaultCode
-    @State private var exportURL: URL?
     @State private var error: (any Error)?
-
-    private var csv: String {
-        CSVExporter.csv(expenses: expenseService.expenses,
-                        incomes: incomeService.incomes,
-                        contributions: savingsService.contributions)
-    }
-
-    private var hasData: Bool {
-        !expenseService.expenses.isEmpty || !incomeService.incomes.isEmpty || !savingsService.contributions.isEmpty
-    }
-
-    private var version: String {
-        let info = Bundle.main.infoDictionary
-        let short = info?["CFBundleShortVersionString"] as? String ?? "?"
-        let build = info?["CFBundleVersion"] as? String ?? "?"
-        return "\(short) (\(build))"
-    }
 
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    VStack(spacing: MUSpacer.size02) {
-                        Image("logoPNG")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 88, height: 88)
-                            .accessibilityHidden(true)
-                        Text(verbatim: "Messup")
-                            .font(.title2.bold())
-                    }
-                    .frame(maxWidth: .infinity)
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                }
-                Section("Preferences") {
-                    NavigationLink(value: SettingsRoute.currency) {
-                        LabeledContent("Currency", value: "\(AppCurrency.localizedName(for: currencyCode)) (\(currencyCode))")
-                    }
-                    Button {
-                        isShowingBudget = true
-                    } label: {
-                        LabeledContent("Budget") {
-                            if let budget = budgetService.budget {
-                                Text(budget.monthlyLimit.formattedMoney(code: currencyCode))
-                            } else {
-                                Text("Not set")
-                            }
-                        }
-                        .contentShape(.rect)
-                    }
-                    .foregroundStyle(.primary)
-                }
-                Section {
-                    Toggle("Budget alerts", isOn: $budgetAlertsEnabled)
-                    Toggle("Weekly summary", isOn: $weeklySummaryEnabled)
-                } header: {
-                    Text("Notifications")
-                } footer: {
-                    Text("Budget alerts tell you when you reach 80 % of your monthly budget and when you go over it. The weekly summary arrives on Sundays.")
-                }
-                Section {
-                    LabeledContent("Status") {
-                        Text(statusText(for: intelligenceService.availability))
-                    }
-                } header: {
-                    Text("Apple Intelligence")
-                } footer: {
-                    Text("Messup uses the on-device model to fill in expenses from text or receipts, suggest categories, summarize your spending and answer questions. Your data stays on your device.")
-                }
+                SettingsHeaderSection()
+                PreferencesSection(isShowingBudget: $isShowingBudget)
+                NotificationsSection(error: $error)
+                IntelligenceStatusSection()
                 Section("Data") {
-                    exportRow
+                    ExportDataRow(error: $error)
                 }
-                Section("About") {
-                    LabeledContent("Version", value: version)
-                }
+                AboutSection()
                 #if DEBUG
                 DebugSection()
                 #endif
@@ -116,26 +42,117 @@ struct SettingsView: View {
                 case .currency: CurrencyPickerView()
                 }
             }
-            .task(id: csv) { writeExport(csv) }
-            .onChange(of: budgetAlertsEnabled) { _, isOn in
-                guard isOn else { return }
-                Task { if await authorize() == false { budgetAlertsEnabled = false } }
-            }
-            .onChange(of: weeklySummaryEnabled) { _, isOn in
-                Task {
-                    if isOn, await authorize() == false {
-                        weeklySummaryEnabled = false
-                        return
-                    }
-                    await notificationService.setWeeklySummary(enabled: isOn)
-                }
-            }
             .errorAlert($error)
             .sheet(isPresented: $isShowingBudget) { BudgetFormView() }
         }
     }
+}
 
-    // MARK: - Apple Intelligence
+// MARK: - SettingsHeaderSection
+
+private struct SettingsHeaderSection: View {
+    var body: some View {
+        Section {
+            VStack(spacing: MUSpacer.size02) {
+                Image("logoPNG")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 88, height: 88)
+                    .accessibilityHidden(true)
+                Text(verbatim: "Messup")
+                    .font(.title2.bold())
+            }
+            .frame(maxWidth: .infinity)
+            .clearListRow()
+        }
+    }
+}
+
+// MARK: - PreferencesSection
+
+private struct PreferencesSection: View {
+    @Environment(\.budgetService) private var budgetService
+    @AppStorage(AppCurrency.storageKey) private var currencyCode = AppCurrency.defaultCode
+    @Binding var isShowingBudget: Bool
+
+    var body: some View {
+        Section("Preferences") {
+            NavigationLink(value: SettingsRoute.currency) {
+                LabeledContent("Currency", value: "\(AppCurrency.localizedName(for: currencyCode)) (\(currencyCode))")
+            }
+            Button {
+                isShowingBudget = true
+            } label: {
+                LabeledContent("Budget") {
+                    if let budget = budgetService.budget {
+                        Text(budget.monthlyLimit.formattedMoney(code: currencyCode))
+                    } else {
+                        Text("Not set")
+                    }
+                }
+                .contentShape(.rect)
+            }
+            .foregroundStyle(.primary)
+        }
+    }
+}
+
+// MARK: - NotificationsSection
+
+private struct NotificationsSection: View {
+    @Environment(\.notificationService) private var notificationService
+    @AppStorage(NotificationPreferences.budgetAlertsKey) private var budgetAlertsEnabled = false
+    @AppStorage(NotificationPreferences.weeklySummaryKey) private var weeklySummaryEnabled = false
+    @Binding var error: (any Error)?
+
+    var body: some View {
+        Section {
+            Toggle("Budget alerts", isOn: $budgetAlertsEnabled)
+            Toggle("Weekly summary", isOn: $weeklySummaryEnabled)
+        } header: {
+            Text("Notifications")
+        } footer: {
+            Text("Budget alerts tell you when you reach 80 % of your monthly budget and when you go over it. The weekly summary arrives on Sundays.")
+        }
+        .onChange(of: budgetAlertsEnabled) { _, isOn in
+            guard isOn else { return }
+            Task { if await authorize() == false { budgetAlertsEnabled = false } }
+        }
+        .onChange(of: weeklySummaryEnabled) { _, isOn in
+            Task {
+                if isOn, await authorize() == false {
+                    weeklySummaryEnabled = false
+                    return
+                }
+                await notificationService.setWeeklySummary(enabled: isOn)
+            }
+        }
+    }
+
+    /// Asks for permission in context (when a switch is turned on); explains how to fix it when it was denied.
+    private func authorize() async -> Bool {
+        let granted = await notificationService.requestAuthorization()
+        if !granted { error = NotificationError.denied }
+        return granted
+    }
+}
+
+// MARK: - IntelligenceStatusSection
+
+private struct IntelligenceStatusSection: View {
+    @Environment(\.intelligenceService) private var intelligenceService
+
+    var body: some View {
+        Section {
+            LabeledContent("Status") {
+                Text(statusText(for: intelligenceService.availability))
+            }
+        } header: {
+            Text("Apple Intelligence")
+        } footer: {
+            Text("Messup uses the on-device model to fill in expenses from text or receipts, suggest categories, summarize your spending and answer questions. Your data stays on your device.")
+        }
+    }
 
     private func statusText(for availability: IntelligenceAvailability) -> LocalizedStringKey {
         switch availability {
@@ -146,31 +163,40 @@ struct SettingsView: View {
         case .unsupportedLanguage: "Language not supported"
         }
     }
+}
 
-    // MARK: - Notifications
+// MARK: - ExportDataRow
 
-    /// Asks for permission in context (when a switch is turned on); explains how to fix it when it was denied.
-    private func authorize() async -> Bool {
-        let granted = await notificationService.requestAuthorization()
-        if !granted { error = NotificationError.denied }
-        return granted
-    }
+/// Owns the CSV: it is rebuilt only when the data changes, not on every Settings state change.
+private struct ExportDataRow: View {
+    @Environment(\.expenseService) private var expenseService
+    @Environment(\.incomeService) private var incomeService
+    @Environment(\.savingsService) private var savingsService
+    @State private var exportURL: URL?
+    @Binding var error: (any Error)?
 
-    // MARK: - Export
+    var body: some View {
+        let hasData = !expenseService.expenses.isEmpty
+            || !incomeService.incomes.isEmpty
+            || !savingsService.contributions.isEmpty
+        let csv = CSVExporter.csv(expenses: expenseService.expenses,
+                                  incomes: incomeService.incomes,
+                                  contributions: savingsService.contributions)
 
-    @ViewBuilder
-    private var exportRow: some View {
-        if hasData, let exportURL {
-            ShareLink(item: exportURL) {
+        Group {
+            if hasData, let exportURL {
+                ShareLink(item: exportURL) {
+                    Label("Export data", systemImage: "square.and.arrow.up")
+                }
+            } else {
                 Label("Export data", systemImage: "square.and.arrow.up")
+                    .foregroundStyle(.secondary)
             }
-        } else {
-            Label("Export data", systemImage: "square.and.arrow.up")
-                .foregroundStyle(.secondary)
         }
+        .task(id: csv) { writeExport(csv, hasData: hasData) }
     }
 
-    private func writeExport(_ csv: String) {
+    private func writeExport(_ csv: String, hasData: Bool) {
         guard hasData else {
             exportURL = nil
             return
@@ -183,6 +209,23 @@ struct SettingsView: View {
             exportURL = nil
             self.error = error
         }
+    }
+}
+
+// MARK: - AboutSection
+
+private struct AboutSection: View {
+    var body: some View {
+        Section("About") {
+            LabeledContent("Version", value: version)
+        }
+    }
+
+    private var version: String {
+        let info = Bundle.main.infoDictionary
+        let short = info?["CFBundleShortVersionString"] as? String ?? "?"
+        let build = info?["CFBundleVersion"] as? String ?? "?"
+        return "\(short) (\(build))"
     }
 }
 
@@ -202,24 +245,14 @@ struct CurrencyPickerView: View {
     }
 
     var body: some View {
+        let codes = self.codes
+
         List {
             ForEach(codes, id: \.self) { code in
                 Button {
                     currencyCode = code
                 } label: {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(AppCurrency.localizedName(for: code))
-                            Text(code).font(.caption).foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                        if code == currencyCode {
-                            Image(systemName: "checkmark")
-                                .foregroundStyle(.tint)
-                                .accessibilityLabel("Selected")
-                        }
-                    }
-                    .contentShape(.rect)
+                    CurrencyOptionLabel(code: code, isSelected: code == currencyCode)
                 }
                 .foregroundStyle(.primary)
             }
@@ -233,6 +266,31 @@ struct CurrencyPickerView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
+
+// MARK: - CurrencyOptionLabel
+
+private struct CurrencyOptionLabel: View {
+    let code: String
+    let isSelected: Bool
+
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(AppCurrency.localizedName(for: code))
+                Text(code).font(.caption).foregroundStyle(.secondary)
+            }
+            Spacer()
+            if isSelected {
+                Image(systemName: "checkmark")
+                    .foregroundStyle(.tint)
+                    .accessibilityLabel("Selected")
+            }
+        }
+        .contentShape(.rect)
+    }
+}
+
+// MARK: - Previews
 
 #Preview("Mock data") {
     SettingsView()

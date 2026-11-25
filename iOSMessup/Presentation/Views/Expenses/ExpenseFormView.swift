@@ -21,14 +21,13 @@ struct ExpenseFormView: View {
     }
 
     /// Who set the current category. A saved expense (edit) and any manual pick are never overwritten.
-    private enum CategorySource {
+    fileprivate enum CategorySource {
         case automatic
         case intelligence
         case user
     }
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.currencyCode) private var currencyCode
     @Environment(\.intelligenceService) private var intelligenceService
     @State private var name: String
     @State private var amount: Double
@@ -37,10 +36,6 @@ struct ExpenseFormView: View {
     @State private var category: Category
     @State private var categorySource: CategorySource
     @State private var isSaving = false
-    @State private var quickText = ""
-    @State private var isGenerating = false
-    @State private var photoItem: PhotosPickerItem?
-    @State private var isScanning = false
     @State private var error: (any Error)?
 
     private let mode: Mode
@@ -71,156 +66,31 @@ struct ExpenseFormView: View {
         NavigationStack {
             Form {
                 if showsIntelligence {
-                    intelligenceSection
+                    ExpenseQuickFillSection(error: $error, onDraft: apply)
                 }
-
-                Section("Details") {
-                    TextField("Name", text: $name)
-                    TextField("Amount", value: $amount, format: .currency(code: currencyCode))
-                        .keyboardType(.decimalPad)
-                    DatePicker("Date", selection: $date, displayedComponents: .date)
-                }
-
-                Section("Payment Method") {
-                    Picker("Payment Method", selection: $paymentMethod) {
-                        ForEach(PaymentMethod.allCases, id: \.self) { method in
-                            HStack {
-                                Text(method.rawValue)
-                                Spacer()
-                                Image(systemName: method.icon)
-                                    .foregroundStyle(method.color)
-                                    .symbolVariant(.fill)
-                            }
-                            .tag(method)
-                        }
-                    }
-                    .pickerStyle(.inline)
-                    .labelsHidden()
-                }
-
-                Section {
-                    Picker("Category", selection: categoryBinding) {
-                        ForEach(Category.allCases, id: \.self) { category in
-                            HStack {
-                                Text(category.rawValue)
-                                Spacer()
-                                Image(systemName: category.icon)
-                                    .foregroundStyle(category.color)
-                                    .symbolVariant(.fill)
-                            }
-                            .tag(category)
-                        }
-                    }
-                    .pickerStyle(.navigationLink)
-                } header: {
-                    Text("Category")
-                } footer: {
-                    if categorySource == .intelligence {
-                        Label("Suggested by Apple Intelligence", systemImage: "sparkles")
-                    }
-                }
+                ExpenseDetailsSection(name: $name, amount: $amount, date: $date)
+                PaymentMethodSection(paymentMethod: $paymentMethod)
+                ExpenseCategorySection(category: $category, source: $categorySource)
             }
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", role: .cancel) { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save", role: .confirm, action: save)
-                        .disabled(isSaving || name.isEmpty || amount <= 0)
-                }
-                ToolbarItem(placement: .keyboard) {
-                    HStack {
-                        Spacer()
-                        Button("Done") { hideKeyboard() }
-                    }
-                }
+                FormToolbar(isSaveDisabled: isSaving || name.isEmpty || amount <= 0,
+                            onCancel: { dismiss() },
+                            onSave: save)
             }
             .errorAlert($error)
             .task(id: name) { await suggestCategory() }
-            .onChange(of: photoItem) { _, item in
-                if let item { read(item) }
-            }
-            .fullScreenCover(isPresented: $isScanning) {
-                DocumentScannerView(onScan: { image in
-                    isScanning = false
-                    read(image)
-                }, onCancel: {
-                    isScanning = false
-                })
-                .ignoresSafeArea()
-            }
         }
     }
 }
 
-// MARK: - Apple Intelligence section
+// MARK: - Apple Intelligence
 
 private extension ExpenseFormView {
     var showsIntelligence: Bool {
         if case .add = mode { return intelligenceService.availability == .available }
         return false
-    }
-
-    var intelligenceSection: some View {
-        Section {
-            TextField("Describe it, e.g. Coffee 3.50 by card yesterday", text: $quickText, axis: .vertical)
-            HStack {
-                Button("Fill in", systemImage: "sparkles", action: fillFromText)
-                    .disabled(quickText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isGenerating)
-                if intelligenceService.canReadImages {
-                    PhotosPicker(selection: $photoItem, matching: .images) {
-                        Label("Photo", systemImage: "photo")
-                    }
-                    if DocumentScannerView.isSupported {
-                        Button("Scan", systemImage: "doc.viewfinder") { isScanning = true }
-                    }
-                }
-                if isGenerating {
-                    ProgressView()
-                }
-            }
-            .buttonStyle(.bordered)
-        } header: {
-            Label("Apple Intelligence", systemImage: "sparkles")
-        } footer: {
-            Text("Check the details before saving.")
-        }
-    }
-
-    /// Run `draft`, fill the form with the result or show the error. Only one request at a time.
-    func generate(_ draft: @escaping () async throws -> ExpenseDraft) {
-        guard !isGenerating else { return }
-        isGenerating = true
-        Task {
-            do {
-                apply(try await draft())
-            } catch {
-                self.error = error
-            }
-            isGenerating = false
-            photoItem = nil
-        }
-    }
-
-    func fillFromText() {
-        let text = quickText
-        generate { try await intelligenceService.draftExpense(from: text) }
-    }
-
-    func read(_ item: PhotosPickerItem) {
-        generate {
-            guard let data = try await item.loadTransferable(type: Data.self),
-                  let image = ReceiptImageLoader.cgImage(from: data) else {
-                throw IntelligenceError.unreadableImage
-            }
-            return try await intelligenceService.draftExpense(fromReceipt: image)
-        }
-    }
-
-    func read(_ image: CGImage) {
-        generate { try await intelligenceService.draftExpense(fromReceipt: image) }
     }
 
     /// Only the fields the model found are overwritten.
@@ -233,14 +103,6 @@ private extension ExpenseFormView {
             category = value
             categorySource = .intelligence
         }
-    }
-
-    var categoryBinding: Binding<Category> {
-        Binding(get: { category },
-                set: {
-                    category = $0
-                    categorySource = .user
-                })
     }
 
     /// Suggests a category once the name settles. Errors are ignored on purpose: the suggestion is optional.
@@ -288,6 +150,158 @@ private extension ExpenseFormView {
             } catch {
                 self.error = error
                 isSaving = false
+            }
+        }
+    }
+}
+
+// MARK: - ExpenseQuickFillSection
+
+/// Fill the form from text, a photo or a scanned receipt. Typing here does not re-evaluate the form.
+private struct ExpenseQuickFillSection: View {
+    @Environment(\.intelligenceService) private var intelligenceService
+    @State private var quickText = ""
+    @State private var isGenerating = false
+    @State private var photoItem: PhotosPickerItem?
+    @State private var isScanning = false
+    @Binding var error: (any Error)?
+    let onDraft: (ExpenseDraft) -> Void
+
+    var body: some View {
+        Section {
+            TextField("Describe it, e.g. Coffee 3.50 by card yesterday", text: $quickText, axis: .vertical)
+            HStack {
+                Button("Fill in", systemImage: "sparkles", action: fillFromText)
+                    .disabled(quickText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isGenerating)
+                if intelligenceService.canReadImages {
+                    PhotosPicker(selection: $photoItem, matching: .images) {
+                        Label("Photo", systemImage: "photo")
+                    }
+                    if DocumentScannerView.isSupported {
+                        Button("Scan", systemImage: "doc.viewfinder") { isScanning = true }
+                    }
+                }
+                if isGenerating {
+                    ProgressView()
+                }
+            }
+            .buttonStyle(.bordered)
+        } header: {
+            Label("Apple Intelligence", systemImage: "sparkles")
+        } footer: {
+            Text("Check the details before saving.")
+        }
+        .onChange(of: photoItem) { _, item in
+            if let item { read(item) }
+        }
+        .fullScreenCover(isPresented: $isScanning) {
+            DocumentScannerView(onScan: { image in
+                isScanning = false
+                read(image)
+            }, onCancel: {
+                isScanning = false
+            })
+            .ignoresSafeArea()
+        }
+    }
+
+    /// Run `draft`, fill the form with the result or show the error. Only one request at a time.
+    private func generate(_ draft: @escaping () async throws -> ExpenseDraft) {
+        guard !isGenerating else { return }
+        isGenerating = true
+        Task {
+            do {
+                onDraft(try await draft())
+            } catch {
+                self.error = error
+            }
+            isGenerating = false
+            photoItem = nil
+        }
+    }
+
+    private func fillFromText() {
+        let text = quickText
+        generate { try await intelligenceService.draftExpense(from: text) }
+    }
+
+    private func read(_ item: PhotosPickerItem) {
+        generate {
+            guard let data = try await item.loadTransferable(type: Data.self),
+                  let image = ReceiptImageLoader.cgImage(from: data) else {
+                throw IntelligenceError.unreadableImage
+            }
+            return try await intelligenceService.draftExpense(fromReceipt: image)
+        }
+    }
+
+    private func read(_ image: CGImage) {
+        generate { try await intelligenceService.draftExpense(fromReceipt: image) }
+    }
+}
+
+// MARK: - ExpenseDetailsSection
+
+private struct ExpenseDetailsSection: View {
+    @Environment(\.currencyCode) private var currencyCode
+    @Binding var name: String
+    @Binding var amount: Double
+    @Binding var date: Date
+
+    var body: some View {
+        Section("Details") {
+            TextField("Name", text: $name)
+            TextField("Amount", value: $amount, format: .currency(code: currencyCode))
+                .keyboardType(.decimalPad)
+            DatePicker("Date", selection: $date, displayedComponents: .date)
+        }
+    }
+}
+
+// MARK: - PaymentMethodSection
+
+private struct PaymentMethodSection: View {
+    @Binding var paymentMethod: PaymentMethod
+
+    var body: some View {
+        Section("Payment Method") {
+            Picker("Payment Method", selection: $paymentMethod) {
+                ForEach(PaymentMethod.allCases, id: \.self) { method in
+                    MUTintedLabel(method.rawValue, systemImage: method.icon, tint: method.color)
+                        .tag(method)
+                }
+            }
+            .pickerStyle(.inline)
+            .labelsHidden()
+        }
+    }
+}
+
+// MARK: - ExpenseCategorySection
+
+private struct ExpenseCategorySection: View {
+    @Binding var category: Category
+    @Binding var source: ExpenseFormView.CategorySource
+
+    var body: some View {
+        let selection = Binding(get: { category }, set: {
+            category = $0
+            source = .user
+        })
+
+        Section {
+            Picker("Category", selection: selection) {
+                ForEach(Category.allCases, id: \.self) { category in
+                    MUTintedLabel(category.rawValue, systemImage: category.icon, tint: category.color)
+                        .tag(category)
+                }
+            }
+            .pickerStyle(.navigationLink)
+        } header: {
+            Text("Category")
+        } footer: {
+            if source == .intelligence {
+                Label("Suggested by Apple Intelligence", systemImage: "sparkles")
             }
         }
     }

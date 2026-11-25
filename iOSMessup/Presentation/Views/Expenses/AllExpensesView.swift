@@ -22,16 +22,12 @@ struct AllExpensesView: View {
 
         List {
             if sections.isEmpty {
-                emptyState
+                AllExpensesEmptyState(searchText: searchText, isPresentingAddExpense: $shouldPresentAddExpense)
             }
             ForEach(sections) { section in
                 Section {
                     ForEach(section.items) { expense in
-                        ExpenseCellView(expense: expense)
-                            .selectableCell { selectedItem = expense }
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button("Delete", role: .destructive) { delete(expense) }
-                            }
+                        ExpenseListRow(expense: expense, selectedItem: $selectedItem, error: $error)
                     }
                 } header: {
                     Text(section.day, format: .dateTime.weekday(.wide).day().month(.wide))
@@ -60,37 +56,26 @@ struct AllExpensesView: View {
     }
 }
 
-// MARK: - View Components
+// MARK: - AllExpensesEmptyState
 
-private extension AllExpensesView {
-    @ViewBuilder
-    var emptyState: some View {
+private struct AllExpensesEmptyState: View {
+    let searchText: String
+    @Binding var isPresentingAddExpense: Bool
+
+    var body: some View {
         Group {
             if searchText.isEmpty {
-                ContentUnavailableView {
-                    Label("No transactions", systemImage: "creditcard")
-                } description: {
-                    Text("Add your first expense to see it here.")
-                } actions: {
-                    Button("Add expense") { shouldPresentAddExpense = true }
-                        .buttonStyle(.borderedProminent)
+                MUEmptyState("No transactions",
+                             systemImage: "creditcard",
+                             description: "Add your first expense to see it here.",
+                             actionTitle: "Add expense") {
+                    isPresentingAddExpense = true
                 }
             } else {
                 ContentUnavailableView.search(text: searchText)
             }
         }
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
-    }
-
-    func delete(_ expense: Expense) {
-        Task {
-            do {
-                try await expenseService.delete(expense)
-            } catch {
-                self.error = error
-            }
-        }
+        .clearListRow()
     }
 }
 

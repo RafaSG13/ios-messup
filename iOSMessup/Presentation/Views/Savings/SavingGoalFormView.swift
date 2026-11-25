@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MUDesignSystem
 
 struct SavingGoalFormView: View {
     enum Mode: Identifiable {
@@ -65,7 +66,8 @@ struct SavingGoalFormView: View {
                 Section("Category") {
                     Picker("Category", selection: $category) {
                         ForEach(SavingCategory.allCases, id: \.self) { category in
-                            SavingCategoryPickerView(category: category)
+                            MUTintedLabel(category.rawValue, systemImage: category.icon, tint: category.color)
+                                .tag(category)
                         }
                     }
                     .pickerStyle(.navigationLink)
@@ -81,19 +83,9 @@ struct SavingGoalFormView: View {
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", role: .cancel) { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save", role: .confirm, action: save)
-                        .disabled(isSaving || name.isEmpty || amount <= 0)
-                }
-                ToolbarItem(placement: .keyboard) {
-                    HStack {
-                        Spacer()
-                        Button("Done") { hideKeyboard() }
-                    }
-                }
+                FormToolbar(isSaveDisabled: isSaving || name.isEmpty || amount <= 0,
+                            onCancel: { dismiss() },
+                            onSave: save)
             }
             .errorAlert($error)
         }
@@ -136,22 +128,6 @@ private extension SavingGoalFormView {
                 isSaving = false
             }
         }
-    }
-}
-
-// MARK: - Category Picker View
-
-private struct SavingCategoryPickerView: View {
-    let category: SavingCategory
-
-    var body: some View {
-        Label {
-            Text(category.rawValue)
-        } icon: {
-            Image(systemName: category.icon)
-                .foregroundStyle(category.color)
-        }
-        .tag(category)
     }
 }
 

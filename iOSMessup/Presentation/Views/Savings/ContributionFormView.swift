@@ -52,19 +52,9 @@ struct ContributionFormView: View {
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", role: .cancel) { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save", role: .confirm, action: save)
-                        .disabled(isSaving || amount <= 0)
-                }
-                ToolbarItem(placement: .keyboard) {
-                    HStack {
-                        Spacer()
-                        Button("Done") { hideKeyboard() }
-                    }
-                }
+                FormToolbar(isSaveDisabled: isSaving || amount <= 0,
+                            onCancel: { dismiss() },
+                            onSave: save)
             }
             .errorAlert($error)
         }

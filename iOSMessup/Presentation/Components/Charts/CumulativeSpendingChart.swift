@@ -14,19 +14,9 @@ import MUDesignSystem
 /// Cumulative spending of a period against the previous one. Dragging shows the day with both amounts; a dashed
 /// rule marks the monthly limit when `monthlyLimit` is given. Meant to live inside a card.
 struct CumulativeSpendingChart: View {
-    @Environment(\.currencyCode) private var currencyCode
-    @State private var selectedDay: Int?
-
     let summary: PeriodSummary
     /// Only passed for months with a budget.
     var monthlyLimit: Double?
-
-    private enum ViewTraits {
-        static let chartMinimumHeight: CGFloat = 200
-        static let previousDash: [CGFloat] = [4, 3]
-        static let limitDash: [CGFloat] = [6, 4]
-        static let quarterMonthStep = 3
-    }
 
     var body: some View {
         if summary.spent == 0 {
@@ -34,17 +24,60 @@ struct CumulativeSpendingChart: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         } else {
-            chart
+            CumulativeSpendingPlot(summary: summary, monthlyLimit: monthlyLimit)
         }
     }
 }
 
-// MARK: - Chart
+// MARK: - CumulativeSpendingPlot
 
-private extension CumulativeSpendingChart {
-    var dayCount: Int { summary.period.dayCount }
+/// Owns the drag selection and the precomputed axis, so dragging only re-evaluates the chart.
+private struct CumulativeSpendingPlot: View {
+    @Environment(\.currencyCode) private var currencyCode
+    @State private var selectedDay: Int?
 
-    var chart: some View {
+    private let summary: PeriodSummary
+    private let monthlyLimit: Double?
+    private let axisDays: [Int]
+    private let axisLabels: [Int: String]
+
+    private enum ViewTraits {
+        static let chartMinimumHeight: CGFloat = 200
+        static let previousDash: [CGFloat] = [4, 3]
+        static let limitDash: [CGFloat] = [6, 4]
+    }
+
+    init(summary: PeriodSummary, monthlyLimit: Double?) {
+        self.summary = summary
+        self.monthlyLimit = monthlyLimit
+
+        let period = summary.period
+        let dayCount = period.dayCount
+        let days: [Int]
+        // Few labels: every weekday for a week, every 7th day for a month, the first day of each quarter for a year.
+        switch period.kind {
+        case .week:
+            days = Array(1...max(dayCount, 1))
+        case .month:
+            days = Array(stride(from: 1, through: dayCount, by: 7))
+        case .year:
+            days = (0..<4).compactMap {
+                period.calendar.date(byAdding: .month, value: $0 * 3, to: period.start).flatMap(period.dayIndex(of:))
+            }
+        }
+        axisDays = days
+        axisLabels = Dictionary(uniqueKeysWithValues: days.map { day in
+            let date = Self.date(forDay: day, in: period)
+            let label = switch period.kind {
+            case .week: date.formatted(.dateTime.weekday(.abbreviated))
+            case .month: date.formatted(.dateTime.day())
+            case .year: date.formatted(.dateTime.month(.abbreviated))
+            }
+            return (day, label)
+        })
+    }
+
+    var body: some View {
         Chart {
             ForEach(summary.previousCumulativeSpend) { point in
                 LineMark(x: .value("Day", point.day),
@@ -82,20 +115,22 @@ private extension CumulativeSpendingChart {
                     .annotation(position: .top,
                                 spacing: 0,
                                 overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
-                        callout(for: day)
+                        ChartDayCallout(date: date(forDay: day),
+                                        current: amount(in: summary.cumulativeSpend, day: day),
+                                        previous: amount(in: summary.previousCumulativeSpend, day: day))
                     }
             }
         }
         .chartLegend(.hidden)
-        .chartXScale(domain: 1...max(dayCount, 2))
+        .chartXScale(domain: 1...max(summary.period.dayCount, 2))
         .chartPlotStyle { $0.clipped() }
         .chartXSelection(value: $selectedDay)
         .chartXAxis {
             AxisMarks(values: axisDays) { value in
                 AxisGridLine()
-                AxisValueLabel {
-                    if let day = value.as(Int.self) {
-                        Text(axisLabel(for: day))
+                AxisValueLabel(anchor: .top) {
+                    if let day = value.as(Int.self), let label = axisLabels[day] {
+                        Text(label)
                     }
                 }
             }
@@ -103,7 +138,7 @@ private extension CumulativeSpendingChart {
         .chartYAxis {
             AxisMarks(position: .leading) { value in
                 AxisGridLine()
-                AxisValueLabel {
+                AxisValueLabel(anchor: .trailing) {
                     if let amount = value.as(Double.self) {
                         Text(amount.formattedCompactMoney(code: currencyCode))
                     }
@@ -118,69 +153,25 @@ private extension CumulativeSpendingChart {
     }
 
     /// The selected day clamped to the period.
-    var selection: Int? {
-        selectedDay.map { min(max($0, 1), dayCount) }
+    private var selection: Int? {
+        selectedDay.map { min(max($0, 1), summary.period.dayCount) }
     }
 
-    func callout(for day: Int) -> some View {
-        VStack(alignment: .leading, spacing: MUSpacer.size01) {
-            Text(date(forDay: day), format: .dateTime.day().month(.abbreviated))
-                .font(.caption.bold())
-            if let current = amount(in: summary.cumulativeSpend, day: day) {
-                Text("Spent \(current.formattedMoney(code: currencyCode))")
-                    .font(.caption)
-                    .foregroundStyle(Color.accentColor)
-            }
-            if let previous = amount(in: summary.previousCumulativeSpend, day: day) {
-                Text("Previous \(previous.formattedMoney(code: currencyCode))")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding(MUSpacer.size03)
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: MURadius.small))
-    }
-
-    func amount(in points: [CumulativePoint], day: Int) -> Double? {
+    private func amount(in points: [CumulativePoint], day: Int) -> Double? {
         points.first { $0.day == day }?.amount
     }
-}
 
-// MARK: - Axis & accessibility
-
-private extension CumulativeSpendingChart {
-    func date(forDay day: Int) -> Date {
-        let calendar = summary.period.calendar
-        return calendar.date(byAdding: .day, value: day - 1, to: calendar.startOfDay(for: summary.period.start))
-            ?? summary.period.start
+    private func date(forDay day: Int) -> Date {
+        Self.date(forDay: day, in: summary.period)
     }
 
-    /// Few labels: every weekday for a week, every 7th day for a month, the first day of each quarter for a year.
-    var axisDays: [Int] {
-        switch summary.period.kind {
-        case .week:
-            return Array(1...max(dayCount, 1))
-        case .month:
-            return Array(stride(from: 1, through: dayCount, by: 7))
-        case .year:
-            let calendar = summary.period.calendar
-            return (1...max(dayCount, 1)).filter { day in
-                let components = calendar.dateComponents([.month, .day], from: date(forDay: day))
-                return components.day == 1 && ((components.month ?? 1) - 1) % ViewTraits.quarterMonthStep == 0
-            }
-        }
+    private static func date(forDay day: Int, in period: Period) -> Date {
+        let calendar = period.calendar
+        return calendar.date(byAdding: .day, value: day - 1, to: calendar.startOfDay(for: period.start))
+            ?? period.start
     }
 
-    func axisLabel(for day: Int) -> String {
-        let dayDate = date(forDay: day)
-        switch summary.period.kind {
-        case .week: return dayDate.formatted(.dateTime.weekday(.abbreviated))
-        case .month: return dayDate.formatted(.dateTime.day())
-        case .year: return dayDate.formatted(.dateTime.month(.abbreviated))
-        }
-    }
-
-    var accessibilitySummary: String {
+    private var accessibilitySummary: String {
         var parts = [String(localized: "Spent \(summary.spent.formattedMoney(code: currencyCode))")]
         if summary.previousSpent > 0 {
             parts.append(String(localized: "Previous period \(summary.previousSpent.formattedMoney(code: currencyCode))"))
@@ -189,6 +180,34 @@ private extension CumulativeSpendingChart {
             parts.append(String(localized: "Monthly limit \(monthlyLimit.formattedMoney(code: currencyCode))"))
         }
         return parts.formatted(.list(type: .and, width: .narrow))
+    }
+}
+
+// MARK: - ChartDayCallout
+
+private struct ChartDayCallout: View {
+    @Environment(\.currencyCode) private var currencyCode
+    let date: Date
+    let current: Double?
+    let previous: Double?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: MUSpacer.size01) {
+            Text(date, format: .dateTime.day().month(.abbreviated))
+                .font(.caption.bold())
+            if let current {
+                Text("Spent \(current.formattedMoney(code: currencyCode))")
+                    .font(.caption)
+                    .foregroundStyle(Color.accentColor)
+            }
+            if let previous {
+                Text("Previous \(previous.formattedMoney(code: currencyCode))")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(MUSpacer.size03)
+        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: MURadius.small))
     }
 }
 

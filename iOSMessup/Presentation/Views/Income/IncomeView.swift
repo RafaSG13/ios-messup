@@ -8,10 +8,12 @@
 import SwiftUI
 import MUDesignSystem
 
+// MARK: - IncomeView
+
+/// Owns the screen state (period, search, sheets). Data reads live in the list's sections, so a keystroke in the
+/// search field does not rebuild the balance summary.
 struct IncomeView: View {
     @Environment(\.incomeService) private var incomeService
-    @Environment(\.expenseService) private var expenseService
-    @Environment(\.savingsService) private var savingsService
     @State private var kind = PeriodKind.month
     @State private var anchor = Date.now
     @State private var selectedIncome: Income?
@@ -20,97 +22,156 @@ struct IncomeView: View {
     @State private var error: (any Error)?
 
     var body: some View {
-        let period = Period(kind: kind, containing: anchor)
-        let hasIncomes = !incomeService.incomes.isEmpty
-        let periodHasIncomes = incomeService.incomes.contains { period.contains($0.date) }
-        let sections = incomeService.filteredIncomes(on: searchText)
-            .filter { period.contains($0.date) }
-            .groupedByDay(date: \.date)
-        let summary = PeriodSummary(period: period,
-                                    expenses: expenseService.expenses,
-                                    incomes: incomeService.incomes,
-                                    contributions: savingsService.contributions)
-
         NavigationStack {
-            List {
-                if hasIncomes {
-                    Section {
-                        PeriodPicker(kind: $kind, anchor: $anchor)
-                    }
-                    Section {
-                        BalanceSummaryCard(summary: summary)
-                    }
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets())
-                    .listRowSeparator(.hidden)
-                    if sections.isEmpty {
-                        Section {
-                            if periodHasIncomes {
-                                ContentUnavailableView.search(text: searchText)
-                            } else {
-                                ContentUnavailableView("No income in this period",
-                                                       systemImage: "arrow.down.circle")
-                            }
+            IncomeList(kind: $kind,
+                       anchor: $anchor,
+                       searchText: searchText,
+                       selectedIncome: $selectedIncome,
+                       isAddingIncome: $isAddingIncome,
+                       error: $error)
+                .searchable(text: $searchText, placement: .toolbar)
+                .searchToolbarBehavior(.minimize)
+                .navigationTitle("Income")
+                .navigationBarTitleDisplayMode(.large)
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button("Add income", systemImage: "plus") {
+                            isAddingIncome = true
                         }
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
+                        .buttonStyle(.glassProminent)
                     }
                 }
-                ForEach(sections) { section in
-                    Section {
-                        ForEach(section.items) { income in
-                            IncomeCellView(income: income)
-                                .selectableCell { selectedIncome = income }
-                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button("Delete", role: .destructive) { delete(income) }
-                                }
-                        }
-                    } header: {
-                        Text(section.day, format: .dateTime.weekday(.wide).day().month(.wide).year())
-                    }
+                .errorAlert($error)
+                .editIncomeSheet(income: $selectedIncome) { income in
+                    try await incomeService.updateIncome(with: income)
                 }
-            }
-            .listStyle(.insetGrouped)
-            .listSectionSpacing(MUSpacer.size04)
-            .overlay {
-                if !hasIncomes {
-                    ContentUnavailableView {
-                        Label("No income", systemImage: "arrow.down.circle")
-                    } description: {
-                        Text("Add your salary, gifts and other money coming in.")
-                    } actions: {
-                        Button("Add income") { isAddingIncome = true }
-                            .buttonStyle(.borderedProminent)
-                    }
+                .addIncomeSheet(isPresented: $isAddingIncome) { income in
+                    try await incomeService.createIncome(income)
                 }
-            }
-            .searchable(text: $searchText, placement: .toolbar)
-            .searchToolbarBehavior(.minimize)
-            .navigationTitle("Income")
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button("Add income", systemImage: "plus") {
-                        isAddingIncome = true
-                    }
-                    .buttonStyle(.glassProminent)
+        }
+    }
+}
+
+// MARK: - IncomeList
+
+private struct IncomeList: View {
+    @Environment(\.incomeService) private var incomeService
+    @Binding var kind: PeriodKind
+    @Binding var anchor: Date
+    let searchText: String
+    @Binding var selectedIncome: Income?
+    @Binding var isAddingIncome: Bool
+    @Binding var error: (any Error)?
+
+    var body: some View {
+        let hasIncomes = !incomeService.incomes.isEmpty
+
+        List {
+            if hasIncomes {
+                Section {
+                    PeriodPicker(kind: $kind, anchor: $anchor)
                 }
+                IncomeBalanceSection(kind: kind, anchor: anchor)
+                IncomeResultsSections(kind: kind,
+                                      anchor: anchor,
+                                      searchText: searchText,
+                                      selectedIncome: $selectedIncome,
+                                      error: $error)
             }
-            .errorAlert($error)
-            .editIncomeSheet(income: $selectedIncome) { income in
-                try await incomeService.updateIncome(with: income)
-            }
-            .addIncomeSheet(isPresented: $isAddingIncome) { income in
-                try await incomeService.createIncome(income)
+        }
+        .listStyle(.insetGrouped)
+        .listSectionSpacing(MUSpacer.size04)
+        .overlay {
+            if !hasIncomes {
+                MUEmptyState("No income",
+                             systemImage: "arrow.down.circle",
+                             description: "Add your salary, gifts and other money coming in.",
+                             actionTitle: "Add income") {
+                    isAddingIncome = true
+                }
             }
         }
     }
 }
 
-// MARK: - Actions
+// MARK: - IncomeBalanceSection
 
-private extension IncomeView {
-    func delete(_ income: Income) {
+private struct IncomeBalanceSection: View {
+    @Environment(\.incomeService) private var incomeService
+    @Environment(\.expenseService) private var expenseService
+    @Environment(\.savingsService) private var savingsService
+    let kind: PeriodKind
+    let anchor: Date
+
+    var body: some View {
+        let summary = PeriodSummary(period: Period(kind: kind, containing: anchor),
+                                    expenses: expenseService.expenses,
+                                    incomes: incomeService.incomes,
+                                    contributions: savingsService.contributions)
+
+        Section {
+            BalanceSummaryCard(summary: summary)
+                .clearListRow(insets: EdgeInsets())
+        }
+    }
+}
+
+// MARK: - IncomeResultsSections
+
+private struct IncomeResultsSections: View {
+    @Environment(\.incomeService) private var incomeService
+    let kind: PeriodKind
+    let anchor: Date
+    let searchText: String
+    @Binding var selectedIncome: Income?
+    @Binding var error: (any Error)?
+
+    var body: some View {
+        let period = Period(kind: kind, containing: anchor)
+        let periodHasIncomes = incomeService.incomes.contains { period.contains($0.date) }
+        let sections = incomeService.filteredIncomes(on: searchText)
+            .filter { period.contains($0.date) }
+            .groupedByDay(date: \.date)
+
+        if sections.isEmpty {
+            Section {
+                if periodHasIncomes {
+                    ContentUnavailableView.search(text: searchText)
+                } else {
+                    ContentUnavailableView("No income in this period", systemImage: "arrow.down.circle")
+                }
+            }
+            .clearListRow()
+        }
+        ForEach(sections) { section in
+            Section {
+                ForEach(section.items) { income in
+                    IncomeListRow(income: income, selectedIncome: $selectedIncome, error: $error)
+                }
+            } header: {
+                Text(section.day, format: .dateTime.weekday(.wide).day().month(.wide).year())
+            }
+        }
+    }
+}
+
+// MARK: - IncomeListRow
+
+private struct IncomeListRow: View {
+    @Environment(\.incomeService) private var incomeService
+    let income: Income
+    @Binding var selectedIncome: Income?
+    @Binding var error: (any Error)?
+
+    var body: some View {
+        IncomeCellView(income: income)
+            .selectableCell { selectedIncome = income }
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                Button("Delete", role: .destructive, action: delete)
+            }
+    }
+
+    private func delete() {
         Task {
             do {
                 try await incomeService.deleteIncome(income)

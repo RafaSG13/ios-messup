@@ -12,39 +12,16 @@ import MUDesignSystem
 
 /// Plain row content; the enclosing `List` provides the surface.
 struct ExpenseCellView: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.currencyCode) private var currencyCode
-    @ScaledMetric private var iconSize: CGFloat = 40
     let expense: Expense
 
     var body: some View {
-        let isAccessibilitySize = dynamicTypeSize.isAccessibilitySize
-        let layout = isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: MUSpacer.size03))
-            : AnyLayout(HStackLayout(spacing: MUSpacer.size03))
-
-        layout {
-            MUIconTile(systemImage: expense.category.icon, tint: expense.category.color, size: iconSize)
-
-            VStack(alignment: .leading) {
-                Text(expense.name)
-                    .font(.headline)
-                Text(expense.paymentMethod.rawValue)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            VStack(alignment: isAccessibilitySize ? .leading : .trailing) {
-                Text(expense.amount.formattedMoney(code: currencyCode))
-                    .font(MUTypography.rowAmount)
-                Text(expense.date, format: .dateTime.day().month().hour().minute())
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .frame(maxWidth: .infinity, minHeight: iconSize, alignment: .leading)
-        .accessibilityElement(children: .combine)
+        MUTransactionRow(systemImage: expense.category.icon,
+                         tint: expense.category.color,
+                         title: Text(expense.name),
+                         subtitle: Text(expense.paymentMethod.rawValue),
+                         amount: Text(expense.amount.formattedMoney(code: currencyCode)),
+                         detail: Text(expense.date, format: .dateTime.day().month().hour().minute()))
     }
 }
 

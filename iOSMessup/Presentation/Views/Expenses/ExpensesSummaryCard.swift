@@ -11,7 +11,7 @@ import MUDesignSystem
 // MARK: - ExpensesSummaryCard
 
 /// Spent in the period, the change versus the previous one, the projection while it is in progress and, for months,
-/// the budget row (or a "Set a budget" button). Tapping the budget row calls `onEditBudget`.
+/// the budget row (or a "Set a budget" button). Tapping the budget row presents the budget form.
 struct ExpensesSummaryCard: View {
     @Environment(\.currencyCode) private var currencyCode
 
@@ -19,15 +19,12 @@ struct ExpensesSummaryCard: View {
     /// Only months have a budget; other periods never show the budget row.
     let showsBudget: Bool
     let budgetProgress: BudgetProgress?
-    let onEditBudget: () -> Void
+    @Binding var isPresentingBudget: Bool
 
     var body: some View {
         MUCard("Spent") {
             VStack(alignment: .leading, spacing: MUSpacer.size03) {
-                Text(summary.spent.formattedMoney(code: currencyCode))
-                    .font(MUTypography.heroAmount)
-                    .contentTransition(.numericText(value: summary.spent))
-                    .animation(.snappy, value: summary.spent)
+                MUHeroAmount(summary.spent.formattedMoney(code: currencyCode), value: summary.spent)
 
                 if let change = summary.changeVersusPrevious {
                     Label {
@@ -44,7 +41,7 @@ struct ExpensesSummaryCard: View {
                         .foregroundStyle(.secondary)
                 }
                 if showsBudget {
-                    budgetRow
+                    BudgetRowView(progress: budgetProgress, isPresentingBudget: $isPresentingBudget)
                         .padding(.top, MUSpacer.size02)
                 }
             }
@@ -53,23 +50,36 @@ struct ExpensesSummaryCard: View {
     }
 }
 
-// MARK: - Budget
+// MARK: - BudgetRowView
 
-private extension ExpensesSummaryCard {
-    @ViewBuilder
-    var budgetRow: some View {
-        if let budgetProgress {
-            Button(action: onEditBudget) {
+private struct BudgetRowView: View {
+    @Environment(\.currencyCode) private var currencyCode
+    let progress: BudgetProgress?
+    @Binding var isPresentingBudget: Bool
+
+    var body: some View {
+        if let progress {
+            let amount = abs(progress.remaining).formattedMoney(code: currencyCode)
+
+            Button {
+                isPresentingBudget = true
+            } label: {
                 VStack(alignment: .leading, spacing: MUSpacer.size03) {
                     HStack(alignment: .firstTextBaseline) {
                         Text("Budget")
                             .font(.subheadline.bold())
                         Spacer(minLength: MUSpacer.size03)
-                        remainingText(for: budgetProgress)
-                            .font(.subheadline)
-                            .foregroundStyle(tint(for: budgetProgress.state))
+                        Group {
+                            if progress.remaining >= 0 {
+                                Text("\(amount) left")
+                            } else {
+                                Text("\(amount) over")
+                            }
+                        }
+                        .font(.subheadline)
+                        .foregroundStyle(progress.state.tint)
                     }
-                    ProgressBar(progress: budgetProgress.fraction, tint: tint(for: budgetProgress.state))
+                    ProgressBar(progress: progress.fraction, tint: progress.state.tint)
                 }
                 .contentShape(Rectangle())
             }
@@ -77,21 +87,10 @@ private extension ExpensesSummaryCard {
             .accessibilityElement(children: .combine)
             .accessibilityHint("Edit budget")
         } else {
-            Button("Set a budget", systemImage: "target", action: onEditBudget)
-                .buttonStyle(.bordered)
-        }
-    }
-
-    func remainingText(for progress: BudgetProgress) -> Text {
-        let amount = abs(progress.remaining).formattedMoney(code: currencyCode)
-        return progress.remaining >= 0 ? Text("\(amount) left") : Text("\(amount) over")
-    }
-
-    func tint(for state: BudgetProgress.State) -> Color {
-        switch state {
-        case .ok: Color.accentColor
-        case .warning: Color.designSystem.warning
-        case .over: Color.designSystem.critical
+            Button("Set a budget", systemImage: "target") {
+                isPresentingBudget = true
+            }
+            .buttonStyle(.bordered)
         }
     }
 }
@@ -128,7 +127,7 @@ private extension ExpensesSummaryCard {
     ExpensesSummaryCard(summary: ExpensesSummaryCard.previewSummary,
                         showsBudget: true,
                         budgetProgress: BudgetProgress(spent: 1700, limit: 2000),
-                        onEditBudget: {})
+                        isPresentingBudget: .constant(false))
         .padding()
 }
 
@@ -136,7 +135,7 @@ private extension ExpensesSummaryCard {
     ExpensesSummaryCard(summary: ExpensesSummaryCard.previewSummary,
                         showsBudget: true,
                         budgetProgress: nil,
-                        onEditBudget: {})
+                        isPresentingBudget: .constant(false))
         .padding()
 }
 
@@ -145,7 +144,7 @@ private extension ExpensesSummaryCard {
         ExpensesSummaryCard(summary: ExpensesSummaryCard.previewSummary,
                             showsBudget: true,
                             budgetProgress: BudgetProgress(spent: 2300, limit: 2000),
-                            onEditBudget: {})
+                            isPresentingBudget: .constant(false))
             .padding()
     }
     .dynamicTypeSize(.accessibility3)

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MUDesignSystem
 
 struct BudgetFormView: View {
     @Environment(\.dismiss) private var dismiss
@@ -27,7 +28,7 @@ struct BudgetFormView: View {
                 }
                 Section("Category limits (optional)") {
                     ForEach(Category.allCases, id: \.self) { category in
-                        categoryRow(category)
+                        CategoryLimitRow(category: category, limit: limitBinding(for: category))
                     }
                 }
                 if budgetService.budget != nil {
@@ -42,40 +43,15 @@ struct BudgetFormView: View {
             .navigationTitle("Budget")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", role: .cancel) { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save", role: .confirm, action: save)
-                        .disabled(isSaving || monthlyLimit <= 0)
-                }
-                ToolbarItem(placement: .keyboard) {
-                    HStack {
-                        Spacer()
-                        Button("Done") { hideKeyboard() }
-                    }
-                }
+                FormToolbar(isSaveDisabled: isSaving || monthlyLimit <= 0,
+                            onCancel: { dismiss() },
+                            onSave: save)
             }
             .confirmationDialog("Remove budget?", isPresented: $isConfirmingRemoval, titleVisibility: .visible) {
                 Button("Remove budget", role: .destructive, action: remove)
             }
             .errorAlert($error)
             .onAppear(perform: loadExisting)
-        }
-    }
-
-    private func categoryRow(_ category: Category) -> some View {
-        LabeledContent {
-            TextField("No limit", value: limitBinding(for: category), format: .currency(code: currencyCode))
-                .keyboardType(.decimalPad)
-                .multilineTextAlignment(.trailing)
-        } label: {
-            Label {
-                Text(category.rawValue)
-            } icon: {
-                Image(systemName: category.icon)
-                    .foregroundStyle(category.color)
-            }
         }
     }
 }
@@ -123,6 +99,24 @@ private extension BudgetFormView {
                 self.error = error
                 isSaving = false
             }
+        }
+    }
+}
+
+// MARK: - CategoryLimitRow
+
+private struct CategoryLimitRow: View {
+    @Environment(\.currencyCode) private var currencyCode
+    let category: Category
+    @Binding var limit: Double?
+
+    var body: some View {
+        LabeledContent {
+            TextField("No limit", value: $limit, format: .currency(code: currencyCode))
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.trailing)
+        } label: {
+            MUTintedLabel(category.rawValue, systemImage: category.icon, tint: category.color)
         }
     }
 }

@@ -28,7 +28,7 @@ public struct MUCard<Content: View>: View {
             content
         }
         .padding(MUSpacer.size04)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: MURadius.large))
     }
 }
