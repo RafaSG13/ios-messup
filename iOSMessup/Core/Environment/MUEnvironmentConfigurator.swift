@@ -5,7 +5,6 @@
 //  Created by Rafael Serrano Gamarra on 15/6/25.
 //
 
-
 import Foundation
 import SwiftUI
 

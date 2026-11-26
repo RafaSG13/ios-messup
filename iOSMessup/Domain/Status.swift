@@ -5,7 +5,6 @@
 //  Created by Rafael Serrano Gamarra on 19/6/25.
 //
 
-
 enum Status: Equatable {
     case idle
     case loading
