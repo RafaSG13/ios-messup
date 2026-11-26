@@ -137,12 +137,15 @@ private struct PersonBalanceCard: View {
                 MUStatTile("Payments", value: payments.formattedCompactMoney(code: currencyCode))
             }
             if !isSettled {
-                Button("Settle up") {
+                Button {
                     formMode = .add(personID: personID,
                                     kind: balance > 0 ? .receivedPayment : .madePayment,
                                     amount: abs(balance))
+                } label: {
+                    Text("Settle up").frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderless)
+                .buttonStyle(.bordered)
+                .controlSize(.large)
             }
         }
     }

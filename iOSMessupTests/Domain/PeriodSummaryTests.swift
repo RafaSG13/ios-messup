@@ -148,4 +148,32 @@ struct PeriodSummaryTests {
 
         #expect(summary.categoryTotals.map(\.category) == [.travel, .food])
     }
+
+    @Test func spendBarsHaveOneEntryPerDayAndMarkTheDayInProgress() {
+        let summary = november(now: date(2026, 11, 17), expenses: [
+            expense(10, on: date(2026, 11, 1)),
+            expense(5, on: date(2026, 11, 1, hour: 20)),
+            expense(7, on: date(2026, 11, 20))
+        ])
+
+        #expect(summary.spendBars.count == 30)
+        #expect(summary.spendBars[0].amount == 15)
+        #expect(summary.spendBars[19].amount == 7)
+        #expect(summary.spendBars.map(\.amount).reduce(0, +) == summary.spent)
+        #expect(summary.currentBar == 17)
+    }
+
+    @Test func yearBarsGroupByMonthAndEndedPeriodsHaveNoCurrentBar() {
+        let year = Period(kind: .year, containing: date(2025, 6, 1), calendar: calendar)
+        let summary = PeriodSummary(period: year,
+                                    expenses: [expense(10, on: date(2025, 1, 5)),
+                                               expense(20, on: date(2025, 1, 28)),
+                                               expense(3, on: date(2025, 12, 31))],
+                                    incomes: [], debts: [], now: date(2026, 11, 17))
+
+        #expect(summary.spendBars.count == 12)
+        #expect(summary.spendBars[0].amount == 30)
+        #expect(summary.spendBars[11].amount == 3)
+        #expect(summary.currentBar == nil)
+    }
 }

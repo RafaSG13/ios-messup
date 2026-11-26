@@ -23,16 +23,15 @@ public struct ListSectionHeaderView<Value: Hashable>: View {
     }
 
     public var body: some View {
-        HStack {
+        HStack(alignment: .firstTextBaseline) {
             Text(sectionTitle)
-                .font(.title2)
-                .bold()
+                .font(.title3.bold())
                 .foregroundStyle(Color.primary)
             Spacer()
             NavigationLink(value: value) {
                 Text(actionTitle)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.subheadline)
+                    .foregroundStyle(.tint)
             }
         }
     }

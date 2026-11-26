@@ -56,6 +56,7 @@ struct AssistantView: View {
                                            description: Text(availability.statusText))
                 }
             }
+            .background(Color(.systemGroupedBackground))
             .navigationTitle("Assistant")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -131,7 +132,7 @@ private struct AssistantChat: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: MUSpacer.size03) {
+            LazyVStack(alignment: .leading, spacing: MUSpacer.size04) {
                 if messages.isEmpty {
                     AssistantEmptyState(isResponding: isResponding, onSelect: onSend)
                 } else {
@@ -140,18 +141,24 @@ private struct AssistantChat: View {
                     }
                     IntelligenceDisclaimer()
                         .frame(maxWidth: .infinity)
-                        .padding(.top, MUSpacer.size03)
+                        .multilineTextAlignment(.center)
                 }
             }
-            .padding()
+            .padding(MUSpacer.size04)
         }
         .defaultScrollAnchor(.bottom, for: .sizeChanges)
+        .defaultScrollAnchor(messages.isEmpty ? .center : .bottom, for: .alignment)
+        .defaultScrollAnchor(.bottom, for: .initialOffset)
         .scrollDismissesKeyboard(.interactively)
         .safeAreaInset(edge: .bottom) {
-            VStack(spacing: MUSpacer.size03) {
-                ConfirmationBar()
-                AssistantInputBar(isResponding: isResponding, onSend: onSend, onError: onError)
+            GlassEffectContainer(spacing: MUSpacer.size03) {
+                VStack(spacing: MUSpacer.size03) {
+                    ConfirmationBar()
+                    AssistantInputBar(isResponding: isResponding, onSend: onSend, onError: onError)
+                }
             }
+            .padding(.horizontal, MUSpacer.size04)
+            .padding(.bottom, MUSpacer.size03)
         }
     }
 }
@@ -186,8 +193,9 @@ private struct ChatBubbleView: View {
                 Text(markdown)
             }
         }
-        .padding(MUSpacer.size03)
-        .background(isUser ? Color.accentColor.opacity(0.18) : Color(.secondarySystemBackground),
+        .padding(.vertical, MUSpacer.size03)
+        .padding(.horizontal, MUSpacer.size04)
+        .background(isUser ? Color.accentColor.opacity(0.18) : Color(.secondarySystemGroupedBackground),
                     in: .rect(cornerRadius: MURadius.large))
         .padding(isUser ? .leading : .trailing, MUSpacer.size09)
         .frame(maxWidth: .infinity, alignment: isUser ? .trailing : .leading)
@@ -212,7 +220,7 @@ private struct ActionCardView: View {
     var body: some View {
         MUAdaptiveStack(spacing: MUSpacer.size03) {
             MUIconTile(systemImage: event.systemImage, tint: .accentColor, size: iconSize)
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: MUSpacer.size01) {
                 Text(event.title)
                     .font(.subheadline.bold())
                 Text(event.detail)
@@ -220,40 +228,82 @@ private struct ActionCardView: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(MUSpacer.size03)
+        .padding(.vertical, MUSpacer.size03)
+        .padding(.horizontal, MUSpacer.size04)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemBackground), in: .rect(cornerRadius: MURadius.large))
+        .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: MURadius.large))
         .accessibilityElement(children: .combine)
     }
 }
 
 // MARK: - AssistantEmptyState
 
+private struct AssistantSuggestion: Identifiable {
+    let text: String
+    let systemImage: String
+    var id: String { text }
+}
+
 private struct AssistantEmptyState: View {
+    @ScaledMetric private var heroIconSize: CGFloat = 56
     let isResponding: Bool
     let onSelect: (String) -> Void
 
-    private static var suggestions: [String] {
-        [String(localized: "How much did I spend this month?"),
-         String(localized: "Add a coffee for 3.50 yesterday"),
-         String(localized: "Who owes me money?"),
-         String(localized: "Delete my last expense")]
+    private static var suggestions: [AssistantSuggestion] {
+        [AssistantSuggestion(text: String(localized: "How much did I spend this month?"), systemImage: "chart.bar"),
+         AssistantSuggestion(text: String(localized: "Add a coffee for 3.50 yesterday"), systemImage: "plus.circle"),
+         AssistantSuggestion(text: String(localized: "Who owes me money?"), systemImage: "person.2"),
+         AssistantSuggestion(text: String(localized: "Delete my last expense"), systemImage: "trash")]
     }
 
     var body: some View {
-        VStack(spacing: MUSpacer.size04) {
-            ContentUnavailableView("Ask about your money or tell me what to do",
-                                   systemImage: "sparkles",
-                                   description: Text("Answers are generated on device with your data."))
-            ForEach(Self.suggestions, id: \.self) { suggestion in
-                Button { onSelect(suggestion) } label: {
-                    Text(suggestion)
-                        .frame(maxWidth: .infinity)
+        VStack(spacing: MUSpacer.size06) {
+            VStack(spacing: MUSpacer.size03) {
+                MUIconTile(systemImage: "sparkles", tint: .accentColor, size: heroIconSize)
+                Text("Ask about your money or tell me what to do")
+                    .font(.title3.bold())
+                Text("Answers are generated on device with your data.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .multilineTextAlignment(.center)
+            .accessibilityElement(children: .combine)
+            VStack(spacing: MUSpacer.size03) {
+                ForEach(Self.suggestions) { suggestion in
+                    SuggestionButton(suggestion: suggestion, isDisabled: isResponding, onSelect: onSelect)
                 }
-                .buttonStyle(.bordered)
-                .disabled(isResponding)
             }
         }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+// MARK: - SuggestionButton
+
+private struct SuggestionButton: View {
+    @ScaledMetric(relativeTo: .subheadline) private var iconWidth: CGFloat = 24
+    let suggestion: AssistantSuggestion
+    let isDisabled: Bool
+    let onSelect: (String) -> Void
+
+    var body: some View {
+        Button { onSelect(suggestion.text) } label: {
+            HStack(spacing: MUSpacer.size03) {
+                Image(systemName: suggestion.systemImage)
+                    .foregroundStyle(.tint)
+                    .frame(width: iconWidth)
+                    .accessibilityHidden(true)
+                Text(suggestion.text)
+                    .foregroundStyle(.primary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .font(.subheadline.weight(.medium))
+            .padding(MUSpacer.size04)
+            .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: MURadius.medium))
+            .contentShape(.rect(cornerRadius: MURadius.medium))
+        }
+        .buttonStyle(.plain)
+        .disabled(isDisabled)
     }
 }
 
@@ -267,7 +317,6 @@ private struct ConfirmationBar: View {
         let center = intelligenceService.actionCenter
         if let request = center.pending {
             ConfirmationCard(request: request, onResolve: center.resolve)
-                .padding(.horizontal)
         }
     }
 }
@@ -279,22 +328,27 @@ private struct ConfirmationCard: View {
     let onResolve: (Bool) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: MUSpacer.size03) {
-            Text(request.title)
-                .font(.headline)
-            ForEach(request.details, id: \.self) { detail in
-                Text(detail)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: MUSpacer.size04) {
+            VStack(alignment: .leading, spacing: MUSpacer.size01) {
+                Text(request.title)
+                    .font(.headline)
+                ForEach(request.details, id: \.self) { detail in
+                    Text(detail)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
             }
-            MUAdaptiveStack {
-                Button("Cancel", role: .cancel) { onResolve(false) }
-                    .buttonStyle(.bordered)
-                    .frame(maxWidth: .infinity)
-                Button(request.confirmLabel, role: .destructive) { onResolve(true) }
-                    .buttonStyle(.borderedProminent)
-                    .frame(maxWidth: .infinity)
+            MUAdaptiveStack(spacing: MUSpacer.size03) {
+                Button(role: .cancel) { onResolve(false) } label: {
+                    Text("Cancel").frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                Button(role: .destructive) { onResolve(true) } label: {
+                    Text(request.confirmLabel).frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
             }
+            .controlSize(.large)
         }
         .padding(MUSpacer.size04)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -317,33 +371,36 @@ private struct AssistantInputBar: View {
     @State private var isDictationAvailable = false
     @State private var isRecording = false
     @FocusState private var isInputFocused: Bool
+    @State private var controlHeight: CGFloat = 0
 
     var body: some View {
-        GlassEffectContainer {
-            HStack(alignment: .bottom) {
-                TextField("Ask or tell Messup…", text: $question, axis: .vertical)
-                    .lineLimit(1...4)
-                    .focused($isInputFocused)
-                    .onSubmit(submit)
-                if isDictationAvailable {
-                    Button(isRecording ? "Stop dictation" : "Dictate",
-                           systemImage: isRecording ? "stop.circle.fill" : "mic",
-                           action: toggleDictation)
-                        .labelStyle(.iconOnly)
-                        .symbolEffect(.pulse, isActive: isRecording)
-                        .buttonStyle(.glass)
-                        .disabled(isResponding)
-                }
-                Button("Send", systemImage: "arrow.up", action: submit)
+        HStack(alignment: .bottom, spacing: MUSpacer.size03) {
+            TextField("Ask or tell Messup…", text: $question, axis: .vertical)
+                .lineLimit(1...4)
+                .focused($isInputFocused)
+                .onSubmit(submit)
+                .padding(.vertical, MUSpacer.size02)
+                .padding(.leading, MUSpacer.size03)
+                .frame(minHeight: controlHeight)
+            if isDictationAvailable {
+                Button(isRecording ? "Stop dictation" : "Dictate",
+                       systemImage: isRecording ? "stop.circle.fill" : "mic",
+                       action: toggleDictation)
                     .labelStyle(.iconOnly)
-                    .buttonStyle(.glassProminent)
-                    .disabled(question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isResponding)
+                    .symbolEffect(.pulse, isActive: isRecording)
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
+                    .disabled(isResponding)
             }
-            .padding(MUSpacer.size03)
-            .glassEffect(in: .rect(cornerRadius: MURadius.large))
+            Button("Send", systemImage: "arrow.up", action: submit)
+                .labelStyle(.iconOnly)
+                .buttonStyle(.glassProminent)
+                .buttonBorderShape(.circle)
+                .disabled(question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isResponding)
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { controlHeight = $0 }
         }
-        .padding(.horizontal)
-        .padding(.bottom, MUSpacer.size03)
+        .padding(MUSpacer.size03)
+        .glassEffect(in: .rect(cornerRadius: controlHeight / 2 + MUSpacer.size03))
         .task { isDictationAvailable = await dictationService.isAvailable() }
         .onDisappear(perform: stopDictation)
     }

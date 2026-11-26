@@ -21,16 +21,20 @@ struct ExpenseInsightsCard: View {
 
     var body: some View {
         MUCard("Insights") {
-            VStack(alignment: .leading, spacing: MUSpacer.size04) {
-                ForEach(insights, id: \.self) { insight in
-                    InsightRowView(insight: insight, kind: summary.period.kind)
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: MUSpacer.size04) {
+                    ForEach(insights, id: \.self) { insight in
+                        InsightRowView(insight: insight, kind: summary.period.kind)
+                    }
                 }
                 if intelligenceService.availability == .available {
+                    Spacer(minLength: MUSpacer.size04)
                     Divider()
                     InsightsSummaryView(summary: summary, monthlyLimit: monthlyLimit)
+                        .padding(.top, MUSpacer.size04)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
     }
 }
@@ -39,13 +43,16 @@ struct ExpenseInsightsCard: View {
 
 private struct InsightRowView: View {
     @Environment(\.currencyCode) private var currencyCode
+    @ScaledMetric(relativeTo: .subheadline) private var iconWidth: CGFloat = 20
     let insight: Insight
     let kind: PeriodKind
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: MUSpacer.size03) {
             Image(systemName: symbol)
+                .font(.subheadline)
                 .foregroundStyle(Color.accentColor)
+                .frame(width: iconWidth)
                 .accessibilityHidden(true)
             sentence
                 .font(.subheadline)

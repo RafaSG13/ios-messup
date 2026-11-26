@@ -11,6 +11,8 @@ import UserNotifications
 @main
 struct iOSMessupApp: App {
     @State private var status: Status = .idle
+    @State private var isLoaded = false
+    @State private var isShowingSplash = true
     @AppStorage(AppCurrency.storageKey) private var currencyCode = AppCurrency.defaultCode
     @State private var expenseService: ExpensesServiceProtocol = AppServices.shared.expenseService
     @State private var incomeService: IncomeServiceProtocol = AppServices.shared.incomeService
@@ -34,7 +36,17 @@ struct iOSMessupApp: App {
         WindowGroup {
             MainTabBarView()
                 .budgetAlerts()
-                .task { await loadInitialData() }
+                .overlay {
+                    if isShowingSplash {
+                        SplashView(isFinished: isLoaded) { isShowingSplash = false }
+                    }
+                }
+                .task {
+                    await loadInitialData()
+                    // A short beat so the launch screen does not vanish the instant it appears.
+                    try? await Task.sleep(for: .milliseconds(350))
+                    isLoaded = true
+                }
                 .errorAlert(loadError)
                 .environment(\.expenseService, expenseService)
                 .environment(\.incomeService, incomeService)
