@@ -22,10 +22,21 @@ extension Sequence where Element: Identifiable {
     /// Groups the elements by calendar day of `date`. Sections are newest day first and the items of each section
     /// are newest first, which is the order lists show them in.
     func groupedByDay(using calendar: Calendar = .current, date: KeyPath<Element, Date>) -> [DaySection<Element>] {
-        Dictionary(grouping: self) { calendar.startOfDay(for: $0[keyPath: date]) }
-            .map { day, items in
-                DaySection(day: day, items: items.sorted { $0[keyPath: date] > $1[keyPath: date] })
+        // One sort, then a single pass: `startOfDay` runs once per day instead of once per element.
+        let newestFirst = sorted { $0[keyPath: date] > $1[keyPath: date] }
+        var sections: [DaySection<Element>] = []
+        var dayStart = Date.distantFuture
+        var items: [Element] = []
+        for element in newestFirst {
+            let value = element[keyPath: date]
+            if value < dayStart {
+                if !items.isEmpty { sections.append(DaySection(day: dayStart, items: items)) }
+                items = []
+                dayStart = calendar.startOfDay(for: value)
             }
-            .sorted { $0.day > $1.day }
+            items.append(element)
+        }
+        if !items.isEmpty { sections.append(DaySection(day: dayStart, items: items)) }
+        return sections
     }
 }

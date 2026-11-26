@@ -34,5 +34,7 @@ protocol ContactsServiceProtocol: AnyObject {
 }
 
 extension EnvironmentValues {
-    @Entry var contactsService: ContactsServiceProtocol = MockContactsService()
+    @Entry var contactsService: ContactsServiceProtocol = defaultContactsService
+    // A `static let`: the macro's getter runs on every fallback read, so `MockContactsService()` there would allocate a new service each time.
+    private static let defaultContactsService = MockContactsService()
 }

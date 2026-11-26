@@ -32,5 +32,7 @@ protocol NotificationServiceProtocol: AnyObject {
 }
 
 extension EnvironmentValues {
-    @Entry var notificationService: NotificationServiceProtocol = MockNotificationService()
+    @Entry var notificationService: NotificationServiceProtocol = defaultNotificationService
+    // A `static let`: the macro's getter runs on every fallback read, so `MockNotificationService()` there would allocate a new service each time.
+    private static let defaultNotificationService = MockNotificationService()
 }

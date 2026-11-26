@@ -29,6 +29,23 @@ struct CumulativeSpendingChart: View {
     }
 }
 
+// MARK: - CumulativeSpendingChartSizer
+
+/// Takes the same space as `CumulativeSpendingChart` without building the chart. For hidden copies that only exist
+/// to measure a container.
+struct CumulativeSpendingChartSizer: View {
+    let summary: PeriodSummary
+
+    var body: some View {
+        if summary.spent == 0 {
+            Text("No expenses in this period.")
+                .font(.subheadline)
+        } else {
+            Color.clear.frame(minHeight: CumulativeSpendingPlot.minimumHeight)
+        }
+    }
+}
+
 // MARK: - CumulativeSpendingPlot
 
 /// Owns the drag selection and the precomputed axis, so dragging only re-evaluates the chart.
@@ -41,8 +58,10 @@ private struct CumulativeSpendingPlot: View {
     private let axisDays: [Int]
     private let axisLabels: [Int: String]
 
+    fileprivate static let minimumHeight: CGFloat = 200
+
     private enum ViewTraits {
-        static let chartMinimumHeight: CGFloat = 200
+        static let chartMinimumHeight = CumulativeSpendingPlot.minimumHeight
         static let previousDash: [CGFloat] = [4, 3]
         static let limitDash: [CGFloat] = [6, 4]
     }

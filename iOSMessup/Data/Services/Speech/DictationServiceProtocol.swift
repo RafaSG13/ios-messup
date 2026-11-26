@@ -33,5 +33,7 @@ enum DictationError: LocalizedError, Equatable {
 }
 
 extension EnvironmentValues {
-    @Entry var dictationService: DictationServiceProtocol = MockDictationService()
+    @Entry var dictationService: DictationServiceProtocol = defaultDictationService
+    // A `static let`: the macro's getter runs on every fallback read, so `MockDictationService()` there would allocate a new service each time.
+    private static let defaultDictationService = MockDictationService()
 }

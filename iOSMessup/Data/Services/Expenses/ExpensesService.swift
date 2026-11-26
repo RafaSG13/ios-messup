@@ -21,7 +21,9 @@ protocol ExpensesServiceProtocol: AnyObject {
 }
 
 extension EnvironmentValues {
-    @Entry() var expenseService: ExpensesServiceProtocol = MockExpensesService()
+    @Entry var expenseService: ExpensesServiceProtocol = defaultExpenseService
+    // A `static let`: the macro's getter runs on every fallback read, so `MockExpensesService()` there would allocate a new service each time.
+    private static let defaultExpenseService = MockExpensesService()
 }
 
 @Observable

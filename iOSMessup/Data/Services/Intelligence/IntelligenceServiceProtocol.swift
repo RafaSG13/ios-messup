@@ -47,5 +47,7 @@ protocol IntelligenceServiceProtocol: AnyObject {
 }
 
 extension EnvironmentValues {
-    @Entry var intelligenceService: IntelligenceServiceProtocol = MockIntelligenceService()
+    @Entry var intelligenceService: IntelligenceServiceProtocol = defaultIntelligenceService
+    // A `static let`: the macro's getter runs on every fallback read, so `MockIntelligenceService()` there would allocate a new service each time.
+    private static let defaultIntelligenceService = MockIntelligenceService()
 }

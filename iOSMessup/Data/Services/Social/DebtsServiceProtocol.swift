@@ -69,5 +69,7 @@ extension DebtsError {
 }
 
 extension EnvironmentValues {
-    @Entry var debtsService: DebtsServiceProtocol = MockDebtsService()
+    @Entry var debtsService: DebtsServiceProtocol = defaultDebtsService
+    // A `static let`: the macro's getter runs on every fallback read, so `MockDebtsService()` there would allocate a new service each time.
+    private static let defaultDebtsService = MockDebtsService()
 }
