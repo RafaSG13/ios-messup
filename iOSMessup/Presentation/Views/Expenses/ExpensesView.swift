@@ -162,15 +162,17 @@ private struct ExpensesCarousel: View {
         let start = (ViewTraits.repeats / 2) * count
 
         VStack(spacing: MUSpacer.size03) {
-            // Invisible copy of every page: gives the carousel the height of the tallest one.
+            // Invisible copy of every page: gives the carousel the height of the tallest one. The chart page uses
+            // a stand-in of the same size, so the chart is built once, not twice.
             ZStack(alignment: .top) {
-                ForEach(kinds.indices, id: \.self) { index in
-                    CarouselPage(kind: kinds[index],
+                ForEach(kinds, id: \.self) { kind in
+                    CarouselPage(kind: kind,
                                  summary: summary,
                                  monthlyLimit: monthlyLimit,
                                  showsBudget: showsBudget,
                                  budgetProgress: budgetProgress,
                                  insights: insights,
+                                 isSizing: true,
                                  isPresentingBudget: $isPresentingBudget)
                 }
             }
@@ -186,6 +188,7 @@ private struct ExpensesCarousel: View {
                                          showsBudget: showsBudget,
                                          budgetProgress: budgetProgress,
                                          insights: insights,
+                                         isSizing: false,
                                          isPresentingBudget: $isPresentingBudget)
                                 .containerRelativeFrame(.horizontal)
                                 .modifier(CarouselPageTransition())
@@ -221,6 +224,8 @@ private struct CarouselPage: View {
     let showsBudget: Bool
     let budgetProgress: BudgetProgress?
     let insights: [Insight]
+    /// True for the hidden copy that only measures the tallest page.
+    let isSizing: Bool
     @Binding var isPresentingBudget: Bool
 
     var body: some View {
@@ -235,7 +240,11 @@ private struct CarouselPage: View {
             ExpenseInsightsCard(insights: insights, summary: summary, monthlyLimit: monthlyLimit)
         case .spending:
             MUCard("Spending") {
-                CumulativeSpendingChart(summary: summary, monthlyLimit: monthlyLimit)
+                if isSizing {
+                    CumulativeSpendingChartSizer(summary: summary)
+                } else {
+                    CumulativeSpendingChart(summary: summary, monthlyLimit: monthlyLimit)
+                }
             }
         }
     }

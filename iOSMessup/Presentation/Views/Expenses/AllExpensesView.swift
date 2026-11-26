@@ -18,21 +18,11 @@ struct AllExpensesView: View {
     @State private var error: (any Error)?
 
     var body: some View {
-        let sections = expenseService.filteredExpenses(on: searchText).groupedByDay(date: \.date)
-
         List {
-            if sections.isEmpty {
-                AllExpensesEmptyState(searchText: searchText, isPresentingAddExpense: $shouldPresentAddExpense)
-            }
-            ForEach(sections) { section in
-                Section {
-                    ForEach(section.items) { expense in
-                        ExpenseListRow(expense: expense, selectedItem: $selectedItem, error: $error)
-                    }
-                } header: {
-                    Text(section.day, format: .dateTime.weekday(.wide).day().month(.wide))
-                }
-            }
+            AllExpensesSections(searchText: searchText,
+                                isPresentingAddExpense: $shouldPresentAddExpense,
+                                selectedItem: $selectedItem,
+                                error: $error)
         }
         .listStyle(.insetGrouped)
         .listSectionSpacing(MUSpacer.size04)
@@ -53,6 +43,35 @@ struct AllExpensesView: View {
                           onSubmit: expenseService.updateExpense(with:))
         .addExpenseSheet(isPresented: $shouldPresentAddExpense,
                          onSubmit: expenseService.addExpense)
+    }
+}
+
+// MARK: - AllExpensesSections
+
+/// Reads and groups the expenses, so presenting a sheet or selecting a row (state of the screen root) does not
+/// group every transaction again.
+private struct AllExpensesSections: View {
+    @Environment(\.expenseService) private var expenseService
+    let searchText: String
+    @Binding var isPresentingAddExpense: Bool
+    @Binding var selectedItem: Expense?
+    @Binding var error: (any Error)?
+
+    var body: some View {
+        let sections = expenseService.filteredExpenses(on: searchText).groupedByDay(date: \.date)
+
+        if sections.isEmpty {
+            AllExpensesEmptyState(searchText: searchText, isPresentingAddExpense: $isPresentingAddExpense)
+        }
+        ForEach(sections) { section in
+            Section {
+                ForEach(section.items) { expense in
+                    ExpenseListRow(expense: expense, selectedItem: $selectedItem, error: $error)
+                }
+            } header: {
+                Text(section.day, format: .dateTime.weekday(.wide).day().month(.wide))
+            }
+        }
     }
 }
 

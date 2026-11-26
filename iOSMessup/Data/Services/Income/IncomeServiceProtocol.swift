@@ -20,5 +20,7 @@ protocol IncomeServiceProtocol: AnyObject {
 }
 
 extension EnvironmentValues {
-    @Entry var incomeService: IncomeServiceProtocol = MockIncomeService()
+    @Entry var incomeService: IncomeServiceProtocol = defaultIncomeService
+    // A `static let`: the macro's getter runs on every fallback read, so `MockIncomeService()` there would allocate a new service each time.
+    private static let defaultIncomeService = MockIncomeService()
 }

@@ -28,7 +28,7 @@ struct SettingsView: View {
                 NotificationsSection(error: $error)
                 IntelligenceStatusSection()
                 Section("Data") {
-                    ExportDataRow(error: $error)
+                    ExportDataRow()
                 }
                 AboutSection()
                 #if DEBUG
@@ -157,49 +157,55 @@ private struct IntelligenceStatusSection: View {
 
 // MARK: - ExportDataRow
 
-/// Owns the CSV: it is rebuilt only when the data changes, not on every Settings state change.
+/// The CSV is not built until the user shares it (`ExportFile` is a `Transferable`), so data changes cost nothing here.
 private struct ExportDataRow: View {
     @Environment(\.expenseService) private var expenseService
     @Environment(\.incomeService) private var incomeService
     @Environment(\.debtsService) private var debtsService
-    @State private var exportURL: URL?
-    @Binding var error: (any Error)?
 
     var body: some View {
         let hasData = !expenseService.expenses.isEmpty
             || !incomeService.incomes.isEmpty
             || !debtsService.entries.isEmpty
-        let csv = CSVExporter.csv(expenses: expenseService.expenses,
-                                  incomes: incomeService.incomes,
-                                  debts: debtsService.entries,
-                                  people: debtsService.people)
 
-        Group {
-            if hasData, let exportURL {
-                ShareLink(item: exportURL) {
-                    Label("Export data", systemImage: "square.and.arrow.up")
-                }
-            } else {
+        if hasData {
+            ShareLink(item: ExportFile(expenses: expenseService.expenses,
+                                       incomes: incomeService.incomes,
+                                       debts: debtsService.entries,
+                                       people: debtsService.people),
+                      preview: SharePreview(ExportFile.fileName)) {
                 Label("Export data", systemImage: "square.and.arrow.up")
-                    .foregroundStyle(.secondary)
             }
+        } else {
+            Label("Export data", systemImage: "square.and.arrow.up")
+                .foregroundStyle(.secondary)
         }
-        .task(id: csv) { writeExport(csv, hasData: hasData) }
+    }
+}
+
+// MARK: - ExportFile
+
+/// A snapshot of the data that becomes `messup-export.csv` only when it is shared.
+private struct ExportFile: Transferable {
+    static let fileName = "messup-export.csv"
+
+    let expenses: [Expense]
+    let incomes: [Income]
+    let debts: [DebtEntry]
+    let people: [Person]
+
+    static var transferRepresentation: some TransferRepresentation {
+        FileRepresentation(exportedContentType: .commaSeparatedText) { file in
+            let csv = await file.csv()
+            let url = FileManager.default.temporaryDirectory.appending(path: fileName)
+            try csv.write(to: url, atomically: true, encoding: .utf8)
+            return SentTransferredFile(url)
+        }
     }
 
-    private func writeExport(_ csv: String, hasData: Bool) {
-        guard hasData else {
-            exportURL = nil
-            return
-        }
-        let url = FileManager.default.temporaryDirectory.appending(path: "messup-export.csv")
-        do {
-            try csv.write(to: url, atomically: true, encoding: .utf8)
-            exportURL = url
-        } catch {
-            exportURL = nil
-            self.error = error
-        }
+    @MainActor
+    private func csv() -> String {
+        CSVExporter.csv(expenses: expenses, incomes: incomes, debts: debts, people: people)
     }
 }
 

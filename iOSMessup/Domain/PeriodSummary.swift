@@ -116,8 +116,9 @@ struct PeriodSummary: Equatable {
                                         throughDay lastDay: Int) -> [CumulativePoint] {
         guard lastDay > 0 else { return [] }
         var perDay = [Double](repeating: 0, count: period.dayCount)
+        let boundaries = period.dayBoundaries()
         for expense in expenses {
-            if let day = period.dayIndex(of: expense.date) {
+            if let day = boundaries.dayIndex(of: expense.date) {
                 perDay[day - 1] += expense.amount
             }
         }

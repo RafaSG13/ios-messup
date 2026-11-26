@@ -31,7 +31,10 @@ iOSMessupApp (@main)  --@State services built by-->  MUEnvironmentConfigurator (
 - Assistant actions: 9 tools (`IntelligenceService.assistantTools()`: `getSpendingSummary`, `searchExpenses`, `searchIncome`, `getDebts` read; `changeExpense`, `changeIncome`, `changeBudget`, `changePerson`, `changeDebt` write, each with an `action` argument) keep the prompt inside the 4096-token context (the live test checks tools + instructions stay under half). Records are addressed by `#ref` = first 8 characters of the UUID, lowercased, printed by the search tools and resolved by `IntelligencePrompts.resolve(ref:in:)` (≥ 4 characters, ambiguous prefixes are errors). `AssistantActions` (`Data/Services/Intelligence/Actions/`) does the work and never throws: failures are returned as `"Error: …"` text for the model. Create/update apply at once and leave an activity card in the chat (`AssistantActionCenter.record`); **only deletions ask**: the tool suspends in `AssistantActionCenter.confirm` until the user presses Delete or Cancel on the card above the input bar (cancelling the task or starting a new conversation resolves it as "no"). Dictation (`DictationServiceProtocol`, `SpeechAnalyzer` + `SpeechTranscriber`, on device, `NSMicrophoneUsageDescription`) only fills the text field; the user presses Send. The tap closure in `DictationService` lives in a `nonisolated` type because it runs on the audio thread.
 - DI: each service protocol file ends with
   ```swift
-  extension EnvironmentValues { @Entry var incomeService: IncomeServiceProtocol = MockIncomeService() }
+  extension EnvironmentValues {
+      @Entry var incomeService: IncomeServiceProtocol = defaultIncomeService
+      private static let defaultIncomeService = MockIncomeService()   // static let: the @Entry getter runs on every fallback read
+  }
   ```
   Defaults are mocks so previews work with no injection. Exception: `ExpensesServiceProtocol` + its `@Entry` live in `ExpensesService.swift`, not a separate file.
 

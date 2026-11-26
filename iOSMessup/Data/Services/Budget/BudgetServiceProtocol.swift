@@ -23,5 +23,7 @@ protocol BudgetServiceProtocol: AnyObject {
 }
 
 extension EnvironmentValues {
-    @Entry var budgetService: BudgetServiceProtocol = MockBudgetService()
+    @Entry var budgetService: BudgetServiceProtocol = defaultBudgetService
+    // A `static let`: the macro's getter runs on every fallback read, so `MockBudgetService()` there would allocate a new service each time.
+    private static let defaultBudgetService = MockBudgetService()
 }
