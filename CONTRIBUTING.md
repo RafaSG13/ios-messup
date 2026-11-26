@@ -26,6 +26,9 @@ cd MUDesignSystem && xcodebuild -scheme MUDesignSystem -destination 'generic/pla
 
 `swift build` does not work for `MUDesignSystem`: the package is iOS-only.
 
+## CI
+`.github/workflows/ci.yml` runs on every pull request and on `main`: SwiftLint (`swiftlint lint --strict`, config in `.swiftlint.yml`; `brew install swiftlint` to run it locally), the design-system package build, the `iOSMessupTests` suite with code coverage (report in the job summary, `.xcresult` attached as an artifact). There is no coverage threshold yet.
+
 ## Conventions
 [`AGENTS.md`](AGENTS.md) is the single source for architecture and conventions. The hard rules:
 

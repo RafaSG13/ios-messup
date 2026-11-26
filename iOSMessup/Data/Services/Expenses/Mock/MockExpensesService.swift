@@ -60,7 +60,7 @@ final class MockExpensesService: ExpensesServiceProtocol {
         return expenses.filter { $0.name.localizedCaseInsensitiveContains(searchTerm) }
     }
 
-    func lastExpenses(limit: Int) -> [Expense]{
+    func lastExpenses(limit: Int) -> [Expense] {
         expenses.sorted().suffix(limit)
     }
 }
