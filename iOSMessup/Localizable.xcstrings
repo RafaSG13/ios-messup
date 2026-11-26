@@ -204,6 +204,9 @@
     "Budget exceeded" : {
 
     },
+    "Calendar" : {
+
+    },
     "Cancel" : {
 
     },
@@ -471,6 +474,9 @@
     "No expenses in this period." : {
 
     },
+    "No expenses on this day" : {
+
+    },
     "No history" : {
 
     },
@@ -526,6 +532,9 @@
 
     },
     "over" : {
+
+    },
+    "Overview" : {
 
     },
     "owes you" : {

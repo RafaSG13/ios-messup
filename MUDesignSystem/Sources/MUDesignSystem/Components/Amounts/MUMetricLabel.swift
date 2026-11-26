@@ -24,15 +24,12 @@ public struct MUMetricLabel: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: MUSpacer.size01) {
-            Label {
-                Text(title)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            } icon: {
+            HStack(spacing: MUSpacer.size02) {
                 Image(systemName: systemImage)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                Text(title)
             }
+            .font(.caption)
+            .foregroundStyle(.secondary)
             Text(value)
                 .font(MUTypography.compactAmount)
                 .foregroundStyle(.primary)

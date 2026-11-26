@@ -18,6 +18,17 @@ struct CumulativePoint: Identifiable, Equatable {
     var id: Int { day }
 }
 
+// MARK: - SpendBar
+
+/// What was spent on one day (week, month) or in one month (year) of a period.
+struct SpendBar: Identifiable, Equatable {
+    /// 1-based day of the period, or month number for a year.
+    let index: Int
+    let amount: Double
+
+    var id: Int { index }
+}
+
 // MARK: - PeriodSummary
 
 /// Everything the money screens show for one period, computed from plain arrays so it is easy to test.
@@ -42,6 +53,10 @@ struct PeriodSummary: Equatable {
     let previousCumulativeSpend: [CumulativePoint]
     /// Days that have started as of `now` (see `Period.elapsedDays`).
     let elapsedDays: Int
+    /// One bar per day (week, month) or per month (year) of the period.
+    let spendBars: [SpendBar]
+    /// The bar of the day or month in progress; `nil` once the period has ended or before it starts.
+    let currentBar: Int?
 
     init(period: Period,
          expenses: [Expense],
@@ -63,6 +78,12 @@ struct PeriodSummary: Equatable {
         self.previousCumulativeSpend = Self.buildCumulative(of: inPrevious,
                                                             in: previousPeriod,
                                                             throughDay: previousPeriod.dayCount)
+        self.spendBars = Self.buildBars(of: inPeriod, in: period)
+        if elapsedDays > 0, elapsedDays < period.dayCount {
+            self.currentBar = period.kind == .year ? period.calendar.component(.month, from: now) : elapsedDays
+        } else {
+            self.currentBar = nil
+        }
         let comparableDay = min(elapsedDays, previousPeriod.dayCount)
         self.previousSpentToDate = comparableDay > 0 ? previousCumulativeSpend[comparableDay - 1].amount : 0
     }
@@ -105,5 +126,20 @@ struct PeriodSummary: Equatable {
             running += perDay[day - 1]
             return CumulativePoint(day: day, amount: running)
         }
+    }
+
+    /// Spending per bar: one per day for weeks and months, one per month for years. Every bar of the period is
+    /// present (zero when nothing was spent), so the chart keeps the same width as days go by.
+    private static func buildBars(of expenses: [Expense], in period: Period) -> [SpendBar] {
+        let isYear = period.kind == .year
+        let count = isYear ? 12 : period.dayCount
+        var perBar = [Double](repeating: 0, count: count)
+        for expense in expenses {
+            let index = isYear ? period.calendar.component(.month, from: expense.date) : period.dayIndex(of: expense.date)
+            if let index, (1...count).contains(index) {
+                perBar[index - 1] += expense.amount
+            }
+        }
+        return perBar.enumerated().map { SpendBar(index: $0.offset + 1, amount: $0.element) }
     }
 }

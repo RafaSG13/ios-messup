@@ -8,6 +8,13 @@
 import SwiftUI
 import MUDesignSystem
 
+// MARK: - ExpensesMode
+
+private enum ExpensesMode {
+    case overview
+    case calendar
+}
+
 // MARK: - ExpensesView
 
 /// Owns the screen state (period, sheets, selection). Every data read lives in `ExpensesDashboard`,
@@ -20,34 +27,48 @@ struct ExpensesView: View {
     @State private var isPresentingBudget = false
     @State private var selectedItem: Expense?
     @State private var error: (any Error)?
+    @State private var mode = ExpensesMode.overview
 
     var body: some View {
         NavigationStack {
-            ExpensesDashboard(kind: $kind,
-                              anchor: $anchor,
-                              isPresentingAddExpense: $shouldPresentAddExpense,
-                              isPresentingBudget: $isPresentingBudget,
-                              selectedItem: $selectedItem,
-                              error: $error)
-                .navigationTitle("Expenses")
-                .navigationBarTitleDisplayMode(.large)
-                .navigationDestination(for: Route.self) { RouteDestinationView(route: $0) }
-                .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button("Add expense", systemImage: "plus") {
-                            shouldPresentAddExpense = true
-                        }
-                        .buttonStyle(.glassProminent)
+            Group {
+                switch mode {
+                case .overview:
+                    ExpensesDashboard(kind: $kind,
+                                      anchor: $anchor,
+                                      isPresentingAddExpense: $shouldPresentAddExpense,
+                                      isPresentingBudget: $isPresentingBudget,
+                                      selectedItem: $selectedItem,
+                                      error: $error)
+                case .calendar:
+                    ExpensesCalendarView(anchor: $anchor, selectedItem: $selectedItem, error: $error)
+                }
+            }
+            .navigationTitle("Expenses")
+            .navigationBarTitleDisplayMode(.large)
+            .navigationDestination(for: Route.self) { RouteDestinationView(route: $0) }
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button(mode == .calendar ? "Overview" : "Calendar",
+                           systemImage: mode == .calendar ? "chart.bar" : "calendar") {
+                        mode = mode == .calendar ? .overview : .calendar
                     }
                 }
-                .errorAlert($error)
-                .addExpenseSheet(isPresented: $shouldPresentAddExpense,
-                                 onSubmit: expenseService.addExpense)
-                .editExpenseSheet(item: $selectedItem,
-                                  onSubmit: expenseService.updateExpense(with:))
-                .sheet(isPresented: $isPresentingBudget) {
-                    BudgetFormView()
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Add expense", systemImage: "plus") {
+                        shouldPresentAddExpense = true
+                    }
+                    .buttonStyle(.glassProminent)
                 }
+            }
+            .errorAlert($error)
+            .addExpenseSheet(isPresented: $shouldPresentAddExpense,
+                             onSubmit: expenseService.addExpense)
+            .editExpenseSheet(item: $selectedItem,
+                              onSubmit: expenseService.updateExpense(with:))
+            .sheet(isPresented: $isPresentingBudget) {
+                BudgetFormView()
+            }
         }
     }
 }
@@ -251,7 +272,7 @@ private struct CarouselDots: View {
     }
 
     var body: some View {
-        HStack(spacing: MUSpacer.size02) {
+        HStack(spacing: MUSpacer.size03) {
             ForEach(0..<count, id: \.self) { page in
                 Circle()
                     .fill(page == selected ? Color.primary : Color.secondary.opacity(ViewTraits.inactiveOpacity))

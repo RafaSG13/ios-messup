@@ -26,26 +26,37 @@ struct ExpensesSummaryCard: View {
             VStack(alignment: .leading, spacing: MUSpacer.size03) {
                 MUHeroAmount(summary.spent.formattedMoney(code: currencyCode), value: summary.spent)
 
-                if let change = summary.changeVersusPrevious {
-                    Label {
-                        summary.period.kind.changeText(change)
-                    } icon: {
-                        Image(systemName: change < 0 ? "arrow.down.right" : "arrow.up.right")
+                if summary.changeVersusPrevious != nil || summary.projectedSpent != nil {
+                    VStack(alignment: .leading, spacing: MUSpacer.size01) {
+                        if let change = summary.changeVersusPrevious {
+                            HStack(alignment: .firstTextBaseline, spacing: MUSpacer.size02) {
+                                Image(systemName: change < 0 ? "arrow.down.right" : "arrow.up.right")
+                                summary.period.kind.changeText(change)
+                            }
+                            .font(.subheadline)
+                            .foregroundStyle(change < 0
+                                             ? AnyShapeStyle(.secondary)
+                                             : AnyShapeStyle(Color.designSystem.warning))
+                            .accessibilityElement(children: .combine)
+                        }
+                        if let projected = summary.projectedSpent {
+                            Text("On pace for \(projected.formattedMoney(code: currencyCode))")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
                     }
-                    .font(.subheadline)
-                    .foregroundStyle(change < 0 ? AnyShapeStyle(.secondary) : AnyShapeStyle(Color.designSystem.warning))
                 }
-                if let projected = summary.projectedSpent {
-                    Text("On pace for \(projected.formattedMoney(code: currencyCode))")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                if summary.spent > 0 {
+                    SpendBarsChart(bars: summary.spendBars, currentBar: summary.currentBar)
+                        .frame(minHeight: 56, idealHeight: 72, maxHeight: .infinity)
+                } else if showsBudget {
+                    Spacer(minLength: 0)
                 }
                 if showsBudget {
                     BudgetRowView(progress: budgetProgress, isPresentingBudget: $isPresentingBudget)
-                        .padding(.top, MUSpacer.size02)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
     }
 }

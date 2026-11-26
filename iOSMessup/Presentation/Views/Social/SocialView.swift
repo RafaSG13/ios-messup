@@ -136,6 +136,8 @@ private struct PeopleSection: View {
                 }
             } header: {
                 Text("People")
+                    .font(.title3.bold())
+                    .foregroundStyle(Color.primary)
                     .textCase(nil)
             }
         }
