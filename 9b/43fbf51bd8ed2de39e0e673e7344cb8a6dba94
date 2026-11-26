@@ -1,0 +1,46 @@
+AGENTS.md
+  h_e81853c41416fb 34-37
+iOSMessup/Data/Export/CSVExporter.swift
+  h_e81853c41416fb 16-17,21-29,31-33,35-40,42,47-50,52,56-57,61-63
+iOSMessup/Data/Services/Budget/BudgetServiceProtocol.swift
+  h_e81853c41416fb 26-28
+iOSMessup/Data/Services/Contacts/ContactsServiceProtocol.swift
+  h_e81853c41416fb 37-39
+iOSMessup/Data/Services/Expenses/ExpensesService.swift
+  h_e81853c41416fb 24-26
+iOSMessup/Data/Services/Income/IncomeServiceProtocol.swift
+  h_e81853c41416fb 23-25
+iOSMessup/Data/Services/Intelligence/IntelligenceServiceProtocol.swift
+  h_e81853c41416fb 50-52
+iOSMessup/Data/Services/Notifications/NotificationServiceProtocol.swift
+  h_e81853c41416fb 35-37
+iOSMessup/Data/Services/Social/DebtsServiceProtocol.swift
+  h_e81853c41416fb 72-74
+iOSMessup/Data/Services/Speech/DictationServiceProtocol.swift
+  h_e81853c41416fb 36-38
+iOSMessup/Domain/DaySection.swift
+  h_e81853c41416fb 25-35,37-40
+iOSMessup/Domain/Period.swift
+  h_e81853c41416fb 37-38,47,72-78,86-103
+iOSMessup/Domain/PeriodSummary.swift
+  h_e81853c41416fb 119,121
+iOSMessup/Presentation/Components/Charts/CumulativeSpendingChart.swift
+  h_e81853c41416fb 32-48,61-62,64
+iOSMessup/Presentation/Views/Expenses/AllExpensesView.swift
+  h_e81853c41416fb 22-25,49-77
+iOSMessup/Presentation/Views/Expenses/ExpensesView.swift
+  h_e81853c41416fb 165-166,168-169,175,191,227-228,243-247
+iOSMessup/Presentation/Views/Settings/SettingsView.swift
+  h_e81853c41416fb 31,160,170-176,179-181,184,186-200,202,205-209
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "9b43fbf51bd8ed2de39e0e673e7344cb8a6dba94",
+  "prompts": {},
+  "humans": {
+    "h_e81853c41416fb": {
+      "author": "RafaSG13 <rafasrrg13@gmail.com>"
+    }
+  }
+}
